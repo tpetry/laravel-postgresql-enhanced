@@ -1,0 +1,46 @@
+name: PHPUnit
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        php: [8.0]
+        laravel: [6.*, 7.*, 8.*]
+        stability: [prefer-lowest, prefer-stable]
+        include:
+          - laravel: 6.*
+            testbench: 4.*
+          - laravel: 7.*
+            testbench: 5.*
+          - laravel: 8.*
+            testbench: 6.*
+
+    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: fileinfo, pdo
+          coverage: xdebug
+
+      - name: Setup problem matchers
+        run: |
+          echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+          echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+
+      - name: Install dependencies
+        run: |
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+
+      - name: Execute tests
+        run: vendor/bin/phpunit
