@@ -2,8 +2,8 @@
 
 ![GitHub License](https://img.shields.io/github/license/tpetry/laravel-postgresql-enhanced?label=License)
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/tpetry/laravel-postgresql-enhanced.svg?label=Packagist)](https://packagist.org/packages/tpetry/laravel-postgresql-enhanced)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/tpetry/laravel-postgresql-enhanced/run-tests?label=Tests)](https://github.com/tpetry/laravel_postgresql_enhanced/actions?query=workflow%3ATests+branch%3Amaster)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/tpetry/laravel-postgresql-enhanced/Check%20&%20fix%20styling?label=Code%20Style)](https://github.com/tpetry/laravel_postgresql_enhanced/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amaster)
+[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/tpetry/laravel-postgresql-enhanced/PHPUnit?label=Tests)](https://github.com/tpetry/laravel-postgresql-enhanced/actions/workflows/phpunit.yml?query=branch%3Amaster)
+[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/tpetry/laravel-postgresql-enhanced/PHP%20CS%20Fixer?label=Code%20Style)](https://github.com/tpetry/laravel-postgresql-enhanced/actions/workflows/php_cs_fixer.yml?query=branch%3Amaster)
 
 The standard Laravel PostgreSQL driver is extended with many missing PostgreSQL functionalities.
   
