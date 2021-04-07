@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests;
 
-use Tpetry\PostgresqlEnhanced\PostgresConnection;
 use Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection;
 
 class ExampleTest extends TestCase
