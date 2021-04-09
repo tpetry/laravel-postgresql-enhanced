@@ -8,4 +8,5 @@ use Illuminate\Database\Schema\Blueprint as BaseBlueprint;
 
 class Blueprint extends BaseBlueprint
 {
+    use BlueprintTypes;
 }

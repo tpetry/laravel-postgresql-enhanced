@@ -12,12 +12,24 @@ The standard Laravel PostgreSQL driver is extended with many missing PostgreSQL 
 You can install the package via composer:
 
 ```bash
-composer require tpetry/laravel_postgresql_enhanced
+composer require tpetry/laravel-postgresql-enhanced
 ```
 
-## Usage
+## Table of Contents
 
-TODO
+### Migration
+
+#### Column Types
+
+```php
+// Range Types
+$table->bigIntegerRange(string $column);
+$table->dateRange(string $column);
+$table->decimalRange(string $column);
+$table->integerRange(string $column);
+$table->timestampRange(string $column);
+$table->timestampTzRange(string $column);
+```
 
 ## Changelog
 

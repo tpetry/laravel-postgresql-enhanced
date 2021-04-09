@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests;
 
+use Closure;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Tpetry\PostgresqlEnhanced\PostgresqlEnhancedServiceProvider;
@@ -27,5 +28,17 @@ class TestCase extends Orchestra
         return [
             PostgresqlEnhancedServiceProvider::class,
         ];
+    }
+
+    protected function withQueryLog(Closure $fn): array
+    {
+        $this->app->get('db.connection')->flushQueryLog();
+        $this->app->get('db.connection')->enableQueryLog();
+        $fn();
+
+        return array_map(
+            fn (array $log) => array_merge($log, ['query' => strtolower($log['query'])]),
+            $this->app->get('db.connection')->getQueryLog(),
+        );
     }
 }
