@@ -12,11 +12,14 @@ jobs:
         laravel: [6.*, 7.*, 8.*]
         stability: [prefer-lowest, prefer-stable]
         include:
-          - laravel: 6.*
+          - doctrine: ^2.6
+            laravel: 6.*
             testbench: 4.*
-          - laravel: 7.*
+          - doctrine: ^2.6
+            laravel: 7.*
             testbench: 5.*
-          - laravel: 8.*
+          - doctrine: 3.*
+            laravel: 8.*
             testbench: 6.*
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }}
@@ -52,7 +55,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "doctrine/dbal:${{ matrix.doctrine }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Execute tests

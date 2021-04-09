@@ -35,14 +35,6 @@ class PostgresqlEnhancedServiceProvider extends DatabaseServiceProvider
         parent::register();
 
         Connection::resolverFor('pgsql', fn (PDO | Closure $pdo, string $database = '', string $tablePrefix = '', array $config = []) => new PostgresEnhancedConnection($pdo, $database, $tablePrefix, $config));
-    }
-
-    /**
-     * Register custom types with the Doctrine DBAL library.
-     */
-    protected function registerDoctrineTypes(): void
-    {
-        parent::registerDoctrineTypes();
 
         foreach ($this->doctrineTypes as $type) {
             if (!Type::hasType($type::LARAVEL_NAME)) {
