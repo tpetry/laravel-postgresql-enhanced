@@ -36,7 +36,7 @@ class DecimalRangeType extends Type
     /**
      * Gets the SQL declaration snippet for a column of this type.
      */
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform)
     {
         return 'numrange';
     }
