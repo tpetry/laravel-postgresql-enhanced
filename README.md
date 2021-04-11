@@ -5,8 +5,8 @@
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/tpetry/laravel-postgresql-enhanced/PHPUnit?label=Tests)](https://github.com/tpetry/laravel-postgresql-enhanced/actions/workflows/phpunit.yml?query=branch%3Amaster)
 [![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/tpetry/laravel-postgresql-enhanced/PHP%20CS%20Fixer?label=Code%20Style)](https://github.com/tpetry/laravel-postgresql-enhanced/actions/workflows/php_cs_fixer.yml?query=branch%3Amaster)
 
-The standard Laravel PostgreSQL driver is extended with many missing PostgreSQL functionalities.
-  
+Laravel supports many different databases and therefore has to limit itself to the lowest common denominator of all databases. PostgreSQL, however, offers a ton more functionality which is being added to Laravel by this extension.
+
 ## Installation
 
 You can install the package via composer:
