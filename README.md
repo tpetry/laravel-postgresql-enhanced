@@ -22,7 +22,13 @@ composer require tpetry/laravel-postgresql-enhanced
 #### Column Types
 
 ```php
+// Bit String Types
+// @see https://www.postgresql.org/docs/current/datatype-bit.html
+$table->bit(string $column, int $length = 1);
+$table->varbit(string $column, ?int $length = null);
+
 // Range Types
+// @see https://www.postgresql.org/docs/current/rangetypes.html
 $table->bigIntegerRange(string $column);
 $table->dateRange(string $column);
 $table->decimalRange(string $column);

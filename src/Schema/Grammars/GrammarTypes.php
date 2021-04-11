@@ -17,6 +17,14 @@ trait GrammarTypes
     }
 
     /**
+     * Create the column definition for a bit type.
+     */
+    protected function typeBit(Fluent $column): string
+    {
+        return "bit({$column->length})";
+    }
+
+    /**
      * Create the column definition for a date range type.
      */
     protected function typeDateRange(Fluent $column): string
@@ -54,5 +62,16 @@ trait GrammarTypes
     protected function typeTimestampTzRange(Fluent $column): string
     {
         return 'tstzrange';
+    }
+
+    /**
+     * Create the column definition for a varying bit type.
+     */
+    protected function typeVarbit(Fluent $column): string
+    {
+        return match (null === $column->length) {
+            true => 'varbit',
+            false => "varbit({$column->length})",
+        };
     }
 }

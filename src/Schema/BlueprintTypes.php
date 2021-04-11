@@ -17,6 +17,14 @@ trait BlueprintTypes
     }
 
     /**
+     * Create a new fixed bit column on the table.
+     */
+    public function bit(string $column, int $length = 1): ColumnDefinition
+    {
+        return $this->addColumn('bit', $column, compact('length'));
+    }
+
+    /**
      * Create a new date range column on the table.
      */
     public function dateRange(string $column): ColumnDefinition
@@ -54,5 +62,13 @@ trait BlueprintTypes
     public function timestampTzRange(string $column): ColumnDefinition
     {
         return $this->addColumn('timestampTzRange', $column);
+    }
+
+    /**
+     * Create a new varying bit column on the table.
+     */
+    public function varbit(string $column, ?int $length = null): ColumnDefinition
+    {
+        return $this->addColumn('varbit', $column, compact('length'));
     }
 }

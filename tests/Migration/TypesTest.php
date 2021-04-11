@@ -20,6 +20,17 @@ class TypesTest extends TestCase
         $this->assertEquals('create table "test" ("col" int8range not null)', $queries[0]['query'] ?? null);
     }
 
+    public function testBitTypeIsSupported(): void
+    {
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->bit('col'),
+            fnChange: fn (Blueprint $table) => $table->bit('col', 9)->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" bit(1) not null)', $queries[0]['query'] ?? null);
+        $this->assertEquals('alter table test alter col type bit(9)', $queries[1]['query'] ?? null);
+    }
+
     public function testDateRangeTypeIsSupported(): void
     {
         $queries = $this->runMigrations(
@@ -68,6 +79,17 @@ class TypesTest extends TestCase
         );
 
         $this->assertEquals('create table "test" ("col" tstzrange not null)', $queries[0]['query'] ?? null);
+    }
+
+    public function testVarbitTypeIsSupported(): void
+    {
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->varbit('col'),
+            fnChange: fn (Blueprint $table) => $table->varbit('col', 9)->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" varbit not null)', $queries[0]['query'] ?? null);
+        $this->assertEquals('alter table test alter col type varbit(9)', $queries[1]['query'] ?? null);
     }
 
     protected function runMigrations(Closure $fnCreate, Closure $fnChange): array
