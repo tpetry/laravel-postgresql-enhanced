@@ -25,6 +25,14 @@ trait BlueprintTypes
     }
 
     /**
+     * Create a new case insensitive text column on the table.
+     */
+    public function caseInsensitiveText(string $column): ColumnDefinition
+    {
+        return $this->addColumn('caseInsensitiveText', $column);
+    }
+
+    /**
      * Create a new date range column on the table.
      */
     public function dateRange(string $column): ColumnDefinition
@@ -46,6 +54,22 @@ trait BlueprintTypes
     public function integerRange(string $column): ColumnDefinition
     {
         return $this->addColumn('integerRange', $column);
+    }
+
+    /**
+     * Create a new ip network column on the table.
+     */
+    public function ipNetwork(string $column): ColumnDefinition
+    {
+        return $this->addColumn('ipNetwork', $column);
+    }
+
+    /**
+     * Create a new case insensitive text column on the table.
+     */
+    public function labelTree(string $column): ColumnDefinition
+    {
+        return $this->addColumn('labelTree', $column);
     }
 
     /**

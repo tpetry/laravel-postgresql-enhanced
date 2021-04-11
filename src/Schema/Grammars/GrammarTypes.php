@@ -25,6 +25,14 @@ trait GrammarTypes
     }
 
     /**
+     * Create the column definition for a case insensitive text type.
+     */
+    protected function typeCaseInsensitiveText(Fluent $column): string
+    {
+        return 'citext';
+    }
+
+    /**
      * Create the column definition for a date range type.
      */
     protected function typeDateRange(Fluent $column): string
@@ -46,6 +54,22 @@ trait GrammarTypes
     protected function typeIntegerRange(Fluent $column): string
     {
         return 'int4range';
+    }
+
+    /**
+     * Create the column definition for an ip network type.
+     */
+    protected function typeIpNetwork(Fluent $column): string
+    {
+        return 'cidr';
+    }
+
+    /**
+     * Create the column definition for a label tree type.
+     */
+    protected function typeLabelTree(Fluent $column): string
+    {
+        return 'ltree';
     }
 
     /**

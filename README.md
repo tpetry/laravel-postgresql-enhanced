@@ -27,6 +27,18 @@ composer require tpetry/laravel-postgresql-enhanced
 $table->bit(string $column, int $length = 1);
 $table->varbit(string $column, ?int $length = null);
 
+// Case Insensitive Text Type
+// @see https://www.postgresql.org/docs/current/citext.html
+$table->caseInsensitiveText(string $column);
+
+// Network Address Types
+// @see https://www.postgresql.org/docs/13/datatype-net-types.html
+$table->ipNetwork(string $column);
+
+// Label Tree Type
+// @see https://www.postgresql.org/docs/13/ltree.html
+$table->labelTree(string $column);
+
 // Range Types
 // @see https://www.postgresql.org/docs/current/rangetypes.html
 $table->bigIntegerRange(string $column);

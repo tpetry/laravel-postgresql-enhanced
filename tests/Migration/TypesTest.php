@@ -31,6 +31,17 @@ class TypesTest extends TestCase
         $this->assertEquals('alter table test alter col type bit(9)', $queries[1]['query'] ?? null);
     }
 
+    public function testCaseInsensitiveTextTypeIsSupported(): void
+    {
+        $this->app->get('db.connection')->statement('CREATE EXTENSION IF NOT EXISTS citext');
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->caseInsensitiveText('col'),
+            fnChange: fn (Blueprint $table) => $table->caseInsensitiveText('col')->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" citext not null)', $queries[0]['query'] ?? null);
+    }
+
     public function testDateRangeTypeIsSupported(): void
     {
         $queries = $this->runMigrations(
@@ -59,6 +70,27 @@ class TypesTest extends TestCase
         );
 
         $this->assertEquals('create table "test" ("col" int4range not null)', $queries[0]['query'] ?? null);
+    }
+
+    public function testIpNetworkTypeIsSupported(): void
+    {
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->ipNetwork('col'),
+            fnChange: fn (Blueprint $table) => $table->ipNetwork('col')->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" cidr not null)', $queries[0]['query'] ?? null);
+    }
+
+    public function testLabelTreeTypeIsSupported(): void
+    {
+        $this->app->get('db.connection')->statement('CREATE EXTENSION IF NOT EXISTS ltree');
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->labelTree('col'),
+            fnChange: fn (Blueprint $table) => $table->labelTree('col')->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" ltree not null)', $queries[0]['query'] ?? null);
     }
 
     public function testTimestampRangeTypeIsSupported(): void
