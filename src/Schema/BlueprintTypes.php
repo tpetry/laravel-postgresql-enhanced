@@ -49,11 +49,67 @@ trait BlueprintTypes
     }
 
     /**
+     * Create a new european article number column on the table.
+     */
+    public function europeanArticleNumber13(string $column): ColumnDefinition
+    {
+        return $this->addColumn('europeanArticleNumber13', $column);
+    }
+
+    /**
      * Create a new integer range column on the table.
      */
     public function integerRange(string $column): ColumnDefinition
     {
         return $this->addColumn('integerRange', $column);
+    }
+
+    /**
+     * Create a new international standard book number column on the table.
+     */
+    public function internationalStandardBookNumber(string $column): ColumnDefinition
+    {
+        return $this->addColumn('internationalStandardBookNumber', $column);
+    }
+
+    /**
+     * Create a new international standard book number column on the table.
+     */
+    public function internationalStandardBookNumber13(string $column): ColumnDefinition
+    {
+        return $this->addColumn('internationalStandardBookNumber13', $column);
+    }
+
+    /**
+     * Create a new international standard music number column on the table.
+     */
+    public function internationalStandardMusicNumber(string $column): ColumnDefinition
+    {
+        return $this->addColumn('internationalStandardMusicNumber', $column);
+    }
+
+    /**
+     * Create a new international standard music number column on the table.
+     */
+    public function internationalStandardMusicNumber13(string $column): ColumnDefinition
+    {
+        return $this->addColumn('internationalStandardMusicNumber13', $column);
+    }
+
+    /**
+     * Create a new international standard serial number column on the table.
+     */
+    public function internationalStandardSerialNumber(string $column): ColumnDefinition
+    {
+        return $this->addColumn('internationalStandardSerialNumber', $column);
+    }
+
+    /**
+     * Create a new international standard serial number column on the table.
+     */
+    public function internationalStandardSerialNumber13(string $column): ColumnDefinition
+    {
+        return $this->addColumn('internationalStandardSerialNumber13', $column);
     }
 
     /**
@@ -86,6 +142,14 @@ trait BlueprintTypes
     public function timestampTzRange(string $column): ColumnDefinition
     {
         return $this->addColumn('timestampTzRange', $column);
+    }
+
+    /**
+     * Create a new universal product number column on the table.
+     */
+    public function universalProductNumber(string $column): ColumnDefinition
+    {
+        return $this->addColumn('universalProductNumber', $column);
     }
 
     /**

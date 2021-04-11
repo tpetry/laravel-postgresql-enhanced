@@ -14,11 +14,19 @@ use Tpetry\PostgresqlEnhanced\Types\BitType;
 use Tpetry\PostgresqlEnhanced\Types\CaseInsensitiveTextType;
 use Tpetry\PostgresqlEnhanced\Types\DateRangeType;
 use Tpetry\PostgresqlEnhanced\Types\DecimalRangeType;
+use Tpetry\PostgresqlEnhanced\Types\EuropeanArticleNumber13Type;
 use Tpetry\PostgresqlEnhanced\Types\IntegerRangeType;
+use Tpetry\PostgresqlEnhanced\Types\InternationalStandardBookNumber13Type;
+use Tpetry\PostgresqlEnhanced\Types\InternationalStandardBookNumberType;
+use Tpetry\PostgresqlEnhanced\Types\InternationalStandardMusicNumber13Type;
+use Tpetry\PostgresqlEnhanced\Types\InternationalStandardMusicNumberType;
+use Tpetry\PostgresqlEnhanced\Types\InternationalStandardSerialNumber13Type;
+use Tpetry\PostgresqlEnhanced\Types\InternationalStandardSerialNumberType;
 use Tpetry\PostgresqlEnhanced\Types\IpNetworkType;
 use Tpetry\PostgresqlEnhanced\Types\LabelTreeType;
 use Tpetry\PostgresqlEnhanced\Types\TimestampRangeType;
 use Tpetry\PostgresqlEnhanced\Types\TimestamptzRangeType;
+use Tpetry\PostgresqlEnhanced\Types\UniversalProductNumberType;
 use Tpetry\PostgresqlEnhanced\Types\VarbitType;
 use Tpetry\PostgresqlEnhanced\Types\XmlType;
 
@@ -30,11 +38,19 @@ class PostgresqlEnhancedServiceProvider extends DatabaseServiceProvider
         CaseInsensitiveTextType::class,
         DateRangeType::class,
         DecimalRangeType::class,
+        EuropeanArticleNumber13Type::class,
         IntegerRangeType::class,
+        InternationalStandardBookNumber13Type::class,
+        InternationalStandardBookNumberType::class,
+        InternationalStandardMusicNumber13Type::class,
+        InternationalStandardMusicNumberType::class,
+        InternationalStandardSerialNumber13Type::class,
+        InternationalStandardSerialNumberType::class,
         IpNetworkType::class,
         LabelTreeType::class,
         TimestampRangeType::class,
         TimestamptzRangeType::class,
+        UniversalProductNumberType::class,
         VarbitType::class,
         XmlType::class,
     ];

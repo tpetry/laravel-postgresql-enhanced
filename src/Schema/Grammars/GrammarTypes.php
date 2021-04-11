@@ -49,11 +49,67 @@ trait GrammarTypes
     }
 
     /**
+     * Create the column definition for an european article number type.
+     */
+    protected function typeEuropeanArticleNumber13(Fluent $column): string
+    {
+        return 'ean13';
+    }
+
+    /**
      * Create the column definition for an integer range type.
      */
     protected function typeIntegerRange(Fluent $column): string
     {
         return 'int4range';
+    }
+
+    /**
+     * Create the column definition for an international standard book number type.
+     */
+    protected function typeInternationalStandardBookNumber(Fluent $column): string
+    {
+        return 'isbn';
+    }
+
+    /**
+     * Create the column definition for an international standard book number type.
+     */
+    protected function typeInternationalStandardBookNumber13(Fluent $column): string
+    {
+        return 'isbn13';
+    }
+
+    /**
+     * Create the column definition for an international standard music number type.
+     */
+    protected function typeInternationalStandardMusicNumber(Fluent $column): string
+    {
+        return 'ismn';
+    }
+
+    /**
+     * Create the column definition for an international standard music number type.
+     */
+    protected function typeInternationalStandardMusicNumber13(Fluent $column): string
+    {
+        return 'ismn13';
+    }
+
+    /**
+     * Create the column definition for an international standard serial number type.
+     */
+    protected function typeInternationalStandardSerialNumber(Fluent $column): string
+    {
+        return 'issn';
+    }
+
+    /**
+     * Create the column definition for an international standard serial number type.
+     */
+    protected function typeInternationalStandardSerialNumber13(Fluent $column): string
+    {
+        return 'issn13';
     }
 
     /**
@@ -86,6 +142,14 @@ trait GrammarTypes
     protected function typeTimestampTzRange(Fluent $column): string
     {
         return 'tstzrange';
+    }
+
+    /**
+     * Create the column definition for an universal product number type.
+     */
+    protected function typeUniversalProductNumber(Fluent $column): string
+    {
+        return 'upc';
     }
 
     /**

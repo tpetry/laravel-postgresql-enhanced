@@ -62,6 +62,17 @@ class TypesTest extends TestCase
         $this->assertEquals('create table "test" ("col" numrange not null)', $queries[0]['query'] ?? null);
     }
 
+    public function testEuropeanArticleNumber13TypeIsSupported(): void
+    {
+        $this->app->get('db.connection')->statement('CREATE EXTENSION IF NOT EXISTS isn');
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->europeanArticleNumber13('col'),
+            fnChange: fn (Blueprint $table) => $table->europeanArticleNumber13('col')->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" ean13 not null)', $queries[0]['query'] ?? null);
+    }
+
     public function testIntegerRangeTypeIsSupported(): void
     {
         $queries = $this->runMigrations(
@@ -70,6 +81,72 @@ class TypesTest extends TestCase
         );
 
         $this->assertEquals('create table "test" ("col" int4range not null)', $queries[0]['query'] ?? null);
+    }
+
+    public function testInternationalStandardBookNumber13TypeIsSupported(): void
+    {
+        $this->app->get('db.connection')->statement('CREATE EXTENSION IF NOT EXISTS isn');
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->internationalStandardBookNumber13('col'),
+            fnChange: fn (Blueprint $table) => $table->internationalStandardBookNumber13('col')->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" isbn13 not null)', $queries[0]['query'] ?? null);
+    }
+
+    public function testInternationalStandardBookNumberTypeIsSupported(): void
+    {
+        $this->app->get('db.connection')->statement('CREATE EXTENSION IF NOT EXISTS isn');
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->internationalStandardBookNumber('col'),
+            fnChange: fn (Blueprint $table) => $table->internationalStandardBookNumber('col')->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" isbn not null)', $queries[0]['query'] ?? null);
+    }
+
+    public function testInternationalStandardMusicNumber13TypeIsSupported(): void
+    {
+        $this->app->get('db.connection')->statement('CREATE EXTENSION IF NOT EXISTS isn');
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->internationalStandardMusicNumber13('col'),
+            fnChange: fn (Blueprint $table) => $table->internationalStandardMusicNumber13('col')->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" ismn13 not null)', $queries[0]['query'] ?? null);
+    }
+
+    public function testInternationalStandardMusicNumberTypeIsSupported(): void
+    {
+        $this->app->get('db.connection')->statement('CREATE EXTENSION IF NOT EXISTS isn');
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->internationalStandardMusicNumber('col'),
+            fnChange: fn (Blueprint $table) => $table->internationalStandardMusicNumber('col')->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" ismn not null)', $queries[0]['query'] ?? null);
+    }
+
+    public function testInternationalStandardSerialNumber13TypeIsSupported(): void
+    {
+        $this->app->get('db.connection')->statement('CREATE EXTENSION IF NOT EXISTS isn');
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->internationalStandardSerialNumber13('col'),
+            fnChange: fn (Blueprint $table) => $table->internationalStandardSerialNumber13('col')->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" issn13 not null)', $queries[0]['query'] ?? null);
+    }
+
+    public function testInternationaltStandardSerialNumberTypeIsSupported(): void
+    {
+        $this->app->get('db.connection')->statement('CREATE EXTENSION IF NOT EXISTS isn');
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->internationalStandardSerialNumber('col'),
+            fnChange: fn (Blueprint $table) => $table->internationalStandardSerialNumber('col')->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" issn not null)', $queries[0]['query'] ?? null);
     }
 
     public function testIpNetworkTypeIsSupported(): void
@@ -111,6 +188,17 @@ class TypesTest extends TestCase
         );
 
         $this->assertEquals('create table "test" ("col" tstzrange not null)', $queries[0]['query'] ?? null);
+    }
+
+    public function testUniversalProductNumberTypeIsSupported(): void
+    {
+        $this->app->get('db.connection')->statement('CREATE EXTENSION IF NOT EXISTS isn');
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->universalProductNumber('col'),
+            fnChange: fn (Blueprint $table) => $table->universalProductNumber('col')->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" upc not null)', $queries[0]['query'] ?? null);
     }
 
     public function testVarbitTypeIsSupported(): void

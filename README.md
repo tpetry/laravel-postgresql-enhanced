@@ -31,13 +31,24 @@ $table->varbit(string $column, ?int $length = null);
 // @see https://www.postgresql.org/docs/current/citext.html
 $table->caseInsensitiveText(string $column);
 
-// Network Address Types
-// @see https://www.postgresql.org/docs/13/datatype-net-types.html
-$table->ipNetwork(string $column);
+// International Product Number Types
+// @see https://www.postgresql.org/docs/current/isn.html
+$table->europeanArticleNumber13(string $column);
+$table->internationalStandardBookNumber(string $column);
+$table->internationalStandardBookNumber13(string $column);
+$table->internationalStandardMusicNumber(string $column);
+$table->internationalStandardMusicNumber13(string $column);
+$table->internationalStandardSerialNumber(string $column);
+$table->internationalStandardSerialNumber13(string $column);
+$table->universalProductNumber(string $column);
 
 // Label Tree Type
-// @see https://www.postgresql.org/docs/13/ltree.html
+// @see https://www.postgresql.org/docs/current/ltree.html
 $table->labelTree(string $column);
+
+// Network Address Types
+// @see https://www.postgresql.org/docs/current/datatype-net-types.html
+$table->ipNetwork(string $column);
 
 // Range Types
 // @see https://www.postgresql.org/docs/current/rangetypes.html
