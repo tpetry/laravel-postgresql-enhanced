@@ -35,6 +35,10 @@ $table->decimalRange(string $column);
 $table->integerRange(string $column);
 $table->timestampRange(string $column);
 $table->timestampTzRange(string $column);
+
+// XML Type
+// @see https://www.postgresql.org/docs/current/datatype-xml.html
+$table->xml(string $column);
 ```
 
 ## Changelog

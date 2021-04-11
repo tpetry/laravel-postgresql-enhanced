@@ -92,6 +92,16 @@ class TypesTest extends TestCase
         $this->assertEquals('alter table test alter col type varbit(9)', $queries[1]['query'] ?? null);
     }
 
+    public function testXmlTypeIsSupported(): void
+    {
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->xml('col'),
+            fnChange: fn (Blueprint $table) => $table->xml('col')->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" xml not null)', $queries[0]['query'] ?? null);
+    }
+
     protected function runMigrations(Closure $fnCreate, Closure $fnChange): array
     {
         return $this->withQueryLog(function () use ($fnCreate, $fnChange): void {

@@ -71,4 +71,12 @@ trait BlueprintTypes
     {
         return $this->addColumn('varbit', $column, compact('length'));
     }
+
+    /**
+     * Create a new xml column on the table.
+     */
+    public function xml(string $column): ColumnDefinition
+    {
+        return $this->addColumn('xml', $column);
+    }
 }

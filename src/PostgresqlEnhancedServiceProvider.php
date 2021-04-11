@@ -17,6 +17,7 @@ use Tpetry\PostgresqlEnhanced\Types\IntegerRangeType;
 use Tpetry\PostgresqlEnhanced\Types\TimestampRangeType;
 use Tpetry\PostgresqlEnhanced\Types\TimestamptzRangeType;
 use Tpetry\PostgresqlEnhanced\Types\VarbitType;
+use Tpetry\PostgresqlEnhanced\Types\XmlType;
 
 class PostgresqlEnhancedServiceProvider extends DatabaseServiceProvider
 {
@@ -29,6 +30,7 @@ class PostgresqlEnhancedServiceProvider extends DatabaseServiceProvider
         TimestampRangeType::class,
         TimestamptzRangeType::class,
         VarbitType::class,
+        XmlType::class,
     ];
 
     /**

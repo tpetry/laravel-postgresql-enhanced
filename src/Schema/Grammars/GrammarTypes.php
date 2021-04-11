@@ -74,4 +74,12 @@ trait GrammarTypes
             false => "varbit({$column->length})",
         };
     }
+
+    /**
+     * Create the column definition for a xml type.
+     */
+    protected function typeXml(Fluent $column): string
+    {
+        return 'xml';
+    }
 }
