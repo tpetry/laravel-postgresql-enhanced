@@ -21,6 +21,7 @@ composer require tpetry/laravel-postgresql-enhanced
   - [Column Types](#column-types)
     - [Bit Strings](#bit-strings)
     - [Case Insensitive Text](#case-insensitive-text)
+    - [Hstore](#hstore)
     - [IP Networks](#ip-networks)
     - [International Product Numbers](#international-product-numbers)
     - [Label Tree](#label-tree)
@@ -48,10 +49,16 @@ $table->caseInsensitiveText(string $column);
 
 ##### IP Networks
 The ip network datatype stores an ip network in cidr notation.
-
 ```php
 // @see https://www.postgresql.org/docs/current/datatype-net-types.html
 $table->ipNetwork(string $column);
+```
+
+##### Hstore
+The hstore data type is used store key/value pairs within a single PostgreSQL value. The new json data type is better in all aspects, so hstore should only be used for compatibility with old applications.
+```php
+// @see https://www.postgresql.org/docs/current/hstore.html
+$table->hstore(string $column);
 ```
 
 ##### International Product Numbers

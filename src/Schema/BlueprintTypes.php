@@ -57,6 +57,14 @@ trait BlueprintTypes
     }
 
     /**
+     * Create a new hstore column on the table.
+     */
+    public function hstore(string $column): ColumnDefinition
+    {
+        return $this->addColumn('hstore', $column);
+    }
+
+    /**
      * Create a new integer range column on the table.
      */
     public function integerRange(string $column): ColumnDefinition

@@ -15,6 +15,7 @@ use Tpetry\PostgresqlEnhanced\Types\CaseInsensitiveTextType;
 use Tpetry\PostgresqlEnhanced\Types\DateRangeType;
 use Tpetry\PostgresqlEnhanced\Types\DecimalRangeType;
 use Tpetry\PostgresqlEnhanced\Types\EuropeanArticleNumber13Type;
+use Tpetry\PostgresqlEnhanced\Types\HstoreType;
 use Tpetry\PostgresqlEnhanced\Types\IntegerRangeType;
 use Tpetry\PostgresqlEnhanced\Types\InternationalStandardBookNumber13Type;
 use Tpetry\PostgresqlEnhanced\Types\InternationalStandardBookNumberType;
@@ -39,6 +40,7 @@ class PostgresqlEnhancedServiceProvider extends DatabaseServiceProvider
         DateRangeType::class,
         DecimalRangeType::class,
         EuropeanArticleNumber13Type::class,
+        HstoreType::class,
         IntegerRangeType::class,
         InternationalStandardBookNumber13Type::class,
         InternationalStandardBookNumberType::class,

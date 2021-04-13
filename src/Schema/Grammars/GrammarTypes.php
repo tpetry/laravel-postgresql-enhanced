@@ -57,6 +57,14 @@ trait GrammarTypes
     }
 
     /**
+     * Create the column definition for a hstore type.
+     */
+    protected function typeHstore(Fluent $column): string
+    {
+        return 'hstore';
+    }
+
+    /**
      * Create the column definition for an integer range type.
      */
     protected function typeIntegerRange(Fluent $column): string

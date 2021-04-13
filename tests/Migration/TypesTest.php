@@ -73,6 +73,17 @@ class TypesTest extends TestCase
         $this->assertEquals('create table "test" ("col" ean13 not null)', $queries[0]['query'] ?? null);
     }
 
+    public function testHstoreTypeIsSupported(): void
+    {
+        $this->app->get('db.connection')->statement('CREATE EXTENSION IF NOT EXISTS hstore');
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->hstore('col'),
+            fnChange: fn (Blueprint $table) => $table->hstore('col')->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" hstore not null)', $queries[0]['query'] ?? null);
+    }
+
     public function testIntegerRangeTypeIsSupported(): void
     {
         $queries = $this->runMigrations(
