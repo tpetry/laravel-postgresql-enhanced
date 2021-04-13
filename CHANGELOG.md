@@ -7,10 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Column Types:
-  - Range Types:
-    - bigIntegerRange
-    - dateRange
-    - decimalRange
-    - integerRange
-    - timestampRange
-    - timestampTzRange  
+  - bigIntegerRange
+  - bit
+  - caseInsensitiveText
+  - dateRange
+  - decimalRange
+  - europeanArticleNumber13
+  - hstore
+  - integerRange
+  - internationalStandardBookNumber
+  - internationalStandardBookNumber13
+  - internationalStandardMusicNumber
+  - internationalStandardMusicNumber13
+  - internationalStandardSerialNumber
+  - internationalStandardSerialNumber13
+  - ipNetwork
+  - labelTree
+  - timestampRange
+  - timestampTzRange
+  - universalProductNumber
+  - varbit
+  - xml
