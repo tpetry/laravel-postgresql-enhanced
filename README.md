@@ -15,23 +15,48 @@ You can install the package via composer:
 composer require tpetry/laravel-postgresql-enhanced
 ```
 
-## Table of Contents
+## Features
+
+- [Migration](#migration)
+  - [Column Types](#column-types)
+    - [Bit Strings](#bit-strings)
+    - [Case Insensitive Text](#case-insensitive-text)
+    - [IP Networks](#ip-networks)
+    - [International Product Numbers](#international-product-numbers)
+    - [Label Tree](#label-tree)
+    - [Ranges](#ranges)
+    - [XML](#xml)
 
 ### Migration
 
 #### Column Types
 
+##### Bit Strings
+The bit string data types store strings of 0s and 1s. They can be used to e.g. store bitmaps.
 ```php
-// Bit String Types
 // @see https://www.postgresql.org/docs/current/datatype-bit.html
 $table->bit(string $column, int $length = 1);
 $table->varbit(string $column, ?int $length = null);
+```
 
-// Case Insensitive Text Type
+##### Case Insensitive Text
+The case insensitive text type is used to store a text that will be compared case insensitive. It can be used to e.g. store and compare e-mail addresses.
+```php
 // @see https://www.postgresql.org/docs/current/citext.html
 $table->caseInsensitiveText(string $column);
+```
 
-// International Product Number Types
+##### IP Networks
+The ip network datatype stores an ip network in cidr notation.
+
+```php
+// @see https://www.postgresql.org/docs/current/datatype-net-types.html
+$table->ipNetwork(string $column);
+```
+
+##### International Product Numbers
+The international product number data types are used to store common product numbers types and validate them before saving.
+```php
 // @see https://www.postgresql.org/docs/current/isn.html
 $table->europeanArticleNumber13(string $column);
 $table->internationalStandardBookNumber(string $column);
@@ -41,16 +66,18 @@ $table->internationalStandardMusicNumber13(string $column);
 $table->internationalStandardSerialNumber(string $column);
 $table->internationalStandardSerialNumber13(string $column);
 $table->universalProductNumber(string $column);
+```
 
-// Label Tree Type
+##### Label Tree
+The ltree data type stores a label as its position in a tree. This provides an easy way to manage a tree without performance and complexity disadvantages compared to alternative solutions.
+```php
 // @see https://www.postgresql.org/docs/current/ltree.html
 $table->labelTree(string $column);
+```
 
-// Network Address Types
-// @see https://www.postgresql.org/docs/current/datatype-net-types.html
-$table->ipNetwork(string $column);
-
-// Range Types
+##### Ranges
+The range data types store a range of values with optional start and end values. They can be used e.g. to describe the duration a meeting room is booked.
+```php
 // @see https://www.postgresql.org/docs/current/rangetypes.html
 $table->bigIntegerRange(string $column);
 $table->dateRange(string $column);
@@ -58,8 +85,11 @@ $table->decimalRange(string $column);
 $table->integerRange(string $column);
 $table->timestampRange(string $column);
 $table->timestampTzRange(string $column);
+```
 
-// XML Type
+##### XML
+The xml data type can be used to store an xml document.
+```php
 // @see https://www.postgresql.org/docs/current/datatype-xml.html
 $table->xml(string $column);
 ```
