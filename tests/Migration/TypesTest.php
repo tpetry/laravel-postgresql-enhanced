@@ -6,6 +6,7 @@ namespace Tpetry\PostgresqlEnhanced\Tests\Migration;
 
 use Closure;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class TypesTest extends TestCase
@@ -236,10 +237,10 @@ class TypesTest extends TestCase
     protected function runMigrations(Closure $fnCreate, Closure $fnChange): array
     {
         return $this->withQueryLog(function () use ($fnCreate, $fnChange): void {
-            $this->app->get('db.connection')->getSchemaBuilder()->create('test', function (Blueprint $table) use ($fnCreate): void {
+            Schema::create('test', function (Blueprint $table) use ($fnCreate): void {
                 $fnCreate($table);
             });
-            $this->app->get('db.connection')->getSchemaBuilder()->table('test', function (Blueprint $table) use ($fnChange): void {
+            Schema::table('test', function (Blueprint $table) use ($fnChange): void {
                 $fnChange($table);
             });
         });

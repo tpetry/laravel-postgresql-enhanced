@@ -18,6 +18,7 @@ composer require tpetry/laravel-postgresql-enhanced
 ## Features
 
 - [Migration](#migration)
+  - [Extensions](#extensions)
   - [Column Types](#column-types)
     - [Bit Strings](#bit-strings)
     - [Case Insensitive Text](#case-insensitive-text)
@@ -29,6 +30,37 @@ composer require tpetry/laravel-postgresql-enhanced
     - [XML](#xml)
 
 ### Migration
+
+#### Extensions
+
+##### Create Extensions
+
+The `Schema` facade supports the creation of extensions with the `createExtension` and `createExtensionIfNotExists` methods:
+```php
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::createExtension('tablefunc');
+Schema::createExtensionIfNotExists('tablefunc');
+```
+
+##### Dropping Extensions
+
+To remove extensions, you may use the `dropExtension` and `dropExtensionIfExists` methods provided by the `Schema` facade:
+
+```php
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::dropExtension('tablefunc');
+Schema::dropExtensionIfExists('tablefunc');
+```
+
+You may drop many extensions at once by passing multiple extension names:
+```php
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::dropExtension('tablefunc', 'fuzzystrmatch');
+Schema::dropExtensionIfExists('tablefunc', 'fuzzystrmatch');
+```
 
 #### Column Types
 

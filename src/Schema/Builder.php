@@ -9,6 +9,8 @@ use Illuminate\Database\Schema\PostgresBuilder;
 
 class Builder extends PostgresBuilder
 {
+    use BuilderExtension;
+
     /**
      * Create a new command set with a Closure.
      *
