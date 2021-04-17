@@ -26,6 +26,7 @@ composer require tpetry/laravel-postgresql-enhanced
 
 - [Migration](#migration)
   - [Extensions](#extensions)
+  - [Views](#views)
   - [Column Types](#column-types)
     - [Bit Strings](#bit-strings)
     - [Case Insensitive Text](#case-insensitive-text)
@@ -35,7 +36,6 @@ composer require tpetry/laravel-postgresql-enhanced
     - [Label Tree](#label-tree)
     - [Ranges](#ranges)
     - [XML](#xml)
-  - [Views](#views)
 
 ## Migration
 
@@ -68,6 +68,49 @@ use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 
 Schema::dropExtension('tablefunc', 'fuzzystrmatch');
 Schema::dropExtensionIfExists('tablefunc', 'fuzzystrmatch');
+```
+
+### Views
+
+#### Create Views
+
+The `Schema` facade supports the creation of views with the `createView` and `createViewOrReplace` methods. The definition of your view can be a sql query string or a query builder instance:
+```php
+use Illuminate\Support\Facades\DB;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::createView('users_with_2fa', 'SELECT * FROM users WHERE two_factor_secret IS NOT NULL');
+Schema::createViewOrReplace('users_without_2fa', DB::table('users')->whereNull('two_factor_secret'));
+```
+
+If you need to create recursive views the `createRecursiveView` and `createRecursiveViewOrReplace` methods can be used like in the former examples but you need to provide the available columns as last parameter:
+
+```php
+use Illuminate\Support\Facades\DB;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+// TODO simple example explaining the concept
+Schema::createView('viewname', 'SELECT id, col1, col2 FROM ....', ['id', 'col1', 'col2']);
+Schema::createViewOrReplace('viewname', 'SELECT id, col1, col2 FROM ....', ['id', 'col1', 'col2']);
+```
+
+#### Dropping Views
+
+To remove views, you may use the `dropView` and `dropViewIfExists` methods provided by the `Schema` facade. You don't have to distinguish normala and recursive views:
+
+```php
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::dropView('myview');
+Schema::dropViewIfExists('myview');
+```
+
+You may drop many views at once by passing multiple view names:
+```php
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::dropExtension('myview1', 'myview2');
+Schema::dropExtensionIfExists('myview1', 'myview2');
 ```
 
 ### Column Types
@@ -139,49 +182,6 @@ The xml data type can be used to store an xml document.
 ```php
 // @see https://www.postgresql.org/docs/current/datatype-xml.html
 $table->xml(string $column);
-```
-
-### Views
-
-#### Create Views
-
-The `Schema` facade supports the creation of views with the `createView` and `createViewOrReplace` methods. The definition of your view can be a sql query string or a query builder instance:
-```php
-use Illuminate\Support\Facades\DB;
-use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
-
-Schema::createView('users_with_2fa', 'SELECT * FROM users WHERE two_factor_secret IS NOT NULL');
-Schema::createViewOrReplace('users_without_2fa', DB::table('users')->whereNull('two_factor_secret'));
-```
-
-If you need to create recursive views the `createRecursiveView` and `createRecursiveViewOrReplace` methods can be used like in the former examples but you need to provide the available columns as last parameter:
-
-```php
-use Illuminate\Support\Facades\DB;
-use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
-
-// TODO simple example explaining the concept
-Schema::createView('viewname', 'SELECT id, col1, col2 FROM ....', ['id', 'col1', 'col2']);
-Schema::createViewOrReplace('viewname', 'SELECT id, col1, col2 FROM ....', ['id', 'col1', 'col2']);
-```
-
-#### Dropping Views
-
-To remove views, you may use the `dropView` and `dropViewIfExists` methods provided by the `Schema` facade. You don't have to distinguish normala and recursive views:
-
-```php
-use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
-
-Schema::dropView('myview');
-Schema::dropViewIfExists('myview');
-```
-
-You may drop many views at once by passing multiple view names:
-```php
-use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
-
-Schema::dropExtension('myview1', 'myview2');
-Schema::dropExtensionIfExists('myview1', 'myview2');
 ```
 
 # Changelog
