@@ -29,8 +29,8 @@ trait BuilderExtension
      */
     public function dropExtension(string ...$name): void
     {
-        $name = array_map(fn ($name) => $this->getConnection()->getSchemaGrammar()->wrap($name), $name);
-        $this->getConnection()->statement('drop extension '.implode(',', $name));
+        $names = $this->getConnection()->getSchemaGrammar()->namize($name);
+        $this->getConnection()->statement("drop extension {$names}");
     }
 
     /**
@@ -38,7 +38,7 @@ trait BuilderExtension
      */
     public function dropExtensionIfExists(string ...$name): void
     {
-        $name = array_map(fn ($name) => $this->getConnection()->getSchemaGrammar()->wrap($name), $name);
-        $this->getConnection()->statement('drop extension if exists '.implode(',', $name));
+        $names = $this->getConnection()->getSchemaGrammar()->namize($name);
+        $this->getConnection()->statement("drop extension if exists {$names}");
     }
 }

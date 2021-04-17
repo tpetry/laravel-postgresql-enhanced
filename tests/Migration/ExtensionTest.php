@@ -33,7 +33,7 @@ class ExtensionTest extends TestCase
         $queries = $this->withQueryLog(function (): void {
             Schema::dropExtension('tablefunc', 'fuzzystrmatch');
         });
-        $this->assertEquals(['drop extension "tablefunc","fuzzystrmatch"'], array_column($queries, 'query'));
+        $this->assertEquals(['drop extension "tablefunc", "fuzzystrmatch"'], array_column($queries, 'query'));
     }
 
     public function testDropExtensionIfExists(): void
@@ -43,6 +43,6 @@ class ExtensionTest extends TestCase
         $queries = $this->withQueryLog(function (): void {
             Schema::dropExtensionIfExists('tablefunc', 'fuzzystrmatch');
         });
-        $this->assertEquals(['drop extension if exists "tablefunc","fuzzystrmatch"'], array_column($queries, 'query'));
+        $this->assertEquals(['drop extension if exists "tablefunc", "fuzzystrmatch"'], array_column($queries, 'query'));
     }
 }
