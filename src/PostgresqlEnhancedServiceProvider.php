@@ -64,7 +64,9 @@ class PostgresqlEnhancedServiceProvider extends DatabaseServiceProvider
     {
         parent::register();
 
-        Connection::resolverFor('pgsql', fn (PDO | Closure $pdo, string $database = '', string $tablePrefix = '', array $config = []) => new PostgresEnhancedConnection($pdo, $database, $tablePrefix, $config));
+        Connection::resolverFor('pgsql', function (PDO | Closure $pdo, string $database = '', string $tablePrefix = '', array $config = []) {
+            return new PostgresEnhancedConnection($pdo, $database, $tablePrefix, $config);
+        });
 
         foreach ($this->doctrineTypes as $type) {
             if (!Type::hasType($type::LARAVEL_NAME)) {

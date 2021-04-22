@@ -33,5 +33,6 @@ return PhpCsFixer\Config::create()
             ],
             'sort_algorithm' => 'alpha',
         ],
+        'use_arrow_functions' => false,
     ])
     ->setFinder($finder);
