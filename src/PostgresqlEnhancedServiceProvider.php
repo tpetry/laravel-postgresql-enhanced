@@ -7,7 +7,7 @@ namespace Tpetry\PostgresqlEnhanced;
 use Closure;
 use Doctrine\DBAL\Types\Type;
 use Illuminate\Database\Connection;
-use Illuminate\Database\DatabaseServiceProvider;
+use Illuminate\Support\ServiceProvider;
 use PDO;
 use Tpetry\PostgresqlEnhanced\Types\BigIntegerRangeType;
 use Tpetry\PostgresqlEnhanced\Types\BitType;
@@ -31,7 +31,7 @@ use Tpetry\PostgresqlEnhanced\Types\UniversalProductNumberType;
 use Tpetry\PostgresqlEnhanced\Types\VarbitType;
 use Tpetry\PostgresqlEnhanced\Types\XmlType;
 
-class PostgresqlEnhancedServiceProvider extends DatabaseServiceProvider
+class PostgresqlEnhancedServiceProvider extends ServiceProvider
 {
     protected array $doctrineTypes = [
         BigIntegerRangeType::class,
@@ -62,8 +62,6 @@ class PostgresqlEnhancedServiceProvider extends DatabaseServiceProvider
      */
     public function register(): void
     {
-        parent::register();
-
         Connection::resolverFor('pgsql', function (PDO | Closure $pdo, string $database = '', string $tablePrefix = '', array $config = []) {
             return new PostgresEnhancedConnection($pdo, $database, $tablePrefix, $config);
         });
