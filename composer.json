@@ -16,7 +16,8 @@
     "require": {
         "php": "^8.0",
         "doctrine/dbal": "^2.6|^3.0",
-        "illuminate/database": "^6.0|^7.0|^8.15"
+        "illuminate/database": "^6.0|^7.0|^8.15",
+        "illuminate/support": "^6.0|^7.0|^8.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.18",

@@ -14,6 +14,7 @@ return PhpCsFixer\Config::create()
         '@PHP80Migration:risky' => true,
         '@Symfony:risky' => true,
         '@Symfony' => true,
+        'binary_operator_spaces' => ['operators' => ['|' => null]], // https://github.com/FriendsOfPHP/PHP-CS-Fixer/issues/5495
         'ordered_class_elements' => [
             'order' => [
                 'use_trait',

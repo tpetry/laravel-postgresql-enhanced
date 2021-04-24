@@ -27,6 +27,7 @@ composer require tpetry/laravel-postgresql-enhanced
 - [Migration](#migration)
   - [Extensions](#extensions)
   - [Views](#views)
+  - [Indexes](#indexes)
   - [Column Types](#column-types)
     - [Bit Strings](#bit-strings)
     - [Case Insensitive Text](#case-insensitive-text)
@@ -112,6 +113,13 @@ use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 Schema::dropExtension('myview1', 'myview2');
 Schema::dropExtensionIfExists('myview1', 'myview2');
 ```
+
+### Indexes
+
+#### Drop If Exists
+
+In addition to the Laravel methods to drop indexes, methods to drop indexes if they exist have been added.
+The methods `dropIndexIfExists`, `dropPrimaryIfExists`, `dropSpatialIndexIfExists` and `dropSpatialIndexIfExists` match the semantics of their laravel originals.
 
 ### Column Types
 

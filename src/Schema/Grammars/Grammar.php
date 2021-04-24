@@ -8,6 +8,7 @@ use Illuminate\Database\Schema\Grammars\PostgresGrammar;
 
 class Grammar extends PostgresGrammar
 {
+    use GrammarIndex;
     use GrammarTypes;
 
     /**
