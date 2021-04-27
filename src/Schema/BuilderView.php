@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tpetry\PostgresqlEnhanced\Schema;
 
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Tpetry\PostgresqlEnhanced\Support\Helpers\Query;
 
 trait BuilderView
 {
@@ -15,7 +16,7 @@ trait BuilderView
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
         $columns = $this->getConnection()->getSchemaGrammar()->columnize($columns);
-        $query = $this->makeSqlQuery($query);
+        $query = Query::toSql($query);
         $this->getConnection()->statement("create recursive view {$name} ({$columns}) as {$query}");
     }
 
@@ -26,7 +27,7 @@ trait BuilderView
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
         $columns = $this->getConnection()->getSchemaGrammar()->columnize($columns);
-        $query = $this->makeSqlQuery($query);
+        $query = Query::toSql($query);
         $this->getConnection()->statement("create or replace recursive view {$name} ({$columns}) as {$query}");
     }
 
@@ -36,7 +37,7 @@ trait BuilderView
     public function createView(string $name, QueryBuilder | string $query): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
-        $query = $this->makeSqlQuery($query);
+        $query = Query::toSql($query);
         $this->getConnection()->statement("create view {$name} as {$query}");
     }
 
@@ -46,7 +47,7 @@ trait BuilderView
     public function createViewOrReplace(string $name, QueryBuilder | string $query): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
-        $query = $this->makeSqlQuery($query);
+        $query = Query::toSql($query);
         $this->getConnection()->statement("create or replace view {$name} as {$query}");
     }
 

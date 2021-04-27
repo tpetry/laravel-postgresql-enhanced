@@ -121,6 +121,24 @@ Schema::dropExtensionIfExists('myview1', 'myview2');
 In addition to the Laravel methods to drop indexes, methods to drop indexes if they exist have been added.
 The methods `dropIndexIfExists`, `dropPrimaryIfExists`, `dropSpatialIndexIfExists` and `dropSpatialIndexIfExists` match the semantics of their laravel originals.
 
+#### Create Partial Indexes
+
+A partial index is an index built over a subset of a table; the subset is defined by a condition. The index contains entries only for those table rows that satisfy the condition. Partial indexes are a specialized feature, but there are several situations in which they are useful.
+Take for example you want to make the email address column of your users table unique and you are using soft-deletes. This is not possible because by deleting a user and creating it again the email address is used twice. With partial indexes this can be done by limiting the index to only untrashed rows:
+```php
+use Illuminate\Database\Query\Builder;
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::table('users', function(Blueprint $table) {
+    $table->partialUnique(['email'], fn (Builder $condition) => $condition->whereNull('deleted_at'));
+});
+```
+
+Partial Indexes are created with the `partialIndex`, `partialSpatialIndex`, `partialUnique` methods. The name of the index is created automatically like for normal laravel indexes, if you want to change the name pass it's value as third parameter.
+
+Special attention is needed for dropping partial unique indexes, you need to use the special partial drop methods: `dropPartialUnique` and `dropPartialUniqueIfExists`.
+
 ### Column Types
 
 #### Bit Strings

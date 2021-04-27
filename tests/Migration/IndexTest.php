@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests\Migration;
 
+use Illuminate\Database\Query\Builder;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 use Tpetry\PostgresqlEnhanced\Tests\TestCase;
@@ -36,6 +37,62 @@ class IndexTest extends TestCase
         $this->assertEquals(['drop index if exists "index_661848"'], array_column($queries, 'query'));
     }
 
+    public function testDropPartialUniqueByColumn(): void
+    {
+        Schema::create('test_944685', function (Blueprint $table): void {
+            $table->string('col_503208');
+            $table->partialUnique('col_503208', fn (Builder $query) => $query->whereNotNull('col_503208'));
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_944685', function (Blueprint $table): void {
+                $table->dropPartialUnique(['col_503208']);
+            });
+        });
+        $this->assertEquals(['drop index "test_944685_col_503208_unique"'], array_column($queries, 'query'));
+    }
+
+    public function testDropPartialUniqueByName(): void
+    {
+        Schema::create('test_873708', function (Blueprint $table): void {
+            $table->string('col_231939');
+            $table->partialUnique('col_231939', fn (Builder $query) => $query->whereNotNull('col_231939'), 'unique_231939');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_873708', function (Blueprint $table): void {
+                $table->dropPartialUnique('unique_231939');
+            });
+        });
+        $this->assertEquals(['drop index "unique_231939"'], array_column($queries, 'query'));
+    }
+
+    public function testDropPartialUniqueIfExistsByColumn(): void
+    {
+        Schema::create('test_638567', function (Blueprint $table): void {
+            $table->string('col_173938');
+            $table->partialUnique('col_173938', fn (Builder $query) => $query->whereNotNull('col_173938'));
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_638567', function (Blueprint $table): void {
+                $table->dropPartialUniqueIfExists(['col_173938']);
+            });
+        });
+        $this->assertEquals(['drop index if exists "test_638567_col_173938_unique"'], array_column($queries, 'query'));
+    }
+
+    public function testDropPartialUniqueIfExistsByName(): void
+    {
+        Schema::create('test_825040', function (Blueprint $table): void {
+            $table->string('col_365888');
+            $table->partialUnique('col_365888', fn (Builder $query) => $query->whereNotNull('col_365888'), 'unique_365888');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_825040', function (Blueprint $table): void {
+                $table->dropPartialUniqueIfExists('unique_365888');
+            });
+        });
+        $this->assertEquals(['drop index if exists "unique_365888"'], array_column($queries, 'query'));
+    }
+
     public function testDropPrimaryIfExistsByColumn(): void
     {
         Schema::create('test_175007', function (Blueprint $table): void {
@@ -65,7 +122,8 @@ class IndexTest extends TestCase
 
     public function testDropSpatialIndexIfExistsByColumn(): void
     {
-        // TODO create real table to test delete command (github postgres container currently has no postgis extension)
+        $this->app->get('db.connection')->statement('create table "test_663598" ("col_377964" box, "col_211451" box)');
+        $this->app->get('db.connection')->statement('create index "test_663598_col_377964_col_211451_spatialindex" on "test_663598" using gist ("col_377964", "col_211451")');
         $queries = $this->withQueryLog(function (): void {
             Schema::table('test_663598', function (Blueprint $table): void {
                 $table->dropSpatialIndexIfExists(['col_377964', 'col_211451']);
@@ -76,7 +134,8 @@ class IndexTest extends TestCase
 
     public function testDropSpatialIndexIfExistsByName(): void
     {
-        // TODO create real table to test delete command (github postgres container currently has no postgis extension)
+        $this->app->get('db.connection')->statement('create table "test_153372" ("col_470747" box)');
+        $this->app->get('db.connection')->statement('create index "index_504502" on "test_153372" using gist ("col_470747")');
         $queries = $this->withQueryLog(function (): void {
             Schema::table('test_153372', function (Blueprint $table): void {
                 $table->dropSpatialIndexIfExists('index_504502');
@@ -101,13 +160,87 @@ class IndexTest extends TestCase
     public function testDropUniqueIfExistsByName(): void
     {
         Schema::create('test_129734', function (Blueprint $table): void {
-            $table->string('col_905394')->unique('spatial_905394');
+            $table->string('col_905394')->unique('unique_905394');
         });
         $queries = $this->withQueryLog(function (): void {
             Schema::table('test_129734', function (Blueprint $table): void {
-                $table->dropUniqueIfExists('spatial_905394');
+                $table->dropUniqueIfExists('unique_905394');
             });
         });
-        $this->assertEquals(['alter table "test_129734" drop constraint if exists "spatial_905394"'], array_column($queries, 'query'));
+        $this->assertEquals(['alter table "test_129734" drop constraint if exists "unique_905394"'], array_column($queries, 'query'));
+    }
+
+    public function testPartialIndexByColumn(): void
+    {
+        Schema::create('test_718079', function (Blueprint $table): void {
+            $table->string('col_191384');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_718079', function (Blueprint $table): void {
+                $table->partialIndex(['col_191384'], fn (Builder $query) => $query->whereNotNull('col_191384'));
+            });
+        });
+        $this->assertEquals(['create index "test_718079_col_191384_index" on "test_718079" ("col_191384") where "col_191384" is not null'], array_column($queries, 'query'));
+    }
+
+    public function testPartialIndexByName(): void
+    {
+        Schema::create('test_563532', function (Blueprint $table): void {
+            $table->string('col_563532');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_563532', function (Blueprint $table): void {
+                $table->partialIndex(['col_563532'], fn (Builder $query) => $query->whereNotNull('col_563532'), 'partial_727161');
+            });
+        });
+        $this->assertEquals(['create index "partial_727161" on "test_563532" ("col_563532") where "col_563532" is not null'], array_column($queries, 'query'));
+    }
+
+    public function testPartialSpatialIndexByColumn(): void
+    {
+        $this->app->get('db.connection')->statement('create table "test_187489" ("col_527332" box)');
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_187489', function (Blueprint $table): void {
+                $table->partialSpatialIndex(['col_527332'], fn (Builder $query) => $query->whereNotNull('col_527332'));
+            });
+        });
+        $this->assertEquals(['create index "test_187489_col_527332_spatialindex" on "test_187489" using gist ("col_527332") where "col_527332" is not null'], array_column($queries, 'query'));
+    }
+
+    public function testPartialSpatialIndexByName(): void
+    {
+        $this->app->get('db.connection')->statement('create table "test_415147" ("col_161022" box)');
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_415147', function (Blueprint $table): void {
+                $table->partialSpatialIndex(['col_161022'], fn (Builder $query) => $query->whereNotNull('col_161022'), 'partial_357565');
+            });
+        });
+        $this->assertEquals(['create index "partial_357565" on "test_415147" using gist ("col_161022") where "col_161022" is not null'], array_column($queries, 'query'));
+    }
+
+    public function testPartialUniqueByColumn(): void
+    {
+        Schema::create('test_614037', function (Blueprint $table): void {
+            $table->string('col_403192');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_614037', function (Blueprint $table): void {
+                $table->partialUnique(['col_403192'], fn (Builder $query) => $query->whereNotNull('col_403192'));
+            });
+        });
+        $this->assertEquals(['create unique index "test_614037_col_403192_unique" on "test_614037" ("col_403192") where "col_403192" is not null'], array_column($queries, 'query'));
+    }
+
+    public function testPartialUniqueByName(): void
+    {
+        Schema::create('test_578729', function (Blueprint $table): void {
+            $table->string('col_818344');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_578729', function (Blueprint $table): void {
+                $table->partialUnique(['col_818344'], fn (Builder $query) => $query->whereNotNull('col_818344'), 'partial_522558');
+            });
+        });
+        $this->assertEquals(['create unique index "partial_522558" on "test_578729" ("col_818344") where "col_818344" is not null'], array_column($queries, 'query'));
     }
 }

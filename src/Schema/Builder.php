@@ -10,7 +10,6 @@ use Illuminate\Database\Schema\PostgresBuilder;
 class Builder extends PostgresBuilder
 {
     use BuilderExtension;
-    use BuilderSqlquery;
     use BuilderView;
 
     /**
