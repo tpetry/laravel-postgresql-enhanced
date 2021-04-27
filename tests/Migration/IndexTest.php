@@ -10,7 +10,7 @@ use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class IndexTest extends TestCase
 {
-    public function testdropIndexIfExistsByColumn(): void
+    public function testDropIndexIfExistsByColumn(): void
     {
         Schema::create('test_282503', function (Blueprint $table): void {
             $table->string('col_125474')->index();
@@ -23,7 +23,7 @@ class IndexTest extends TestCase
         $this->assertEquals(['drop index if exists "test_282503_col_125474_index"'], array_column($queries, 'query'));
     }
 
-    public function testdropIndexIfExistsByName(): void
+    public function testDropIndexIfExistsByName(): void
     {
         Schema::create('test_855776', function (Blueprint $table): void {
             $table->string('col_661848')->index('index_661848');
@@ -36,7 +36,7 @@ class IndexTest extends TestCase
         $this->assertEquals(['drop index if exists "index_661848"'], array_column($queries, 'query'));
     }
 
-    public function testdropPrimaryIfExistsByColumn(): void
+    public function testDropPrimaryIfExistsByColumn(): void
     {
         Schema::create('test_175007', function (Blueprint $table): void {
             $table->string('col_585036')->primary();
@@ -49,7 +49,7 @@ class IndexTest extends TestCase
         $this->assertEquals(['alter table "test_175007" drop constraint if exists "test_175007_pkey"'], array_column($queries, 'query'));
     }
 
-    public function testdropPrimaryIfExistsByName(): void
+    public function testDropPrimaryIfExistsByName(): void
     {
         // Note: Laravel ignores name of primary key, the autonamed key is used all the time
         Schema::create('test_152155', function (Blueprint $table): void {
@@ -63,7 +63,7 @@ class IndexTest extends TestCase
         $this->assertEquals(['alter table "test_152155" drop constraint if exists "test_152155_pkey"'], array_column($queries, 'query'));
     }
 
-    public function testdropSpatialIndexIfExistsByColumn(): void
+    public function testDropSpatialIndexIfExistsByColumn(): void
     {
         // TODO create real table to test delete command (github postgres container currently has no postgis extension)
         $queries = $this->withQueryLog(function (): void {
@@ -74,7 +74,7 @@ class IndexTest extends TestCase
         $this->assertEquals(['drop index if exists "test_663598_col_377964_col_211451_spatialindex"'], array_column($queries, 'query'));
     }
 
-    public function testdropSpatialIndexIfExistsByName(): void
+    public function testDropSpatialIndexIfExistsByName(): void
     {
         // TODO create real table to test delete command (github postgres container currently has no postgis extension)
         $queries = $this->withQueryLog(function (): void {
@@ -85,7 +85,7 @@ class IndexTest extends TestCase
         $this->assertEquals(['drop index if exists "index_504502"'], array_column($queries, 'query'));
     }
 
-    public function testdropUniqueIfExistsByColumn(): void
+    public function testDropUniqueIfExistsByColumn(): void
     {
         Schema::create('test_460872', function (Blueprint $table): void {
             $table->string('col_542073')->unique();
@@ -98,7 +98,7 @@ class IndexTest extends TestCase
         $this->assertEquals(['alter table "test_460872" drop constraint if exists "test_460872_col_542073_unique"'], array_column($queries, 'query'));
     }
 
-    public function testdropUniqueIfExistsByName(): void
+    public function testDropUniqueIfExistsByName(): void
     {
         Schema::create('test_129734', function (Blueprint $table): void {
             $table->string('col_905394')->unique('spatial_905394');
