@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tpetry\PostgresqlEnhanced\Support\Helpers;
 
 use Illuminate\Database\Connection;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use RuntimeException;
 
@@ -13,7 +14,7 @@ class Query
     /**
      * Transforms a query to it's sql representation.
      */
-    public static function toSql(QueryBuilder | string $query): string
+    public static function toSql(EloquentBuilder | QueryBuilder | string $query): string
     {
         if (\is_string($query)) {
             return $query;
