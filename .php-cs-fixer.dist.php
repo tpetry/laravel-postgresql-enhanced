@@ -1,6 +1,6 @@
 <?php
 
-$finder = Symfony\Component\Finder\Finder::create()
+$finder = PhpCsFixer\Finder::create()
     ->in([
         __DIR__ . '/src',
         __DIR__ . '/tests',
@@ -9,7 +9,8 @@ $finder = Symfony\Component\Finder\Finder::create()
     ->ignoreDotFiles(true)
     ->ignoreVCS(true);
 
-return PhpCsFixer\Config::create()
+$config = new PhpCsFixer\Config();
+$config
     ->setRules([
         '@PHP80Migration:risky' => true,
         '@Symfony:risky' => true,
@@ -37,3 +38,5 @@ return PhpCsFixer\Config::create()
         'use_arrow_functions' => false,
     ])
     ->setFinder($finder);
+
+return $config;
