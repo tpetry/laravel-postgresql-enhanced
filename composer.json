@@ -51,6 +51,9 @@
             ]
         }
     },
+    "archive": {
+        "exclude": ["/.art"]
+    },
     "minimum-stability": "stable",
     "prefer-stable": true
 }
