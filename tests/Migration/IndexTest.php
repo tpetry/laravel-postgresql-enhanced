@@ -170,6 +170,62 @@ class IndexTest extends TestCase
         $this->assertEquals(['alter table "test_129734" drop constraint if exists "unique_905394"'], array_column($queries, 'query'));
     }
 
+    public function testDropUniqueIndexByColumn(): void
+    {
+        Schema::create('test_994632', function (Blueprint $table): void {
+            $table->string('col_823350');
+            $table->uniqueIndex('col_823350');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_994632', function (Blueprint $table): void {
+                $table->dropUniqueIndex(['col_823350']);
+            });
+        });
+        $this->assertEquals(['drop index "test_994632_col_823350_unique"'], array_column($queries, 'query'));
+    }
+
+    public function testDropUniqueIndexByName(): void
+    {
+        Schema::create('test_370499', function (Blueprint $table): void {
+            $table->string('col_431653');
+            $table->uniqueIndex('col_431653', 'unique_476787');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_370499', function (Blueprint $table): void {
+                $table->dropUniqueIndex('unique_476787');
+            });
+        });
+        $this->assertEquals(['drop index "unique_476787"'], array_column($queries, 'query'));
+    }
+
+    public function testDropUniqueIndexIfExistsByColumn(): void
+    {
+        Schema::create('test_426583', function (Blueprint $table): void {
+            $table->string('col_555473');
+            $table->uniqueIndex('col_555473');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_426583', function (Blueprint $table): void {
+                $table->dropUniqueIndexIfExists(['col_555473']);
+            });
+        });
+        $this->assertEquals(['drop index if exists "test_426583_col_555473_unique"'], array_column($queries, 'query'));
+    }
+
+    public function testDropUniqueIndexIfExistsByName(): void
+    {
+        Schema::create('test_849821', function (Blueprint $table): void {
+            $table->string('col_320750');
+            $table->uniqueIndex('col_320750', 'unique_775368');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_849821', function (Blueprint $table): void {
+                $table->dropUniqueIndexIfExists('unique_775368');
+            });
+        });
+        $this->assertEquals(['drop index if exists "unique_775368"'], array_column($queries, 'query'));
+    }
+
     public function testPartialIndexByColumn(): void
     {
         Schema::create('test_718079', function (Blueprint $table): void {
@@ -242,5 +298,31 @@ class IndexTest extends TestCase
             });
         });
         $this->assertEquals(['create unique index "partial_522558" on "test_578729" ("col_818344") where "col_818344" is not null'], array_column($queries, 'query'));
+    }
+
+    public function testUniqueIndexByColumn(): void
+    {
+        Schema::create('test_800299', function (Blueprint $table): void {
+            $table->string('col_494598');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_800299', function (Blueprint $table): void {
+                $table->uniqueIndex(['col_494598']);
+            });
+        });
+        $this->assertEquals(['create unique index "test_800299_col_494598_unique" on "test_800299" ("col_494598")'], array_column($queries, 'query'));
+    }
+
+    public function testUniqueIndexByName(): void
+    {
+        Schema::create('test_645101', function (Blueprint $table): void {
+            $table->string('col_173311');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_645101', function (Blueprint $table): void {
+                $table->uniqueIndex(['col_173311'], 'unique_229201');
+            });
+        });
+        $this->assertEquals(['create unique index "unique_229201" on "test_645101" ("col_173311")'], array_column($queries, 'query'));
     }
 }

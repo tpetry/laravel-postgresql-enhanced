@@ -60,6 +60,22 @@ trait BlueprintIndex
     }
 
     /**
+     * Indicate that the given unique key should be dropped.
+     */
+    public function dropUniqueIndex(array|string $index): Fluent
+    {
+        return $this->dropIndexCommand('dropUnique2', 'unique', $index);
+    }
+
+    /**
+     * Indicate that the given unique key should be dropped if it exists.
+     */
+    public function dropUniqueIndexIfExists(array|string $index): Fluent
+    {
+        return $this->dropGenericIfExists($index, 'unique', 'dropUnique2IfExists');
+    }
+
+    /**
      * Specify an partial index for the table.
      */
     public function partialIndex(array|string $columns, Closure|string $condition, ?string $name = null, ?string $algorithm = null): Fluent
@@ -96,6 +112,14 @@ trait BlueprintIndex
         $index = $name ?: $this->createIndexName('unique', (array) $columns);
 
         return $this->genericPartialIndex('partialUnique', (array) $columns, $condition, $index, true, $algorithm);
+    }
+
+    /**
+     * Specify a unique index for the table.
+     */
+    public function uniqueIndex($columns, ?string $name = null, ?string $algorithm = null): Fluent
+    {
+        return $this->indexCommand('unique2', $columns, $name ?: $this->createIndexName('unique', (array) $columns), $algorithm);
     }
 
     /**

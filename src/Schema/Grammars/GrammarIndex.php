@@ -34,6 +34,22 @@ trait GrammarIndex
     }
 
     /**
+     * Compile a drop unique key command.
+     */
+    public function compileDropUnique2(Blueprint $blueprint, Fluent $command): string
+    {
+        return "drop index {$this->wrap($command->index)}";
+    }
+
+    /**
+     * Compile a drop unique key if exists command.
+     */
+    public function compileDropUnique2IfExists(Blueprint $blueprint, Fluent $command): string
+    {
+        return "drop index if exists {$this->wrap($command->index)}";
+    }
+
+    /**
      * Compile a drop unique key if exists command.
      */
     public function compileDropUniqueIfExists(Blueprint $blueprint, Fluent $command): string
@@ -76,6 +92,19 @@ trait GrammarIndex
             $command->algorithm ? ' using '.$command->algorithm : '',
             $this->columnize($command->columns),
             $command->condition,
+        );
+    }
+
+    /**
+     * Compile a unique key command.
+     */
+    public function compileUnique2(Blueprint $blueprint, Fluent $command): string
+    {
+        return sprintf('create unique index %s on %s%s (%s)',
+            $this->wrap($command->index),
+            $this->wrapTable($blueprint),
+            $command->algorithm ? ' using '.$command->algorithm : '',
+            $this->columnize($command->columns)
         );
     }
 }
