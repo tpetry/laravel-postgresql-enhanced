@@ -12,7 +12,7 @@ trait BuilderView
     /**
      * Create a recursive view on the schema.
      */
-    public function createRecursiveView(string $name, QueryBuilder | string $query, array $columns): void
+    public function createRecursiveView(string $name, QueryBuilder|string $query, array $columns): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
         $columns = $this->getConnection()->getSchemaGrammar()->columnize($columns);
@@ -23,7 +23,7 @@ trait BuilderView
     /**
      * Create or replace a recursive view on the schema.
      */
-    public function createRecursiveViewOrReplace(string $name, QueryBuilder | string $query, array $columns): void
+    public function createRecursiveViewOrReplace(string $name, QueryBuilder|string $query, array $columns): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
         $columns = $this->getConnection()->getSchemaGrammar()->columnize($columns);
@@ -34,7 +34,7 @@ trait BuilderView
     /**
      * Create a view on the schema.
      */
-    public function createView(string $name, QueryBuilder | string $query): void
+    public function createView(string $name, QueryBuilder|string $query): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
         $query = Query::toSql($query);
@@ -44,7 +44,7 @@ trait BuilderView
     /**
      * Create or replace a view on the schema.
      */
-    public function createViewOrReplace(string $name, QueryBuilder | string $query): void
+    public function createViewOrReplace(string $name, QueryBuilder|string $query): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
         $query = Query::toSql($query);

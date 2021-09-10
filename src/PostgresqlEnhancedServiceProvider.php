@@ -62,7 +62,7 @@ class PostgresqlEnhancedServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        Connection::resolverFor('pgsql', function (PDO | Closure $pdo, string $database = '', string $tablePrefix = '', array $config = []) {
+        Connection::resolverFor('pgsql', function (PDO|Closure $pdo, string $database = '', string $tablePrefix = '', array $config = []) {
             return new PostgresEnhancedConnection($pdo, $database, $tablePrefix, $config);
         });
 

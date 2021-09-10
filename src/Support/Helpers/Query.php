@@ -14,7 +14,7 @@ class Query
     /**
      * Transforms a query to it's sql representation.
      */
-    public static function toSql(EloquentBuilder | QueryBuilder | string $query): string
+    public static function toSql(EloquentBuilder|QueryBuilder|string $query): string
     {
         if (\is_string($query)) {
             return $query;
