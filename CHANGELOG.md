@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Query Builder to raw query string did use integer instead of boolean literal for boolean values
+
 ### Changed
 - Partial indexes are no longer extra functions of the table blueprint, they are now index options
 
