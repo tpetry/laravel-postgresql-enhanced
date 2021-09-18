@@ -30,6 +30,7 @@ class Query
 
             return (string) match (true) {
                 null === $value => 'null',
+                \is_bool($value) => $value ? 'true' : 'false',
                 is_numeric($value) => $value,
                 default => with($query->getConnection(), fn (Connection $connection) => $connection->getPdo()->quote((string) $value)),
             };
