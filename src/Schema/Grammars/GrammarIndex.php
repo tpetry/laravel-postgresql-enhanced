@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Schema\Grammars;
 
+use Closure;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Fluent;
+use Tpetry\PostgresqlEnhanced\Support\Helpers\Query;
 
 trait GrammarIndex
 {
@@ -58,41 +62,19 @@ trait GrammarIndex
     }
 
     /**
-     * Compile a partial index key command.
+     * Compile a plain index key command.
      */
-    public function compilePartialIndex(Blueprint $blueprint, Fluent $command): string
+    public function compileIndex(Blueprint $blueprint, Fluent $command): string
     {
-        return sprintf('create index %s on %s%s (%s) where %s',
-            $this->wrap($command->index),
-            $this->wrapTable($blueprint),
-            $command->algorithm ? ' using '.$command->algorithm : '',
-            $this->columnize($command->columns),
-            $command->condition,
-        );
+        return $this->genericCompileCreateIndex($blueprint, $command, false);
     }
 
     /**
-     * Compile a partial spatial index key command.
+     * Compile a spatial index key command.
      */
-    public function compilePartialSpatialIndex(Blueprint $blueprint, Fluent $command): string
+    public function compileSpatialIndex(Blueprint $blueprint, Fluent $command): string
     {
-        $command->algorithm = 'gist';
-
-        return $this->compilePartialIndex($blueprint, $command);
-    }
-
-    /**
-     * Compile a partial unique key command.
-     */
-    public function compilePartialUnique(Blueprint $blueprint, Fluent $command): string
-    {
-        return sprintf('create unique index %s on %s%s (%s) where %s',
-            $this->wrap($command->index),
-            $this->wrapTable($blueprint),
-            $command->algorithm ? ' using '.$command->algorithm : '',
-            $this->columnize($command->columns),
-            $command->condition,
-        );
+        return $this->genericCompileCreateIndex($blueprint, $command->algorithm('gist'), false);
     }
 
     /**
@@ -100,11 +82,43 @@ trait GrammarIndex
      */
     public function compileUnique2(Blueprint $blueprint, Fluent $command): string
     {
-        return sprintf('create unique index %s on %s%s (%s)',
+        return $this->genericCompileCreateIndex($blueprint, $command, true);
+    }
+
+    private function genericCompileCreateIndex(Blueprint $blueprint, Fluent $command, bool $unique): string
+    {
+        // If the index is partial index using a closure a dummy query builder is provided to the closure. The query is
+        // then transformed to a static query and the select part is removed to only keep the condition.
+        if ($command->where instanceof Closure) {
+            $query = ($command->where)(DB::query());
+            $command->where = trim(str_replace('select * where', '', Query::toSql($query)));
+        }
+
+        // If the storage parameters for the index are provided in array form they need to be serialized to PostgreSQL's
+        // string format.
+        if (\is_array($command->with)) {
+            $with = array_map(fn (mixed $value) => match ($value) {
+                true => 'on',
+                false => 'off',
+                default => (string) $value,
+            }, $command->with);
+            $with = array_map(fn (string $value, string $key) => "{$key} = {$value}", $with, array_keys($with));
+            $command->with = implode(', ', $with);
+        }
+
+        $index = [
+            $unique ? 'create unique index' : 'create index',
             $this->wrap($command->index),
+            'on',
             $this->wrapTable($blueprint),
-            $command->algorithm ? ' using '.$command->algorithm : '',
-            $this->columnize($command->columns)
-        );
+            $command->algorithm ? "using {$command->algorithm}" : '',
+            '('.$this->columnize($command->columns).')',
+            $command->include ? 'include ('.implode(',', $this->wrapArray(Arr::wrap($command->include))).')' : '',
+            $command->with ? "with ({$command->with})" : '',
+            $command->where ? "where {$command->where}" : '',
+        ];
+        $sql = implode(' ', array_filter($index, fn ($part) => $part));
+
+        return $sql;
     }
 }

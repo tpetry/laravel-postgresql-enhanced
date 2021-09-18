@@ -28,6 +28,9 @@ composer require tpetry/laravel-postgresql-enhanced
   - [Extensions](#extensions)
   - [Views](#views)
   - [Indexes](#indexes)
+    - [Partial Indexes](#partial-indexes)
+    - [Include Columns](#include-columns)
+    - [Storage Parameters](#storage-parameters)
   - [Column Types](#column-types)
     - [Bit Strings](#bit-strings)
     - [Case Insensitive Text](#case-insensitive-text)
@@ -116,12 +119,27 @@ Schema::dropExtensionIfExists('myview1', 'myview2');
 
 ### Indexes
 
+#### Unique Indexes
+Laravel provides uniqueness with the `$table->unique()` method but these are unique constraints instead of unique indexes.
+If you want to make values unique in the table they will behave identical.
+However, only for unique indexes advanced options like partial indexes or including further columns are available.
+
+To use these great features and not break compatability with Laravel the method `uniqueIndex` has been added which can be used identical to `unique`: 
+```php
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::table('users', function(Blueprint $table) {
+    $table->uniqueIndex('email');
+});
+```
+
 #### Drop If Exists
 
 In addition to the Laravel methods to drop indexes, methods to drop indexes if they exist have been added.
 The methods `dropIndexIfExists`, `dropPrimaryIfExists`, `dropSpatialIndexIfExists` and `dropSpatialIndexIfExists` match the semantics of their laravel originals.
 
-#### Create Partial Indexes
+#### Partial Indexes
 
 A partial index is an index built over a subset of a table; the subset is defined by a condition. The index contains entries only for those table rows that satisfy the condition. Partial indexes are a specialized feature, but there are several situations in which they are useful.
 Take for example you want to make the email address column of your users table unique and you are using soft-deletes. This is not possible because by deleting a user and creating it again the email address is used twice. With partial indexes this can be done by limiting the index to only untrashed rows:
@@ -131,13 +149,43 @@ use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 
 Schema::table('users', function(Blueprint $table) {
-    $table->partialUnique(['email'], fn (Builder $condition) => $condition->whereNull('deleted_at'));
+    $table->uniqueIndex('email')->partial("deleted_at IS NULL");
+    // or:
+    $table->uniqueIndex('email')->partial(fn (Builder $condition) => $condition->whereNull('deleted_at'));
 });
 ```
 
-Partial Indexes are created with the `partialIndex`, `partialSpatialIndex`, `partialUnique` methods. The name of the index is created automatically like for normal laravel indexes, if you want to change the name pass it's value as third parameter.
+Partial Indexes are created with the `partial` method on an index created by `index()`, `spatialIndex` or `uniqueIndex`.
 
-Special attention is needed for dropping partial unique indexes, you need to use the special partial drop methods: `dropPartialUnique` and `dropPartialUniqueIfExists`.
+#### Include Columns
+
+A really great feature of recent PostgreSQL versions is the ability to include columns in an index as non-key columns.
+A non-key column is not used for efficient lookups but PostgreSQL can use these columns to do index-only operations which won't need to load the specific columns from the table as they are already included in the index.
+
+```php
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::table('users', function(Blueprint $table) {
+    // The query "SELECT firstname, lastname FROM users WHERE email = 'test@example.com'" can be executed as an index-only scan without loading the table data
+    $table->index('email')->include(['firstname', 'lastname']);
+});
+```
+Columns are included in an index with the `include` method on an index created by `index()`, `spatialIndex` or `uniqueIndex`.
+
+#### Storage Parameters
+
+In some cases you want to specify the storage parameters of an index. If you are using gin indexes you should read the article [Debugging random slow writes in PostgreSQL](https://iamsafts.com/posts/postgres-gin-performance/) why storage parameters for a gin index are important:
+
+```php
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::table('bookmarks', function(Blueprint $table) {
+    $table->jsonb('data', algorithm: 'gin')->with(['fastupdate' => false]);
+});
+```
+Storage parameters are defined with the `with` method on an index created by `index()`, `spatialIndex` or `uniqueIndex`.
 
 ### Column Types
 
