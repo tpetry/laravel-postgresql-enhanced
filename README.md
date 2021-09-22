@@ -258,6 +258,10 @@ The xml data type can be used to store an xml document.
 $table->xml(string $column);
 ```
 
+# Contribution
+
+If you want to contribute code to this package, please open an issue first. To avoid unnecessary effort for you it is very beneficial to first discuss the idea, the functionality and its API.
+
 # Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
