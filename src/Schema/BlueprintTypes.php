@@ -175,4 +175,12 @@ trait BlueprintTypes
     {
         return $this->addColumn('xml', $column);
     }
+
+    /**
+     * Create a new money column on the table.
+     */
+    public function money(string $column): ColumnDefinition
+    {
+        return $this->addColumn('money', $column);
+    }
 }

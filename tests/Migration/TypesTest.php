@@ -234,6 +234,16 @@ class TypesTest extends TestCase
         $this->assertEquals('create table "test" ("col" xml not null)', $queries[0]['query'] ?? null);
     }
 
+    public function testMoneyTypeIsSupported(): void
+    {
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->money('col'),
+            fnChange: fn (Blueprint $table) => $table->money('col')->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" money not null)', $queries[0]['query'] ?? null);
+    }
+
     protected function runMigrations(Closure $fnCreate, Closure $fnChange): array
     {
         return $this->withQueryLog(function () use ($fnCreate, $fnChange): void {

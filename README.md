@@ -40,6 +40,7 @@ composer require tpetry/laravel-postgresql-enhanced
     - [Label Tree](#label-tree)
     - [Ranges](#ranges)
     - [XML](#xml)
+    - [Monetary](#monetary)
 
 ## Migration
 
@@ -256,6 +257,13 @@ The xml data type can be used to store an xml document.
 ```php
 // @see https://www.postgresql.org/docs/current/datatype-xml.html
 $table->xml(string $column);
+```
+
+#### Monetary
+The money type can be used to store a currency amount with a fixed fractional precision.
+```php
+// @see https://www.postgresql.org/docs/current/datatype-money.html
+$table->money(string $column);
 ```
 
 # Changelog

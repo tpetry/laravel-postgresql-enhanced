@@ -178,4 +178,12 @@ trait GrammarTypes
     {
         return 'xml';
     }
+
+    /**
+     * Create the column definition for a money type.
+     */
+    protected function typeMoney(Fluent $column): string
+    {
+        return 'money';
+    }
 }
