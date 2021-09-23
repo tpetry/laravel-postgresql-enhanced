@@ -27,6 +27,7 @@ use Tpetry\PostgresqlEnhanced\Types\IpNetworkType;
 use Tpetry\PostgresqlEnhanced\Types\LabelTreeType;
 use Tpetry\PostgresqlEnhanced\Types\TimestampRangeType;
 use Tpetry\PostgresqlEnhanced\Types\TimestamptzRangeType;
+use Tpetry\PostgresqlEnhanced\Types\TsvectorType;
 use Tpetry\PostgresqlEnhanced\Types\UniversalProductNumberType;
 use Tpetry\PostgresqlEnhanced\Types\VarbitType;
 use Tpetry\PostgresqlEnhanced\Types\XmlType;
@@ -52,6 +53,7 @@ class PostgresqlEnhancedServiceProvider extends ServiceProvider
         LabelTreeType::class,
         TimestampRangeType::class,
         TimestamptzRangeType::class,
+        TsvectorType::class,
         UniversalProductNumberType::class,
         VarbitType::class,
         XmlType::class,

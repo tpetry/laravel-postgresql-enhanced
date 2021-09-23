@@ -34,6 +34,7 @@ composer require tpetry/laravel-postgresql-enhanced
   - [Column Types](#column-types)
     - [Bit Strings](#bit-strings)
     - [Case Insensitive Text](#case-insensitive-text)
+    - [Full Text Search](#full-text-search)
     - [Hstore](#hstore)
     - [IP Networks](#ip-networks)
     - [International Product Numbers](#international-product-numbers)
@@ -202,6 +203,13 @@ The case insensitive text type is used to store a text that will be compared cas
 ```php
 // @see https://www.postgresql.org/docs/current/citext.html
 $table->caseInsensitiveText(string $column);
+```
+
+#### Full Text Search
+The tsvector type is used to store a processed dictionary for full text searching.
+```php
+// @see https://www.postgresql.org/docs/10/datatype-textsearch.html
+$table->tsvector(string $column);
 ```
 
 #### IP Networks

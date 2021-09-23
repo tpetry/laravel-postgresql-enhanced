@@ -202,6 +202,16 @@ class TypesTest extends TestCase
         $this->assertEquals('create table "test" ("col" tstzrange not null)', $queries[0]['query'] ?? null);
     }
 
+    public function testTsvectorTypeIsSupported(): void
+    {
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->tsvector('col'),
+            fnChange: fn (Blueprint $table) => $table->tsvector('col')->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" tsvector not null)', $queries[0]['query'] ?? null);
+    }
+
     public function testUniversalProductNumberTypeIsSupported(): void
     {
         $this->app->get('db.connection')->statement('CREATE EXTENSION IF NOT EXISTS isn');

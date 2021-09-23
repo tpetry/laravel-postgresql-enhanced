@@ -153,6 +153,14 @@ trait BlueprintTypes
     }
 
     /**
+     * Create a new tsvector column on the table.
+     */
+    public function tsvector(string $column): ColumnDefinition
+    {
+        return $this->addColumn('tsvector', $column);
+    }
+
+    /**
      * Create a new universal product number column on the table.
      */
     public function universalProductNumber(string $column): ColumnDefinition

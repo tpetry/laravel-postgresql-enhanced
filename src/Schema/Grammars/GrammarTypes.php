@@ -153,6 +153,14 @@ trait GrammarTypes
     }
 
     /**
+     * Create the column definition for a tsvector type.
+     */
+    protected function typeTsvector(Fluent $column): string
+    {
+        return 'tsvector';
+    }
+
+    /**
      * Create the column definition for an universal product number type.
      */
     protected function typeUniversalProductNumber(Fluent $column): string
