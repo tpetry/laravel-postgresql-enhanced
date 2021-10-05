@@ -25,22 +25,23 @@ composer require tpetry/laravel-postgresql-enhanced
 # Features
 
 - [Migration](#migration)
-  - [Extensions](#extensions)
-  - [Views](#views)
-  - [Indexes](#indexes)
-    - [Partial Indexes](#partial-indexes)
-    - [Include Columns](#include-columns)
-    - [Storage Parameters](#storage-parameters)
-  - [Column Types](#column-types)
-    - [Bit Strings](#bit-strings)
-    - [Case Insensitive Text](#case-insensitive-text)
-    - [Full Text Search](#full-text-search)
-    - [Hstore](#hstore)
-    - [IP Networks](#ip-networks)
-    - [International Product Numbers](#international-product-numbers)
-    - [Label Tree](#label-tree)
-    - [Ranges](#ranges)
-    - [XML](#xml)
+    - [Extensions](#extensions)
+    - [Views](#views)
+    - [Indexes](#indexes)
+        - [Partial Indexes](#partial-indexes)
+        - [Include Columns](#include-columns)
+        - [Storage Parameters](#storage-parameters)
+        - [Functional Indexes / Column Options](#functional-indexes--column-options)
+    - [Column Types](#column-types)
+        - [Bit Strings](#bit-strings)
+        - [Case Insensitive Text](#case-insensitive-text)
+        - [Full Text Search](#full-text-search)
+        - [Hstore](#hstore)
+        - [IP Networks](#ip-networks)
+        - [International Product Numbers](#international-product-numbers)
+        - [Label Tree](#label-tree)
+        - [Ranges](#ranges)
+        - [XML](#xml)
 
 ## Migration
 
@@ -123,9 +124,9 @@ Schema::dropExtensionIfExists('myview1', 'myview2');
 #### Unique Indexes
 Laravel provides uniqueness with the `$table->unique()` method but these are unique constraints instead of unique indexes.
 If you want to make values unique in the table they will behave identical.
-However, only for unique indexes advanced options like partial indexes or including further columns are available.
+However, only for unique indexes advanced options like partial indexes, including further columns or column options are available.
 
-To use these great features and not break compatability with Laravel the method `uniqueIndex` has been added which can be used identical to `unique`: 
+To use these great features and not break compatability with Laravel the method `uniqueIndex` has been added which can be used identical to `unique`:
 ```php
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
@@ -183,10 +184,28 @@ use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 
 Schema::table('bookmarks', function(Blueprint $table) {
-    $table->jsonb('data', algorithm: 'gin')->with(['fastupdate' => false]);
+    $table->index('data')->algorithm('gin')->with(['fastupdate' => false]);
 });
 ```
 Storage parameters are defined with the `with` method on an index created by `index()`, `spatialIndex` or `uniqueIndex`.
+
+#### Functional Indexes / Column Options
+
+Sometimes an index with only column specifications is not sufficient. For maximum performance, the extended index functionalities of PostgreSQL has to be used in some cases.
+
+* To create functional indexes the function must be bracketed and a separate index name must be specified, since an index name cannot be generated automatically from the expression.
+* Column specific properties like collation, opclass, sorting or positioning of NULL values can easily be specified like in a normal SQL query directly after the column name.
+
+```php
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::table('users', function(Blueprint $table) {
+    $table->unique('(LOWER(email))', 'users_email_unique');
+    $table->index(['firstname ASC NULLS FIRST', 'lastname ASC NULLS FIRST'])
+    $table->index('attributes jsonb_path_ops')->algorithm('gin');
+});
+```
 
 ### Column Types
 

@@ -11,8 +11,6 @@ use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class IndexOptionsTest extends TestCase
 {
-    // with
-
     public function testIndexIncludeByColumn(): void
     {
         Schema::create('test_130163', function (Blueprint $table): void {

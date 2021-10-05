@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tpetry\PostgresqlEnhanced\Schema;
 
 use Illuminate\Support\Fluent;
+use Illuminate\Support\Str;
+use RuntimeException;
 
 trait BlueprintIndex
 {
@@ -61,7 +63,50 @@ trait BlueprintIndex
      */
     public function uniqueIndex($columns, ?string $name = null, ?string $algorithm = null): Fluent
     {
-        return $this->indexCommand('unique2', $columns, $name ?: $this->createIndexName('unique', (array) $columns), $algorithm);
+        if (null === $name) {
+            $name = str_replace('unique2', 'unique', $this->createIndexName('unique2', (array) $columns));
+        }
+
+        return $this->indexCommand('unique2', $columns, $name, $algorithm);
+    }
+
+    /**
+     * Create a default index name for the table.
+     *
+     * @param string $type
+     */
+    protected function createIndexName($type, array $columns): string
+    {
+        if ('unique' === $type) {
+            return parent::createIndexName($type, $columns);
+        }
+
+        $columns = array_map(function (string $column): string {
+            // When the column has a structure like '(.+).*' it's an functional index. But it's not
+            // easily possible to extract column names from a functional expression so the developer
+            // has to provide an index name instead of relying on the automatic index name generation.
+            if (str_starts_with($column, '(')) {
+                throw new RuntimeException('For functional indexes an index name must be specified.');
+            }
+
+            // In some very rare cases a developer created a column with characters which are not
+            // alphanumeric and not an underscore. For the standard laravel migration it's no problem
+            // as the full string is used and properly escaped. But for the improved index support a
+            // special character like the space means index options are defined. To still support
+            // these very uncommon column names the column can be escaped in double quotes.
+            // Strictly speaking this is breaking compatability with laravel, but such column names
+            // are very uncommon. So it's a good tradeoff for the big performance improvements.
+            if (str_starts_with($column, '"')) {
+                return Str::beforeLast(Str::after($column, '"'), '"');
+            }
+
+            // When index parameters are defined the space in the sql grammar is the separation character
+            // of the column and all params. So in case a space is available only the part before the first
+            // space character is declaring the column and will be used.
+            return Str::before($column, ' ');
+        }, $columns);
+
+        return parent::createIndexName($type, $columns);
     }
 
     /**

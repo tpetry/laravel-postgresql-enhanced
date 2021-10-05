@@ -9,6 +9,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Fluent;
+use Illuminate\Support\Str;
 use Tpetry\PostgresqlEnhanced\Support\Helpers\Query;
 
 trait GrammarIndex
@@ -106,13 +107,30 @@ trait GrammarIndex
             $command->with = implode(', ', $with);
         }
 
+        // If the additions for column specifications are used the columns need to be columnized different to the
+        // standard laravel logic which is expecting plain references.
+        $columns = array_map(function (string $column): string {
+            // When a functional index or escaped column name  is provided the column string is already a valid raw
+            // column index string and can be used exactly as provided.
+            if (Str::startsWith($column, ['(', '"'])) {
+                return $column;
+            }
+
+            // In case index parameters are provided the column needs to escaped correctly and the rest is provided
+            // exactly as provided.
+            $parts = explode(' ', $column, 2);
+            $column = trim(sprintf('%s %s', $this->wrap($parts[0]), $parts[1] ?? ''));
+
+            return $column;
+        }, $command->columns);
+
         $index = [
             $unique ? 'create unique index' : 'create index',
             $this->wrap($command->index),
             'on',
             $this->wrapTable($blueprint),
             $command->algorithm ? "using {$command->algorithm}" : '',
-            '('.$this->columnize($command->columns).')',
+            '('.implode(', ', $columns).')',
             $command->include ? 'include ('.implode(',', $this->wrapArray(Arr::wrap($command->include))).')' : '',
             $command->with ? "with ({$command->with})" : '',
             $command->where ? "where {$command->where}" : '',
