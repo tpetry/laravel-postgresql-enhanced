@@ -67,7 +67,7 @@ trait BlueprintTypes
     /**
      * Create a new identity column on the table.
      */
-    public function identity(string $column = 'id', $always = false): ColumnDefinition
+    public function identity(string $column = 'id', bool $always = false): ColumnDefinition
     {
         return parent::bigInteger($column)->generatedAs()->always($always);
     }
