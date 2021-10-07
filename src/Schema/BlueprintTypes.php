@@ -65,6 +65,14 @@ trait BlueprintTypes
     }
 
     /**
+     * Create a new identity column on the table.
+     */
+    public function identity(string $column = 'id', $always = false): ColumnDefinition
+    {
+        return parent::bigInteger($column)->generatedAs()->always($always);
+    }
+
+    /**
      * Create a new integer range column on the table.
      */
     public function integerRange(string $column): ColumnDefinition
