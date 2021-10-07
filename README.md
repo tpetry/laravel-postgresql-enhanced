@@ -37,6 +37,7 @@ composer require tpetry/laravel-postgresql-enhanced
         - [Case Insensitive Text](#case-insensitive-text)
         - [Full Text Search](#full-text-search)
         - [Hstore](#hstore)
+        - [Identity](#identity)
         - [IP Networks](#ip-networks)
         - [International Product Numbers](#international-product-numbers)
         - [Label Tree](#label-tree)
@@ -243,6 +244,14 @@ The hstore data type is used store key/value pairs within a single PostgreSQL va
 ```php
 // @see https://www.postgresql.org/docs/current/hstore.html
 $table->hstore(string $column);
+```
+
+#### Identity
+The identity data type is the new PostgreSQL standard for automatic generated values. You can even specify whether the database should be the only one generating them (`always = true`) preventing accidental overwrites.
+They are used to define primary keys managed by the database or any other kind of automatically generated identification that needs to be unique.
+```php
+$table->identity(always: true)->primary();
+$table->identity('uniqid');
 ```
 
 #### International Product Numbers
