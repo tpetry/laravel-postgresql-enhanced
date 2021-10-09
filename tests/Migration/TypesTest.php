@@ -43,6 +43,17 @@ class TypesTest extends TestCase
         $this->assertEquals('create table "test" ("col" citext not null)', $queries[0]['query'] ?? null);
     }
 
+    public function testColumnModifierCompressionIsSupported(): void
+    {
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->string('col')->compression('pglz'),
+            fnChange: fn (Blueprint $table) => $table->string('col')->compression('lz4')->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" varchar(255) compression pglz not null)', $queries[0]['query'] ?? null);
+        $this->assertEquals('alter table "test" alter "col" set compression "lz4"', $queries[1]['query'] ?? null);
+    }
+
     public function testDateRangeTypeIsSupported(): void
     {
         $queries = $this->runMigrations(

@@ -4,10 +4,42 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Schema\Grammars;
 
+use Illuminate\Database\Connection;
+use Illuminate\Database\Schema\Blueprint as BaseBlueprint;
 use Illuminate\Support\Fluent;
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 
 trait GrammarTypes
 {
+    public function compileChange(BaseBlueprint $blueprint, Fluent $command, Connection $connection)
+    {
+        $queries = parent::compileChange($blueprint, $command, $connection);
+        foreach ($blueprint->getChangedColumns() as $changedColumn) {
+            if (null !== $changedColumn->compression) {
+                $queries[] = sprintf(
+                    'ALTER TABLE %s ALTER %s SET COMPRESSION %s',
+                    $this->wrapTable($blueprint->getTable()),
+                    $this->wrap($changedColumn->name),
+                    $this->wrap($changedColumn->compression),
+                );
+            }
+        }
+
+        return $queries;
+    }
+
+    /**
+     * Get the SQL for a default column modifier.
+     */
+    protected function modifyCompression(Blueprint $blueprint, Fluent $column): ?string
+    {
+        if (null !== $column->compression) {
+            return " compression {$column->compression}";
+        }
+
+        return null;
+    }
+
     /**
      * Create the column definition for a big integer range type.
      */

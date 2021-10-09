@@ -32,6 +32,8 @@ composer require tpetry/laravel-postgresql-enhanced
         - [Include Columns](#include-columns)
         - [Storage Parameters](#storage-parameters)
         - [Functional Indexes / Column Options](#functional-indexes--column-options)
+    - [Column Options](#column-options)
+        - [Compression](#compression)
     - [Column Types](#column-types)
         - [Bit Strings](#bit-strings)
         - [Case Insensitive Text](#case-insensitive-text)
@@ -206,6 +208,15 @@ Schema::table('users', function(Blueprint $table) {
     $table->index(['firstname ASC NULLS FIRST', 'lastname ASC NULLS FIRST'])
     $table->index('attributes jsonb_path_ops')->algorithm('gin');
 });
+```
+
+### Column Options
+#### Compression
+PostgreSQL 14 introduced the possibility to specify the compression method for toast-able data types.
+You can choose between the default method `pglz`, the recently added `lz4` algorithm and the value `default` to use the server default setting.
+```php
+// @see https://www.postgresql.org/docs/current/storage-toast.html
+$table->string('col')->compression('lz4');
 ```
 
 ### Column Types

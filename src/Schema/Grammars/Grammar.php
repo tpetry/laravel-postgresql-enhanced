@@ -12,6 +12,13 @@ class Grammar extends PostgresGrammar
     use GrammarTypes;
 
     /**
+     * The possible column modifiers.
+     *
+     * @var string[]
+     */
+    protected $modifiers = ['Compression', 'Collate', 'Increment', 'Nullable', 'Default', 'VirtualAs', 'StoredAs'];
+
+    /**
      * Convert an array of names into a delimited string.
      */
     public function namize(array $names)
