@@ -154,13 +154,13 @@ use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 
 Schema::table('users', function(Blueprint $table) {
-    $table->uniqueIndex('email')->partial("deleted_at IS NULL");
+    $table->uniqueIndex('email')->where("deleted_at IS NULL");
     // or:
-    $table->uniqueIndex('email')->partial(fn (Builder $condition) => $condition->whereNull('deleted_at'));
+    $table->uniqueIndex('email')->where(fn (Builder $condition) => $condition->whereNull('deleted_at'));
 });
 ```
 
-Partial Indexes are created with the `partial` method on an index created by `index()`, `spatialIndex` or `uniqueIndex`.
+Partial Indexes are created with the `where` method on an index created by `index()`, `spatialIndex` or `uniqueIndex`.
 
 #### Include Columns
 
