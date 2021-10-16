@@ -7,54 +7,56 @@ namespace Tpetry\PostgresqlEnhanced;
 use Closure;
 use Doctrine\DBAL\Types\Type;
 use Illuminate\Database\Connection;
+use Illuminate\Database\Events\MigrationsStarted;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use PDO;
-use Tpetry\PostgresqlEnhanced\Types\BigIntegerRangeType;
 use Tpetry\PostgresqlEnhanced\Types\BitType;
-use Tpetry\PostgresqlEnhanced\Types\CaseInsensitiveTextType;
-use Tpetry\PostgresqlEnhanced\Types\DateRangeType;
-use Tpetry\PostgresqlEnhanced\Types\DecimalRangeType;
-use Tpetry\PostgresqlEnhanced\Types\EuropeanArticleNumber13Type;
+use Tpetry\PostgresqlEnhanced\Types\CidrType;
+use Tpetry\PostgresqlEnhanced\Types\CitextType;
+use Tpetry\PostgresqlEnhanced\Types\DaterangeType;
+use Tpetry\PostgresqlEnhanced\Types\Ean13Type;
 use Tpetry\PostgresqlEnhanced\Types\HstoreType;
-use Tpetry\PostgresqlEnhanced\Types\IntegerRangeType;
-use Tpetry\PostgresqlEnhanced\Types\InternationalStandardBookNumber13Type;
-use Tpetry\PostgresqlEnhanced\Types\InternationalStandardBookNumberType;
-use Tpetry\PostgresqlEnhanced\Types\InternationalStandardMusicNumber13Type;
-use Tpetry\PostgresqlEnhanced\Types\InternationalStandardMusicNumberType;
-use Tpetry\PostgresqlEnhanced\Types\InternationalStandardSerialNumber13Type;
-use Tpetry\PostgresqlEnhanced\Types\InternationalStandardSerialNumberType;
-use Tpetry\PostgresqlEnhanced\Types\IpNetworkType;
-use Tpetry\PostgresqlEnhanced\Types\LabelTreeType;
-use Tpetry\PostgresqlEnhanced\Types\TimestampRangeType;
-use Tpetry\PostgresqlEnhanced\Types\TimestamptzRangeType;
+use Tpetry\PostgresqlEnhanced\Types\Int4rangeType;
+use Tpetry\PostgresqlEnhanced\Types\Int8rangeType;
+use Tpetry\PostgresqlEnhanced\Types\Isbn13Type;
+use Tpetry\PostgresqlEnhanced\Types\IsbnType;
+use Tpetry\PostgresqlEnhanced\Types\Ismn13Type;
+use Tpetry\PostgresqlEnhanced\Types\IsmnType;
+use Tpetry\PostgresqlEnhanced\Types\Issn13Type;
+use Tpetry\PostgresqlEnhanced\Types\IssnType;
+use Tpetry\PostgresqlEnhanced\Types\LtreeType;
+use Tpetry\PostgresqlEnhanced\Types\NumrangeType;
+use Tpetry\PostgresqlEnhanced\Types\TsrangeType;
+use Tpetry\PostgresqlEnhanced\Types\TstzrangeType;
 use Tpetry\PostgresqlEnhanced\Types\TsvectorType;
-use Tpetry\PostgresqlEnhanced\Types\UniversalProductNumberType;
+use Tpetry\PostgresqlEnhanced\Types\UpcType;
 use Tpetry\PostgresqlEnhanced\Types\VarbitType;
 use Tpetry\PostgresqlEnhanced\Types\XmlType;
 
 class PostgresqlEnhancedServiceProvider extends ServiceProvider
 {
     protected array $doctrineTypes = [
-        BigIntegerRangeType::class,
         BitType::class,
-        CaseInsensitiveTextType::class,
-        DateRangeType::class,
-        DecimalRangeType::class,
-        EuropeanArticleNumber13Type::class,
+        CidrType::class,
+        CitextType::class,
+        DaterangeType::class,
+        Ean13Type::class,
         HstoreType::class,
-        IntegerRangeType::class,
-        InternationalStandardBookNumber13Type::class,
-        InternationalStandardBookNumberType::class,
-        InternationalStandardMusicNumber13Type::class,
-        InternationalStandardMusicNumberType::class,
-        InternationalStandardSerialNumber13Type::class,
-        InternationalStandardSerialNumberType::class,
-        IpNetworkType::class,
-        LabelTreeType::class,
-        TimestampRangeType::class,
-        TimestamptzRangeType::class,
+        Int4rangeType::class,
+        Int8rangeType::class,
+        IsbnType::class,
+        Isbn13Type::class,
+        IsmnType::class,
+        Ismn13Type::class,
+        IssnType::class,
+        Issn13Type::class,
+        LtreeType::class,
+        NumrangeType::class,
+        TsrangeType::class,
+        TstzrangeType::class,
         TsvectorType::class,
-        UniversalProductNumberType::class,
+        UpcType::class,
         VarbitType::class,
         XmlType::class,
     ];
@@ -68,9 +70,22 @@ class PostgresqlEnhancedServiceProvider extends ServiceProvider
             return new PostgresEnhancedConnection($pdo, $database, $tablePrefix, $config);
         });
 
+        Event::listen(MigrationsStarted::class, function (): void {
+            $this->registerDoctrineTypes();
+        });
+        if ($this->app->runningUnitTests()) {
+            $this->registerDoctrineTypes();
+        }
+    }
+
+    protected function registerDoctrineTypes(): void
+    {
         foreach ($this->doctrineTypes as $type) {
-            if (!Type::hasType($type::LARAVEL_NAME)) {
-                Type::addType($type::LARAVEL_NAME, $type);
+            /** @var Type $typeInstance */
+            $typeInstance = new $type();
+
+            if (!Type::hasType($typeInstance->getName())) {
+                Type::addType($typeInstance->getName(), $type);
             }
         }
     }

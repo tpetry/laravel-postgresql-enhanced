@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Types;
 
-class XmlType extends BaseType
+class Int8rangeType extends BaseType
 {
     /**
      * Gets the name of this type.
      */
     public function getName()
     {
-        return 'xml';
+        return 'int8range';
     }
 }

@@ -10,11 +10,6 @@ use Doctrine\DBAL\Types\StringType;
 class BitType extends StringType
 {
     /**
-     * The name of the type used within laravel.
-     */
-    public const LARAVEL_NAME = 'bit';
-
-    /**
      * Gets an array of database types that map to this Doctrine type.
      */
     public function getMappedDatabaseTypes(AbstractPlatform $platform)

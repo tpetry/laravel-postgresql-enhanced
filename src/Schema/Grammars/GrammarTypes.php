@@ -41,14 +41,6 @@ trait GrammarTypes
     }
 
     /**
-     * Create the column definition for a big integer range type.
-     */
-    protected function typeBigIntegerRange(Fluent $column): string
-    {
-        return 'int8range';
-    }
-
-    /**
      * Create the column definition for a bit type.
      */
     protected function typeBit(Fluent $column): string
@@ -57,9 +49,17 @@ trait GrammarTypes
     }
 
     /**
+     * Create the column definition for an ip network type.
+     */
+    protected function typeCidr(Fluent $column): string
+    {
+        return 'cidr';
+    }
+
+    /**
      * Create the column definition for a case insensitive text type.
      */
-    protected function typeCaseInsensitiveText(Fluent $column): string
+    protected function typeCitext(Fluent $column): string
     {
         return 'citext';
     }
@@ -67,23 +67,15 @@ trait GrammarTypes
     /**
      * Create the column definition for a date range type.
      */
-    protected function typeDateRange(Fluent $column): string
+    protected function typeDaterange(Fluent $column): string
     {
         return 'daterange';
     }
 
     /**
-     * Create the column definition for a decimal range type.
-     */
-    protected function typeDecimalRange(Fluent $column): string
-    {
-        return 'numrange';
-    }
-
-    /**
      * Create the column definition for an european article number type.
      */
-    protected function typeEuropeanArticleNumber13(Fluent $column): string
+    protected function typeEan13(Fluent $column): string
     {
         return 'ean13';
     }
@@ -99,15 +91,23 @@ trait GrammarTypes
     /**
      * Create the column definition for an integer range type.
      */
-    protected function typeIntegerRange(Fluent $column): string
+    protected function typeInt4range(Fluent $column): string
     {
         return 'int4range';
     }
 
     /**
+     * Create the column definition for a big integer range type.
+     */
+    protected function typeInt8Range(Fluent $column): string
+    {
+        return 'int8range';
+    }
+
+    /**
      * Create the column definition for an international standard book number type.
      */
-    protected function typeInternationalStandardBookNumber(Fluent $column): string
+    protected function typeIsbn(Fluent $column): string
     {
         return 'isbn';
     }
@@ -115,7 +115,7 @@ trait GrammarTypes
     /**
      * Create the column definition for an international standard book number type.
      */
-    protected function typeInternationalStandardBookNumber13(Fluent $column): string
+    protected function typeIsbn13(Fluent $column): string
     {
         return 'isbn13';
     }
@@ -123,7 +123,7 @@ trait GrammarTypes
     /**
      * Create the column definition for an international standard music number type.
      */
-    protected function typeInternationalStandardMusicNumber(Fluent $column): string
+    protected function typeIsmn(Fluent $column): string
     {
         return 'ismn';
     }
@@ -131,7 +131,7 @@ trait GrammarTypes
     /**
      * Create the column definition for an international standard music number type.
      */
-    protected function typeInternationalStandardMusicNumber13(Fluent $column): string
+    protected function typeIsmn13(Fluent $column): string
     {
         return 'ismn13';
     }
@@ -139,7 +139,7 @@ trait GrammarTypes
     /**
      * Create the column definition for an international standard serial number type.
      */
-    protected function typeInternationalStandardSerialNumber(Fluent $column): string
+    protected function typeIssn(Fluent $column): string
     {
         return 'issn';
     }
@@ -147,31 +147,31 @@ trait GrammarTypes
     /**
      * Create the column definition for an international standard serial number type.
      */
-    protected function typeInternationalStandardSerialNumber13(Fluent $column): string
+    protected function typeIssn13(Fluent $column): string
     {
         return 'issn13';
     }
 
     /**
-     * Create the column definition for an ip network type.
-     */
-    protected function typeIpNetwork(Fluent $column): string
-    {
-        return 'cidr';
-    }
-
-    /**
      * Create the column definition for a label tree type.
      */
-    protected function typeLabelTree(Fluent $column): string
+    protected function typeLtree(Fluent $column): string
     {
         return 'ltree';
     }
 
     /**
+     * Create the column definition for a decimal range type.
+     */
+    protected function typeNumrange(Fluent $column): string
+    {
+        return 'numrange';
+    }
+
+    /**
      * Create the column definition for a timestamp range type.
      */
-    protected function typeTimestampRange(Fluent $column): string
+    protected function typeTsrange(Fluent $column): string
     {
         return 'tsrange';
     }
@@ -179,7 +179,7 @@ trait GrammarTypes
     /**
      * Create the column definition for a timestamp (with time zone) range type.
      */
-    protected function typeTimestampTzRange(Fluent $column): string
+    protected function typeTstzrange(Fluent $column): string
     {
         return 'tstzrange';
     }
@@ -195,7 +195,7 @@ trait GrammarTypes
     /**
      * Create the column definition for an universal product number type.
      */
-    protected function typeUniversalProductNumber(Fluent $column): string
+    protected function typeUpc(Fluent $column): string
     {
         return 'upc';
     }

@@ -13,7 +13,7 @@ trait BlueprintTypes
      */
     public function bigIntegerRange(string $column): ColumnDefinition
     {
-        return $this->addColumn('bigIntegerRange', $column);
+        return $this->addColumn('int8range', $column);
     }
 
     /**
@@ -29,7 +29,7 @@ trait BlueprintTypes
      */
     public function caseInsensitiveText(string $column): ColumnDefinition
     {
-        return $this->addColumn('caseInsensitiveText', $column);
+        return $this->addColumn('citext', $column);
     }
 
     /**
@@ -37,7 +37,7 @@ trait BlueprintTypes
      */
     public function dateRange(string $column): ColumnDefinition
     {
-        return $this->addColumn('dateRange', $column);
+        return $this->addColumn('daterange', $column);
     }
 
     /**
@@ -45,7 +45,7 @@ trait BlueprintTypes
      */
     public function decimalRange(string $column): ColumnDefinition
     {
-        return $this->addColumn('decimalRange', $column);
+        return $this->addColumn('numrange', $column);
     }
 
     /**
@@ -53,7 +53,7 @@ trait BlueprintTypes
      */
     public function europeanArticleNumber13(string $column): ColumnDefinition
     {
-        return $this->addColumn('europeanArticleNumber13', $column);
+        return $this->addColumn('ean13', $column);
     }
 
     /**
@@ -77,7 +77,7 @@ trait BlueprintTypes
      */
     public function integerRange(string $column): ColumnDefinition
     {
-        return $this->addColumn('integerRange', $column);
+        return $this->addColumn('int4range', $column);
     }
 
     /**
@@ -85,7 +85,7 @@ trait BlueprintTypes
      */
     public function internationalStandardBookNumber(string $column): ColumnDefinition
     {
-        return $this->addColumn('internationalStandardBookNumber', $column);
+        return $this->addColumn('isbn', $column);
     }
 
     /**
@@ -93,7 +93,7 @@ trait BlueprintTypes
      */
     public function internationalStandardBookNumber13(string $column): ColumnDefinition
     {
-        return $this->addColumn('internationalStandardBookNumber13', $column);
+        return $this->addColumn('isbn13', $column);
     }
 
     /**
@@ -101,7 +101,7 @@ trait BlueprintTypes
      */
     public function internationalStandardMusicNumber(string $column): ColumnDefinition
     {
-        return $this->addColumn('internationalStandardMusicNumber', $column);
+        return $this->addColumn('ismn', $column);
     }
 
     /**
@@ -109,7 +109,7 @@ trait BlueprintTypes
      */
     public function internationalStandardMusicNumber13(string $column): ColumnDefinition
     {
-        return $this->addColumn('internationalStandardMusicNumber13', $column);
+        return $this->addColumn('ismn13', $column);
     }
 
     /**
@@ -117,7 +117,7 @@ trait BlueprintTypes
      */
     public function internationalStandardSerialNumber(string $column): ColumnDefinition
     {
-        return $this->addColumn('internationalStandardSerialNumber', $column);
+        return $this->addColumn('issn', $column);
     }
 
     /**
@@ -125,7 +125,7 @@ trait BlueprintTypes
      */
     public function internationalStandardSerialNumber13(string $column): ColumnDefinition
     {
-        return $this->addColumn('internationalStandardSerialNumber13', $column);
+        return $this->addColumn('issn13', $column);
     }
 
     /**
@@ -133,7 +133,7 @@ trait BlueprintTypes
      */
     public function ipNetwork(string $column): ColumnDefinition
     {
-        return $this->addColumn('ipNetwork', $column);
+        return $this->addColumn('cidr', $column);
     }
 
     /**
@@ -141,7 +141,7 @@ trait BlueprintTypes
      */
     public function labelTree(string $column): ColumnDefinition
     {
-        return $this->addColumn('labelTree', $column);
+        return $this->addColumn('ltree', $column);
     }
 
     /**
@@ -149,7 +149,7 @@ trait BlueprintTypes
      */
     public function timestampRange(string $column): ColumnDefinition
     {
-        return $this->addColumn('timestampRange', $column);
+        return $this->addColumn('tsrange', $column);
     }
 
     /**
@@ -157,7 +157,7 @@ trait BlueprintTypes
      */
     public function timestampTzRange(string $column): ColumnDefinition
     {
-        return $this->addColumn('timestampTzRange', $column);
+        return $this->addColumn('tstzrange', $column);
     }
 
     /**
@@ -173,7 +173,7 @@ trait BlueprintTypes
      */
     public function universalProductNumber(string $column): ColumnDefinition
     {
-        return $this->addColumn('universalProductNumber', $column);
+        return $this->addColumn('upc', $column);
     }
 
     /**

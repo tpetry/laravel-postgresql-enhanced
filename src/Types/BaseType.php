@@ -7,13 +7,8 @@ namespace Tpetry\PostgresqlEnhanced\Types;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 
-class InternationalStandardSerialNumber13Type extends Type
+abstract class BaseType extends Type
 {
-    /**
-     * The name of the type used within laravel.
-     */
-    public const LARAVEL_NAME = 'internationalstandardserialnumber13';
-
     /**
      * Gets an array of database types that map to this Doctrine type.
      */
@@ -28,16 +23,13 @@ class InternationalStandardSerialNumber13Type extends Type
     /**
      * Gets the name of this type.
      */
-    public function getName()
-    {
-        return 'issn13';
-    }
+    abstract public function getName();
 
     /**
      * Gets the SQL declaration snippet for a column of this type.
      */
     public function getSQLDeclaration(array $column, AbstractPlatform $platform)
     {
-        return 'issn13';
+        return $this->getName();
     }
 }
