@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Support\Helpers;
 
-use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Events\MigrationEnded;
 use Illuminate\Database\Events\MigrationStarted;
 use Illuminate\Database\Events\QueryExecuted;
