@@ -8,7 +8,7 @@ use Closure;
 
 /**
  * To support some features these commits from laravel needed to be backported for older versions:
- * - [8.x] Adds new RefreshDatabaseLazily testing trait (https://github.com/laravel/framework/commit/3d1ead403e05ee0b9aa93a6ff720704970aec9c8)
+ * - [8.x] Adds new RefreshDatabaseLazily testing trait (https://github.com/laravel/framework/commit/3d1ead403e05ee0b9aa93a6ff720704970aec9c8).
  */
 trait PostgresConnectionBackport
 {
