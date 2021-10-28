@@ -25,6 +25,7 @@ composer require tpetry/laravel-postgresql-enhanced
 # Features
 
 - [Migration](#migration)
+    - [Zero Downtime Migration](#zero-downtime-migration)
     - [Extensions](#extensions)
     - [Views](#views)
     - [Indexes](#indexes)
@@ -47,6 +48,49 @@ composer require tpetry/laravel-postgresql-enhanced
         - [XML](#xml)
 
 ## Migration
+
+### Zero-Downtime Migration
+For applications with 24/7 requirements, migrations must never impact availability.
+PostgreSQL provides many functionalities to execute changes on the schema without downtime.
+However, sometimes a change to the schema is not tested sufficiently and locks the tables for a longer period of time in order to make the desired change.
+To avoid this problem, a migration can be marked as zero-downtime migration.
+If the migration exceeds a specified time limit, it is cancelled and the schema is reset to its original state.
+
+```php
+use Illuminate\Database\Migrations\Migration;
+use Tpetry\PostgresqlEnhanced\Concerns\ZeroDowntimeMigration;
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+class Test123 extends Migration
+{
+    use ZeroDowntimeMigration;
+
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('user', function (Blueprint $table) {
+            $table->string('name', 128)->change();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('user', function (Blueprint $table) {
+            $table->string('name', 32)->change();
+        });
+    }
+}
+```
+
+The timeout for a maximum time limit of 1.0 second can be set separately for each migration.
+You can set `private float $timeout = 5.0` on the migration for a up/down timeout.
+Or you can set the specific timeouts `$timeoutUp` and `$timeoutDown` to differentiate between the methods.
 
 ### Extensions
 

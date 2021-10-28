@@ -11,6 +11,7 @@ use Illuminate\Database\Events\MigrationsStarted;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use PDO;
+use Tpetry\PostgresqlEnhanced\Support\Helpers\ZeroDowntimeMigrationSupervisor;
 use Tpetry\PostgresqlEnhanced\Types\BitType;
 use Tpetry\PostgresqlEnhanced\Types\CidrType;
 use Tpetry\PostgresqlEnhanced\Types\CitextType;
@@ -69,9 +70,11 @@ class PostgresqlEnhancedServiceProvider extends ServiceProvider
         Connection::resolverFor('pgsql', function (PDO|Closure $pdo, string $database = '', string $tablePrefix = '', array $config = []) {
             return new PostgresEnhancedConnection($pdo, $database, $tablePrefix, $config);
         });
+        $this->app->singleton(ZeroDowntimeMigrationSupervisor::class);
 
         Event::listen(MigrationsStarted::class, function (): void {
             $this->registerDoctrineTypes();
+            $this->app->get(ZeroDowntimeMigrationSupervisor::class)->start();
         });
         if ($this->app->runningUnitTests()) {
             $this->registerDoctrineTypes();
