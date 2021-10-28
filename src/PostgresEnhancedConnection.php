@@ -16,6 +16,8 @@ use Tpetry\PostgresqlEnhanced\Support\Helpers\ZeroDowntimeMigrationSupervisor;
 
 class PostgresEnhancedConnection extends PostgresConnection
 {
+    use PostgresConnectionBackport;
+
     /**
      * Get a schema builder instance for the connection.
      */
@@ -63,10 +65,11 @@ class PostgresEnhancedConnection extends PostgresConnection
     /**
      * Handle an exception encountered when running a transacted statement.
      *
-     * @param int $currentAttempt
-     * @param int $maxAttempts
+     * @param Throwable $e
+     * @param int       $currentAttempt
+     * @param int       $maxAttempts
      */
-    protected function handleTransactionException(Throwable $e, $currentAttempt, $maxAttempts): void
+    protected function handleTransactionException($e, $currentAttempt, $maxAttempts): void
     {
         try {
             parent::handleTransactionException($e, $currentAttempt, $maxAttempts);
