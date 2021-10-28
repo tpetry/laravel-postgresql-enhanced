@@ -1,8 +1,3 @@
-<p align="center">
-
-![][logo]
-
-</p>
 
 [![License][icon-license]][href-license]
 [![PHP][icon-php]][href-php]
