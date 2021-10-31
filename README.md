@@ -157,8 +157,8 @@ You may drop many views at once by passing multiple view names:
 ```php
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 
-Schema::dropExtension('myview1', 'myview2');
-Schema::dropExtensionIfExists('myview1', 'myview2');
+Schema::dropView('myview1', 'myview2');
+Schema::dropViewIfExists('myview1', 'myview2');
 ```
 
 ### Indexes
