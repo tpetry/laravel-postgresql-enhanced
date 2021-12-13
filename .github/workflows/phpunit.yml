@@ -6,9 +6,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
-        php: [8.0, 8.1]
+        php: [8.0]
         laravel: [6.*, 7.*, 8.*]
         stability: [prefer-lowest, prefer-stable]
         include:
@@ -20,6 +20,11 @@ jobs:
             testbench: 5.*
           - doctrine: 3.*
             laravel: 8.*
+            testbench: 6.*
+          - php: 8.1
+            laravel: 8.x
+            stability: prefer-stable
+            doctrine: 3.*
             testbench: 6.*
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }}
