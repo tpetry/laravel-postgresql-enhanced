@@ -10,7 +10,8 @@ use Illuminate\Database\PostgresConnection;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Str;
 use Throwable;
-use Tpetry\PostgresqlEnhanced\Schema\Builder;
+use Tpetry\PostgresqlEnhanced\Query\Builder as QueryBuilder;
+use Tpetry\PostgresqlEnhanced\Schema\Builder as SchemaBuilder;
 use Tpetry\PostgresqlEnhanced\Schema\Grammars\Grammar;
 use Tpetry\PostgresqlEnhanced\Support\Helpers\ZeroDowntimeMigrationSupervisor;
 
@@ -21,13 +22,21 @@ class PostgresEnhancedConnection extends PostgresConnection
     /**
      * Get a schema builder instance for the connection.
      */
-    public function getSchemaBuilder(): Builder
+    public function getSchemaBuilder(): SchemaBuilder
     {
         if (null === $this->schemaGrammar) {
             $this->useDefaultSchemaGrammar();
         }
 
-        return new Builder($this);
+        return new SchemaBuilder($this);
+    }
+
+    /**
+     * Get a new query builder instance.
+     */
+    public function query(): QueryBuilder
+    {
+        return new QueryBuilder($this, $this->getQueryGrammar(), $this->getPostProcessor());
     }
 
     /**
