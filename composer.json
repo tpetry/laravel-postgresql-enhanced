@@ -17,7 +17,7 @@
         "php": "^8.0",
         "doctrine/dbal": "^2.6|^3.0",
         "illuminate/container": "^6.0|^7.0|^8.0",
-        "illuminate/database": "^6.0|^7.0|^8.62",
+        "illuminate/database": "^6.0|^7.0|^8.77",
         "illuminate/events": "^6.0|^7.0|^8.0",
         "illuminate/support": "^6.0|^7.0|^8.0"
     },
