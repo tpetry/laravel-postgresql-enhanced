@@ -51,7 +51,7 @@ class PostgresEnhancedConnection extends PostgresConnection
      * Handle a query exception.
      *
      * @param string $query
-     * @param array  $bindings
+     * @param array $bindings
      */
     protected function handleQueryException(QueryException $e, $query, $bindings, Closure $callback): mixed
     {
@@ -75,8 +75,8 @@ class PostgresEnhancedConnection extends PostgresConnection
      * Handle an exception encountered when running a transacted statement.
      *
      * @param Throwable $e
-     * @param int       $currentAttempt
-     * @param int       $maxAttempts
+     * @param int $currentAttempt
+     * @param int $maxAttempts
      */
     protected function handleTransactionException($e, $currentAttempt, $maxAttempts): void
     {

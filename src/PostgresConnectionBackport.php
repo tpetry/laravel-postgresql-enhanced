@@ -33,7 +33,7 @@ trait PostgresConnectionBackport
      * Run a SQL statement and log its execution context.
      *
      * @param string $query
-     * @param array  $bindings
+     * @param array $bindings
      */
     protected function run($query, $bindings, Closure $callback): mixed
     {

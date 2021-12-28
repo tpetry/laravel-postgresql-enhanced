@@ -35,6 +35,7 @@ $config
             ],
             'sort_algorithm' => 'alpha',
         ],
+        'phpdoc_align' => ['align' => 'left'],
         'use_arrow_functions' => false,
     ])
     ->setFinder($finder);

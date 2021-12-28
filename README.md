@@ -42,6 +42,8 @@ composer require tpetry/laravel-postgresql-enhanced
         - [Label Tree](#label-tree)
         - [Ranges](#ranges)
         - [XML](#xml)
+- [Query](#query)
+    - [Lateral Subquery Joins](#lateral-subquery-joins)
 
 ## Migration
 
@@ -385,6 +387,31 @@ The xml data type can be used to store an xml document.
 ```php
 // @see https://www.postgresql.org/docs/current/datatype-xml.html
 $table->xml(string $column);
+```
+
+## Query
+
+### Lateral Subquery Joins
+
+PostgreSQL does support the advanced lateral subquery joins.
+The simplest explanation is that you can access tables and their columns previously selected from, making it a dependent subquery. You will now be able to do joins equivalent to a foreach-loop in php which will offer a whole new set of possibilities.
+
+This is a very advanced construct, you can read more about them in these articles:
+- [PostgreSQL's Powerful New Join Type: LATERAL (heap.io)](https://heap.io/blog/postgresqls-powerful-new-join-type-lateral)
+- [UNDERSTANDING LATERAL JOINS IN POSTGRESQL(cybertec-postgresql.com)](https://www.cybertec-postgresql.com/en/understanding-lateral-joins-in-postgresql/)
+- [Iterators in PostgreSQL with Lateral Joins (crunchydata.com)](https://blog.crunchydata.com/blog/iterators-in-postgresql-with-lateral-joins)
+
+They are used exactly like their Laravel counterparts but you are now using `crossJoinSubLateral` instead of `crossJoinSub`, `joinSubLateral` instead of `joinSub` and `leftJoinSubLateral` instead of `leftJoinSubLateral`.
+
+A very common is case to use lateral subqueries in a for-each loop concept to e.g. get only the 3 orders with the highest price for every user: 
+```php
+User::select('users.email', 'orders.*')
+    ->crossJoinSubLateral(
+        Order::whereColumn('orders.user_id', 'users.id')
+            ->orderBy('price', 'desc')
+            ->limit(3),
+        'orders',
+    );
 ```
 
 # Contribution
