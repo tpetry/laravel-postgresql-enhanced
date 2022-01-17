@@ -23,7 +23,6 @@ composer require tpetry/laravel-postgresql-enhanced
     - [Zero Downtime Migration](#zero-downtime-migration)
     - [Extensions](#extensions)
     - [Views](#views)
-    - [Explain](#explain)
     - [Indexes](#indexes)
         - [Partial Indexes](#partial-indexes)
         - [Include Columns](#include-columns)
@@ -43,6 +42,7 @@ composer require tpetry/laravel-postgresql-enhanced
         - [Ranges](#ranges)
         - [XML](#xml)
 - [Query](#query)
+    - [Explain](#explain)
     - [Lateral Subquery Joins](#lateral-subquery-joins)
 
 ## Migration
@@ -163,48 +163,6 @@ use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 Schema::dropView('myview1', 'myview2');
 Schema::dropViewIfExists('myview1', 'myview2');
 ```
-
-### Explain
-Laravel has the ability to get the database query plan for any query you are building. Just calling `explain()` on the query will get a collection with the query plan.
-
-This behaviour has been extended to be more PostgreSQL specific. There are multiple (optional) parameters for the [explain statement](https://www.postgresql.org/docs/current/sql-explain.html), different for every version. The enhanced PostgreSQL driver will automatically activate all options available for your PostgreSQL version.
-
-```php
-DB::table('migrations')->where('batch', 1)->explain()->dd();
-
-// Output:
-// array:1 [
-//  0 => """
-//    Seq Scan on public.migrations  (cost=0.00..11.75 rows=1 width=524)\n
-//      Output: id, migration, batch\n
-//      Filter: (migrations.batch = 1)\n
-//    Settings: search_path = 'public'\n
-//    Planning Time: 0.370 ms
-//    """
-//]
-```
-
-Additionally, you can also get the query plan with executing the query. The query plan will be extended by valuable runtime information like per-operation timing and buffer read/write statistics:
-
-```php
-DB::table('migrations')->where('batch', 1)->explain(analyze:true)->dd();
-
-// Output:
-// array:1 [
-//  0 => """
-//    Seq Scan on public.migrations  (cost=0.00..11.75 rows=1 width=524) (actual time=0.014..0.031 rows=1 loops=1)\n
-//      Output: id, migration, batch\n
-//      Filter: (migrations.batch = 1)\n
-//      Buffers: shared hit=1\n
-//    Settings: search_path = 'public'\n
-//    Planning:\n
-//      Buffers: shared hit=61\n
-//    Planning Time: 0.282 ms\n
-//    Execution Time: 0.100 ms
-//    """
-//]
-```
-**NOTE: The PostgreSQL-specific query plan is currently limited to `Query\Builder` instances, for `Eloquent\Builder` instances [PR #40075](https://github.com/laravel/framework/pull/40075) needs to be merged to Laravel or you have to use `$query->toBase()` for transforming an eloquent query builder to a base query builder.**
 
 ### Indexes
 
@@ -390,6 +348,48 @@ $table->xml(string $column);
 ```
 
 ## Query
+
+
+### Explain
+Laravel has the ability to get the database query plan for any query you are building. Just calling `explain()` on the query will get a collection with the query plan.
+
+This behaviour has been extended to be more PostgreSQL specific. There are multiple (optional) parameters for the [explain statement](https://www.postgresql.org/docs/current/sql-explain.html), different for every version. The enhanced PostgreSQL driver will automatically activate all options available for your PostgreSQL version.
+
+```php
+DB::table('migrations')->where('batch', 1)->explain()->dd();
+
+// Output:
+// array:1 [
+//  0 => """
+//    Seq Scan on public.migrations  (cost=0.00..11.75 rows=1 width=524)\n
+//      Output: id, migration, batch\n
+//      Filter: (migrations.batch = 1)\n
+//    Settings: search_path = 'public'\n
+//    Planning Time: 0.370 ms
+//    """
+//]
+```
+
+Additionally, you can also get the query plan with executing the query. The query plan will be extended by valuable runtime information like per-operation timing and buffer read/write statistics:
+
+```php
+DB::table('migrations')->where('batch', 1)->explain(analyze:true)->dd();
+
+// Output:
+// array:1 [
+//  0 => """
+//    Seq Scan on public.migrations  (cost=0.00..11.75 rows=1 width=524) (actual time=0.014..0.031 rows=1 loops=1)\n
+//      Output: id, migration, batch\n
+//      Filter: (migrations.batch = 1)\n
+//      Buffers: shared hit=1\n
+//    Settings: search_path = 'public'\n
+//    Planning:\n
+//      Buffers: shared hit=61\n
+//    Planning Time: 0.282 ms\n
+//    Execution Time: 0.100 ms
+//    """
+//]
+```
 
 ### Lateral Subquery Joins
 
