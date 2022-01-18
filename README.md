@@ -184,7 +184,7 @@ Schema::table('users', function(Blueprint $table) {
 #### Drop If Exists
 
 In addition to the Laravel methods to drop indexes, methods to drop indexes if they exist have been added.
-The methods `dropIndexIfExists`, `dropPrimaryIfExists`, `dropSpatialIndexIfExists` and `dropSpatialIndexIfExists` match the semantics of their laravel originals.
+The methods `dropFullTextIfExists`, `dropIndexIfExists`, `dropPrimaryIfExists`, `dropSpatialIndexIfExists` and `dropSpatialIndexIfExists` match the semantics of their laravel originals.
 
 #### Partial Indexes
 
@@ -202,7 +202,7 @@ Schema::table('users', function(Blueprint $table) {
 });
 ```
 
-Partial Indexes are created with the `where` method on an index created by `index()`, `spatialIndex` or `uniqueIndex`.
+Partial Indexes are created with the `where` method on an index created by `fullText()`, `index()`, `spatialIndex()` or `uniqueIndex()`.
 
 #### Include Columns
 
@@ -232,7 +232,7 @@ Schema::table('bookmarks', function(Blueprint $table) {
     $table->index('data')->algorithm('gin')->with(['fastupdate' => false]);
 });
 ```
-Storage parameters are defined with the `with` method on an index created by `index()`, `spatialIndex` or `uniqueIndex`.
+Storage parameters are defined with the `with` method on an index created by `fullText()`, `index()`, `spatialIndex` or `uniqueIndex`.
 
 #### Functional Indexes / Column Options
 

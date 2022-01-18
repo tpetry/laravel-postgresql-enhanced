@@ -15,6 +15,14 @@ use Tpetry\PostgresqlEnhanced\Support\Helpers\Query;
 trait GrammarIndex
 {
     /**
+     * Compile a drop fulltext index if exists command.
+     */
+    public function compileDropFullTextIfExists(Blueprint $blueprint, Fluent $command): string
+    {
+        return $this->compileDropIndexIfExists($blueprint, $command);
+    }
+
+    /**
      * Compile a drop index if exists command.
      */
     public function compileDropIndexIfExists(Blueprint $blueprint, Fluent $command): string
@@ -60,6 +68,16 @@ trait GrammarIndex
     public function compileDropUniqueIfExists(Blueprint $blueprint, Fluent $command): string
     {
         return "alter table {$this->wrapTable($blueprint)} drop constraint if exists {$this->wrap($command->index)}";
+    }
+
+    /**
+     * Compile a fulltext index key command.
+     */
+    public function compileFulltext(Blueprint $blueprint, Fluent $command): string
+    {
+        $command->algorithm ??= 'gin';
+
+        return $this->genericCompileCreateIndex($blueprint, $command, false);
     }
 
     /**
@@ -123,6 +141,16 @@ trait GrammarIndex
 
             return $column;
         }, $command->columns);
+
+        // A fulltext index needs special handling to wrap the columns into to_tsvector calls.
+        if ('fulltext' === $command->name) {
+            $columns = array_map(function (string $column) use ($command): string {
+                $language = $command->language ?? 'english';
+
+                return "to_tsvector({$this->quoteString($language)}, {$column})";
+            }, $columns);
+            $columns = ['('.implode(' || ', $columns).')'];
+        }
 
         $index = [
             $unique ? 'create unique index' : 'create index',

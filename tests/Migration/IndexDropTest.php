@@ -10,6 +10,40 @@ use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class IndexDropTest extends TestCase
 {
+    public function testDropFullTextIfExistsByColumn(): void
+    {
+        if (version_compare($this->app->version(), '8.74.0', '<')) {
+            $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
+        }
+
+        Schema::create('test_960082', function (Blueprint $table): void {
+            $table->string('col_700752')->fulltext();
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_960082', function (Blueprint $table): void {
+                $table->dropFulltextIfExists(['col_700752']);
+            });
+        });
+        $this->assertEquals(['drop index if exists "test_960082_col_700752_fulltext"'], array_column($queries, 'query'));
+    }
+
+    public function testDropFullTextIfExistsByName(): void
+    {
+        if (version_compare($this->app->version(), '8.74.0', '<')) {
+            $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
+        }
+
+        Schema::create('test_458230', function (Blueprint $table): void {
+            $table->string('col_719197')->fulltext('index_337012');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_458230', function (Blueprint $table): void {
+                $table->dropIndexIfExists('index_337012');
+            });
+        });
+        $this->assertEquals(['drop index if exists "index_337012"'], array_column($queries, 'query'));
+    }
+
     public function testDropIndexIfExistsByColumn(): void
     {
         Schema::create('test_282503', function (Blueprint $table): void {
