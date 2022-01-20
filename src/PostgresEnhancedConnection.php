@@ -11,8 +11,9 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Str;
 use Throwable;
 use Tpetry\PostgresqlEnhanced\Query\Builder as QueryBuilder;
+use Tpetry\PostgresqlEnhanced\Query\Grammar as QueryGrammar;
 use Tpetry\PostgresqlEnhanced\Schema\Builder as SchemaBuilder;
-use Tpetry\PostgresqlEnhanced\Schema\Grammars\Grammar;
+use Tpetry\PostgresqlEnhanced\Schema\Grammars\Grammar as SchemaGrammar;
 use Tpetry\PostgresqlEnhanced\Support\Helpers\ZeroDowntimeMigrationSupervisor;
 
 class PostgresEnhancedConnection extends PostgresConnection
@@ -40,11 +41,19 @@ class PostgresEnhancedConnection extends PostgresConnection
     }
 
     /**
+     * Get the default query grammar instance.
+     */
+    protected function getDefaultQueryGrammar(): QueryGrammar
+    {
+        return new QueryGrammar();
+    }
+
+    /**
      * Get the default schema grammar instance.
      */
-    protected function getDefaultSchemaGrammar(): Grammar
+    protected function getDefaultSchemaGrammar(): SchemaGrammar
     {
-        return $this->withTablePrefix(new Grammar());
+        return $this->withTablePrefix(new SchemaGrammar());
     }
 
     /**

@@ -144,11 +144,14 @@ trait GrammarIndex
 
         // A fulltext index needs special handling to wrap the columns into to_tsvector calls.
         if ('fulltext' === $command->name) {
-            $columns = array_map(function (string $column) use ($command): string {
+            $columns = array_map(function (string $column, int $index) use ($command): string {
                 $language = $command->language ?? 'english';
 
-                return "to_tsvector({$this->quoteString($language)}, {$column})";
-            }, $columns);
+                return match (isset($command->weight[$index])) {
+                    true => "setweight(to_tsvector({$this->quoteString($language)}, {$column}), {$this->quoteString($command->weight[$index])})",
+                    false => "to_tsvector({$this->quoteString($language)}, {$column})",
+                };
+            }, $columns, array_keys(array_values($columns)));
             $columns = ['('.implode(' || ', $columns).')'];
         }
 

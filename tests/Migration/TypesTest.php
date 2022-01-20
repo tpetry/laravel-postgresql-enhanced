@@ -29,7 +29,7 @@ class TypesTest extends TestCase
         );
 
         $this->assertEquals('create table "test" ("col" bit(1) not null)', $queries[0]['query'] ?? null);
-        $this->assertEquals('alter table test alter col type bit(9)', $queries[1]['query'] ?? null);
+        $this->assertEquals('ALTER TABLE test ALTER col TYPE bit(9)', $queries[1]['query'] ?? null);
     }
 
     public function testCaseInsensitiveTextTypeIsSupported(): void
@@ -51,7 +51,7 @@ class TypesTest extends TestCase
         );
 
         $this->assertEquals('create table "test" ("col" varchar(255) compression pglz not null)', $queries[0]['query'] ?? null);
-        $this->assertEquals('alter table "test" alter "col" set compression "lz4"', $queries[1]['query'] ?? null);
+        $this->assertEquals('ALTER TABLE "test" ALTER "col" SET COMPRESSION "lz4"', $queries[1]['query'] ?? null);
     }
 
     public function testDateRangeTypeIsSupported(): void
@@ -255,7 +255,7 @@ class TypesTest extends TestCase
         );
 
         $this->assertEquals('create table "test" ("col" varbit not null)', $queries[0]['query'] ?? null);
-        $this->assertEquals('alter table test alter col type varbit(9)', $queries[1]['query'] ?? null);
+        $this->assertEquals('ALTER TABLE test ALTER col TYPE varbit(9)', $queries[1]['query'] ?? null);
     }
 
     public function testXmlTypeIsSupported(): void

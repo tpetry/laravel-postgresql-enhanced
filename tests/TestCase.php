@@ -36,9 +36,6 @@ class TestCase extends Orchestra
         $this->app->get('db.connection')->enableQueryLog();
         $fn();
 
-        return array_map(
-            fn (array $log) => array_merge($log, ['query' => strtolower($log['query'])]),
-            $this->app->get('db.connection')->getQueryLog(),
-        );
+        return $this->app->get('db.connection')->getQueryLog();
     }
 }
