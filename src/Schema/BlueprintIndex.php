@@ -11,6 +11,14 @@ use RuntimeException;
 trait BlueprintIndex
 {
     /**
+     * Indicate that the given fulltext index should be dropped if it exists.
+     */
+    public function dropFullTextIfExists(array|string $index): Fluent
+    {
+        return $this->dropGenericIfExists($index, 'fulltext', 'dropFullTextIfExists');
+    }
+
+    /**
      * Indicate that the given index should be dropped if it exists.
      */
     public function dropIndexIfExists(array|string $index): Fluent

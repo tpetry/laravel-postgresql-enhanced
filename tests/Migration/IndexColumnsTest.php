@@ -33,7 +33,7 @@ class IndexColumnsTest extends TestCase
                 $table->index(['(LOWER(col_475002))'], 'test_831289_func992979');
             });
         });
-        $this->assertEquals(['create index "test_831289_func992979" on "test_831289" ((lower(col_475002)))'], array_column($queries, 'query'));
+        $this->assertEquals(['create index "test_831289_func992979" on "test_831289" ((LOWER(col_475002)))'], array_column($queries, 'query'));
     }
 
     public function testIndexParametrizedColumn(): void
@@ -46,7 +46,7 @@ class IndexColumnsTest extends TestCase
                 $table->index(['col_613233 ASC']);
             });
         });
-        $this->assertEquals(['create index "test_217958_col_613233_index" on "test_217958" ("col_613233" asc)'], array_column($queries, 'query'));
+        $this->assertEquals(['create index "test_217958_col_613233_index" on "test_217958" ("col_613233" ASC)'], array_column($queries, 'query'));
     }
 
     public function testIndexPlainColumn(): void
@@ -137,7 +137,7 @@ class IndexColumnsTest extends TestCase
                 $table->uniqueIndex(['(LOWER(col_929728))'], 'test_331602_func714604');
             });
         });
-        $this->assertEquals(['create unique index "test_331602_func714604" on "test_331602" ((lower(col_929728)))'], array_column($queries, 'query'));
+        $this->assertEquals(['create unique index "test_331602_func714604" on "test_331602" ((LOWER(col_929728)))'], array_column($queries, 'query'));
     }
 
     public function testUniqueIndexParametrizedColumn(): void
@@ -150,7 +150,7 @@ class IndexColumnsTest extends TestCase
                 $table->uniqueIndex(['col_177070 NULLS FIRST']);
             });
         });
-        $this->assertEquals(['create unique index "test_477236_col_177070_unique" on "test_477236" ("col_177070" nulls first)'], array_column($queries, 'query'));
+        $this->assertEquals(['create unique index "test_477236_col_177070_unique" on "test_477236" ("col_177070" NULLS FIRST)'], array_column($queries, 'query'));
     }
 
     public function testUniqueIndexPlainColumn(): void

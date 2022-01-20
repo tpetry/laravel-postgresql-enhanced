@@ -28,6 +28,7 @@ composer require tpetry/laravel-postgresql-enhanced
         - [Include Columns](#include-columns)
         - [Storage Parameters](#storage-parameters)
         - [Functional Indexes / Column Options](#functional-indexes--column-options)
+        - [Fulltext Indexes](#fulltext-indexes)
     - [Column Options](#column-options)
         - [Compression](#compression)
     - [Column Types](#column-types)
@@ -43,6 +44,7 @@ composer require tpetry/laravel-postgresql-enhanced
         - [XML](#xml)
 - [Query](#query)
     - [Explain](#explain)
+    - [Fulltext Search](#fulltext-search)
     - [Lateral Subquery Joins](#lateral-subquery-joins)
 
 ## Migration
@@ -184,7 +186,7 @@ Schema::table('users', function(Blueprint $table) {
 #### Drop If Exists
 
 In addition to the Laravel methods to drop indexes, methods to drop indexes if they exist have been added.
-The methods `dropIndexIfExists`, `dropPrimaryIfExists`, `dropSpatialIndexIfExists` and `dropSpatialIndexIfExists` match the semantics of their laravel originals.
+The methods `dropFullTextIfExists`, `dropIndexIfExists`, `dropPrimaryIfExists`, `dropSpatialIndexIfExists` and `dropSpatialIndexIfExists` match the semantics of their laravel originals.
 
 #### Partial Indexes
 
@@ -202,7 +204,7 @@ Schema::table('users', function(Blueprint $table) {
 });
 ```
 
-Partial Indexes are created with the `where` method on an index created by `index()`, `spatialIndex` or `uniqueIndex`.
+Partial Indexes are created with the `where` method on an index created by `fullText()`, `index()`, `spatialIndex()` or `uniqueIndex()`.
 
 #### Include Columns
 
@@ -232,7 +234,7 @@ Schema::table('bookmarks', function(Blueprint $table) {
     $table->index('data')->algorithm('gin')->with(['fastupdate' => false]);
 });
 ```
-Storage parameters are defined with the `with` method on an index created by `index()`, `spatialIndex` or `uniqueIndex`.
+Storage parameters are defined with the `with` method on an index created by `fullText()`, `index()`, `spatialIndex` or `uniqueIndex`.
 
 #### Functional Indexes / Column Options
 
@@ -249,6 +251,28 @@ Schema::table('users', function(Blueprint $table) {
     $table->unique('(LOWER(email))', 'users_email_unique');
     $table->index(['firstname ASC NULLS FIRST', 'lastname ASC NULLS FIRST'])
     $table->index('attributes jsonb_path_ops')->algorithm('gin');
+});
+```
+
+#### Fulltext Indexes
+
+Fulltext-search in PostgreSQL is language-dependent: For better results all words are [stemmed](https://en.wikipedia.org/wiki/Stemming) to their root form.
+Laravel is using the `english` language by default, for your application you may have to use a different one.
+You can also use the generic `simple` language which is not doing any stemming, but your search term will then have to include the exact string to match the record.
+
+Additionally, you can specify a relative weight for each column of the index to control the ranking.
+In this example the `title` column is a more relevant information than the `description` column, so it's relative weight has been set more important (`A` precedes `B`).
+
+For more information on all the options for fulltext-search read this article: [Fine Tuning Full Text Search with PostgreSQL 12](https://rob.conery.io/2019/10/29/fine-tuning-full-text-search-with-postgresql-12/).
+
+```php
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::table('book', function (Blueprint $table) {
+    $table->fullText(['title', 'description'])
+        ->language('spanish')
+        ->weight(['A', 'B']);
 });
 ```
 
@@ -389,6 +413,54 @@ DB::table('migrations')->where('batch', 1)->explain(analyze:true)->dd();
 //    Execution Time: 0.100 ms
 //    """
 //]
+```
+
+### Fulltext Search
+
+The PostgreSQL fulltext search implementation supports a lot of knobs to fine tune the search quality of your fulltext-search.
+In it's most basic form you are specifying the columns to search on and the search term to use:
+
+```php
+Book::whereFullText(['title', 'description'], 'PostgreSQL')->get();
+```
+
+But the implementation does provide a lot more functionality hidden in the third optional parameter.
+For more information on all the options for fulltext-search read this article: [Fine Tuning Full Text Search with PostgreSQL 12](https://rob.conery.io/2019/10/29/fine-tuning-full-text-search-with-postgresql-12/).
+
+#### Language
+
+By default the columns and the search term are [stemmed](https://en.wikipedia.org/wiki/Stemming) to it's root form in the `english` language to also find results for e.g. singular or plural words.
+If your application is using a different language you can change it to e.g. `spanish` or use the `simple` language which is not doing any stemming. 
+```php
+Book::whereFullText(['title', 'description'], 'PostgreSQL', ['language' => 'spanish'])->get();
+```
+
+#### Search Mode
+
+You can choose from three different search modes for the fulltext-search which is defaulting to the `plainto` mode.
+Depending on your requirements a search term can be handled completely different giving you a large amount of freedom to tune fulltext search for your needs.
+
+* `plainto`: All words in the search-term have to exist at least once in the columns.
+    ```php
+    Book::whereFullText(['title', 'description'], 'PostgreSQL', ['mode' => 'plain'])->get();
+    ```
+* `phrase`: All words in the search-term have to appear in the exact same order in the columns.
+    ```php
+    Book::whereFullText(['title', 'description'], 'PostgreSQL database', ['mode' => 'phrase'])->get();
+    ```
+* `websearch`: Complex search-term which supports quoting values, the `or` keyword and `-` to exclude a word but is missing parentheses.
+    ```php
+    Book::whereFullText(['title', 'description'], '"PostgreSQL database" -MySQL', ['mode' => 'websearch'])->get();
+    ```
+
+#### Weighting
+
+When you want to rank your fulltext-search results you need a way declare some columns more relevant than others.
+With the weight option you set a relevance for every search column starting with an `A` and ending with a `Z`.
+If you want to you can use the same relative weight multiple times to make some columns equal important.
+
+```php
+Book::whereFullText(['title', 'description'], '"PostgreSQL', ['weight' => ['A', 'B']])->get();
 ```
 
 ### Lateral Subquery Joins

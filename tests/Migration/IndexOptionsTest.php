@@ -11,6 +11,154 @@ use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class IndexOptionsTest extends TestCase
 {
+    public function testFulltextLanguageByColumn(): void
+    {
+        if (version_compare($this->app->version(), '8.74.0', '<')) {
+            $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
+        }
+
+        Schema::create('test_805943', function (Blueprint $table): void {
+            $table->string('col_721591');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_805943', function (Blueprint $table): void {
+                $table->fullText(['col_721591'])->language('simple');
+            });
+        });
+        $this->assertEquals(['create index "test_805943_col_721591_fulltext" on "test_805943" using gin ((to_tsvector(\'simple\', "col_721591")))'], array_column($queries, 'query'));
+    }
+
+    public function testFulltextLanguageByName(): void
+    {
+        if (version_compare($this->app->version(), '8.74.0', '<')) {
+            $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
+        }
+
+        Schema::create('test_575245', function (Blueprint $table): void {
+            $table->string('col_400891');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_575245', function (Blueprint $table): void {
+                $table->fullText(['col_400891'], 'index_618564')->language('simple');
+            });
+        });
+        $this->assertEquals(['create index "index_618564" on "test_575245" using gin ((to_tsvector(\'simple\', "col_400891")))'], array_column($queries, 'query'));
+    }
+
+    public function testFulltextPartialByColumn(): void
+    {
+        if (version_compare($this->app->version(), '8.74.0', '<')) {
+            $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
+        }
+
+        Schema::create('test_311536', function (Blueprint $table): void {
+            $table->string('col_877250');
+            $table->string('col_599221');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_311536', function (Blueprint $table): void {
+                $table->fullText(['col_877250'])->where(fn (Builder $query) => $query->whereNull('col_599221'));
+            });
+        });
+        $this->assertEquals(['create index "test_311536_col_877250_fulltext" on "test_311536" using gin ((to_tsvector(\'english\', "col_877250"))) where "col_599221" is null'], array_column($queries, 'query'));
+    }
+
+    public function testFulltextPartialByName(): void
+    {
+        if (version_compare($this->app->version(), '8.74.0', '<')) {
+            $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
+        }
+
+        Schema::create('test_606168', function (Blueprint $table): void {
+            $table->string('col_229595');
+            $table->string('col_711664');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_606168', function (Blueprint $table): void {
+                $table->fullText(['col_229595'], 'index_461578')->where('col_711664 is null');
+            });
+        });
+        $this->assertEquals(['create index "index_461578" on "test_606168" using gin ((to_tsvector(\'english\', "col_229595"))) where col_711664 is null'], array_column($queries, 'query'));
+    }
+
+    public function testFulltextWeightByColumn(): void
+    {
+        if (version_compare($this->app->version(), '8.74.0', '<')) {
+            $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
+        }
+
+        if (version_compare($this->app->version(), '8.74.0', '<')) {
+            $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
+        }
+
+        Schema::create('test_517379', function (Blueprint $table): void {
+            $table->string('col_383934');
+            $table->string('col_996362');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_517379', function (Blueprint $table): void {
+                $table->fullText(['col_383934', 'col_996362'])->weight(['A', 'B']);
+            });
+        });
+        $this->assertEquals(['create index "test_517379_col_383934_col_996362_fulltext" on "test_517379" using gin ((setweight(to_tsvector(\'english\', "col_383934"), \'A\') || setweight(to_tsvector(\'english\', "col_996362"), \'B\')))'], array_column($queries, 'query'));
+    }
+
+    public function testFulltextWeightByName(): void
+    {
+        if (version_compare($this->app->version(), '8.74.0', '<')) {
+            $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
+        }
+
+        if (version_compare($this->app->version(), '8.74.0', '<')) {
+            $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
+        }
+
+        Schema::create('test_460239', function (Blueprint $table): void {
+            $table->string('col_705289');
+            $table->string('col_996385');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_460239', function (Blueprint $table): void {
+                $table->fullText(['col_705289', 'col_996385'], 'index_183210')->weight(['A', 'B']);
+            });
+        });
+        $this->assertEquals(['create index "index_183210" on "test_460239" using gin ((setweight(to_tsvector(\'english\', "col_705289"), \'A\') || setweight(to_tsvector(\'english\', "col_996385"), \'B\')))'], array_column($queries, 'query'));
+    }
+
+    public function testFulltextWithByColumn(): void
+    {
+        if (version_compare($this->app->version(), '8.74.0', '<')) {
+            $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
+        }
+
+        Schema::create('test_136102', function (Blueprint $table): void {
+            $table->string('col_856942');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_136102', function (Blueprint $table): void {
+                $table->fullText(['col_856942'])->with(['fastupdate' => 'off']);
+            });
+        });
+        $this->assertEquals(['create index "test_136102_col_856942_fulltext" on "test_136102" using gin ((to_tsvector(\'english\', "col_856942"))) with (fastupdate = off)'], array_column($queries, 'query'));
+    }
+
+    public function testFulltextWithByName(): void
+    {
+        if (version_compare($this->app->version(), '8.74.0', '<')) {
+            $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
+        }
+
+        Schema::create('test_251686', function (Blueprint $table): void {
+            $table->string('col_307576');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_251686', function (Blueprint $table): void {
+                $table->fullText(['col_307576'], 'index_767340')->with(['fastupdate' => 'off']);
+            });
+        });
+        $this->assertEquals(['create index "index_767340" on "test_251686" using gin ((to_tsvector(\'english\', "col_307576"))) with (fastupdate = off)'], array_column($queries, 'query'));
+    }
+
     public function testIndexIncludeByColumn(): void
     {
         Schema::create('test_130163', function (Blueprint $table): void {
