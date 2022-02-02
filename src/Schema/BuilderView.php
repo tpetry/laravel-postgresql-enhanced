@@ -22,11 +22,11 @@ trait BuilderView
     /**
      * Create or replace a materialized view on the schema.
      */
-    public function createMaterializedViewOrReplace(string $name, QueryBuilder|string $query): void
+    public function alterMaterializedView(string $name, QueryBuilder|string $query): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
         $query = Query::toSql($query);
-        $this->getConnection()->statement("create or replace materialized view {$name} as {$query}");
+        $this->getConnection()->statement("alter materialized view {$name} as {$query}");
     }
 
     /**
@@ -96,6 +96,6 @@ trait BuilderView
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrap($name);
         $concurrently = $concurrently ? 'concurrently' : '';
-        $this->getConnection()->statement("refresh materialized $concurrently view {$name}");
+        $this->getConnection()->statement("refresh materialized view $concurrently {$name}");
     }
 }
