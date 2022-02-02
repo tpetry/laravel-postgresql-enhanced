@@ -20,6 +20,15 @@ trait BuilderView
     }
 
     /**
+     * Create or replace a materialized view on the schema.
+     */
+    public function createMaterializedViewOrReplace(string $name, QueryBuilder|string $query): void
+    {
+        $this->dropViewIfExists($name);
+        $this->createMaterializedView($name, $query);
+    }
+
+    /**
      * Create a recursive view on the schema.
      */
     public function createRecursiveView(string $name, QueryBuilder|string $query, array $columns): void

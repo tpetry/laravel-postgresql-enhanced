@@ -72,7 +72,7 @@ class ViewTest extends TestCase
 
     public function testRefreshMaterializedView(): void
     {
-        DB::statement('CREATE VIEW test_125383 AS SELECT random() as column_298865');
+        DB::statement('CREATE MATERIALIZED VIEW test_125383 AS SELECT random() as column_298865');
         $queries = $this->withQueryLog(function (): void {
             Schema::refreshMaterializedView('test_125383', true);
         });

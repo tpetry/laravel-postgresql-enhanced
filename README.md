@@ -147,15 +147,16 @@ Schema::createRecursiveView('viewname', 'SELECT id, col1, col2 FROM ....', ['id'
 Schema::createRecursiveViewOrReplace('viewname', 'SELECT id, col1, col2 FROM ....', ['id', 'col1', 'col2']);
 ```
 
-If you need to create materialized views the `createMaterializedView` and `alterMaterializedView` methods:
+If you need to create materialized views the `createMaterializedView` and `createMaterializedViewOrReplace` methods:
 ```php
 use Illuminate\Support\Facades\DB;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 
 Schema::createMaterializedView('users_with_2fa', 'SELECT * FROM users WHERE two_factor_secret IS NOT NULL');
-Schema::alterMaterializedView('users_with_2fa', DB::table('users')->whereNotNull('two_factor_secret'));
+Schema::createMaterializedViewOrReplace('users_without_2fa', DB::table('users')->whereNull('two_factor_secret'));
 
 Schema::refreshMaterializedView('users_with_2fa');
+Schema::refreshMaterializedView('users_without_2fa');
 ```
 
 #### Dropping Views
