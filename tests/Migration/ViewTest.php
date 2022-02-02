@@ -10,14 +10,6 @@ use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class ViewTest extends TestCase
 {
-    public function testCreateMaterializedView(): void
-    {
-        $queries = $this->withQueryLog(function (): void {
-            Schema::createMaterializedView('test_787472', DB::query()->selectRaw('random() as column_275654'));
-        });
-        $this->assertEquals(['create view "test_787472" as select random() as column_275654'], array_column($queries, 'query'));
-    }
-
     public function testAlterMaterializedView(): void
     {
         Schema::createMaterializedView('test_623621', DB::query()->selectRaw('random() as column_449978'));
@@ -25,6 +17,14 @@ class ViewTest extends TestCase
             Schema::alterMaterializedView('test_623621', DB::query()->selectRaw('random() as column_449978'));
         });
         $this->assertEquals(['alter view "test_623621" as select random() as column_449978'], array_column($queries, 'query'));
+    }
+
+    public function testCreateMaterializedView(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createMaterializedView('test_787472', DB::query()->selectRaw('random() as column_275654'));
+        });
+        $this->assertEquals(['create view "test_787472" as select random() as column_275654'], array_column($queries, 'query'));
     }
 
     public function testCreateRecursiveView(): void

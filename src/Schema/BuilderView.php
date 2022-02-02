@@ -10,16 +10,6 @@ use Tpetry\PostgresqlEnhanced\Support\Helpers\Query;
 trait BuilderView
 {
     /**
-     * Create a materialized view on the schema.
-     */
-    public function createMaterializedView(string $name, QueryBuilder|string $query): void
-    {
-        $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
-        $query = Query::toSql($query);
-        $this->getConnection()->statement("create materialized view {$name} as {$query}");
-    }
-
-    /**
      * Create or replace a materialized view on the schema.
      */
     public function alterMaterializedView(string $name, QueryBuilder|string $query): void
@@ -27,6 +17,16 @@ trait BuilderView
         $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
         $query = Query::toSql($query);
         $this->getConnection()->statement("alter materialized view {$name} as {$query}");
+    }
+
+    /**
+     * Create a materialized view on the schema.
+     */
+    public function createMaterializedView(string $name, QueryBuilder|string $query): void
+    {
+        $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
+        $query = Query::toSql($query);
+        $this->getConnection()->statement("create materialized view {$name} as {$query}");
     }
 
     /**
