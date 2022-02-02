@@ -32,6 +32,26 @@ trait BuilderView
     }
 
     /**
+     * Create a materialized view on the schema.
+     */
+    public function createMaterializedView(string $name, QueryBuilder|string $query, array $columns): void
+    {
+        $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
+        $query = Query::toSql($query);
+        $this->getConnection()->statement("create materialized view {$name} as {$query}");
+    }
+
+    /**
+     * Create or replace a materialized view on the schema.
+     */
+    public function createMaterializedViewOrReplace(string $name, QueryBuilder|string $query, array $columns): void
+    {
+        $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
+        $query = Query::toSql($query);
+        $this->getConnection()->statement("create or replace materialized view {$name} as {$query}");
+    }
+
+    /**
      * Create a view on the schema.
      */
     public function createView(string $name, QueryBuilder|string $query): void
@@ -67,5 +87,15 @@ trait BuilderView
     {
         $names = $this->getConnection()->getSchemaGrammar()->namize($name);
         $this->getConnection()->statement("drop view if exists {$names}");
+    }
+
+    /**
+     * Refresh materialized view from the schema.
+     */
+    public function refreshMaterializedView(string $name, $concurrently = false): void
+    {
+        $names = $this->getConnection()->getSchemaGrammar()->namize($name);
+        $concurrently = $concurrently ? 'concurrently' : '';
+        $this->getConnection()->statement("refresh materialized $concurrently view {$names}");
     }
 }

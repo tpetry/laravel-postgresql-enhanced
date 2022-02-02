@@ -26,6 +26,22 @@ class ViewTest extends TestCase
         $this->assertEquals(['create or replace recursive view "test_552475" ("column_395089") as select random() as column_395089'], array_column($queries, 'query'));
     }
 
+    public function testCreateMaterializedView(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createMaterializedView('test_787482', DB::query()->selectRaw('random() as column_275664'));
+        });
+        $this->assertEquals(['create view "test_787482" as select random() as column_275664'], array_column($queries, 'query'));
+    }
+
+    public function testCreateMaterializedViewOrReplace(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createMaterializedViewOrReplace('test_623631', DB::query()->selectRaw('random() as column_449988'));
+        });
+        $this->assertEquals(['create or replace view "test_623631" as select random() as column_449988'], array_column($queries, 'query'));
+    }
+
     public function testCreateView(): void
     {
         $queries = $this->withQueryLog(function (): void {
@@ -60,5 +76,14 @@ class ViewTest extends TestCase
             Schema::dropViewIfExists('test_450510', 'test_210779');
         });
         $this->assertEquals(['drop view if exists "test_450510", "test_210779"'], array_column($queries, 'query'));
+    }
+
+    public function testRefreshMaterializedView(): void
+    {
+        DB::statement('CREATE VIEW test_125383 AS SELECT random() as column_298865');
+        $queries = $this->withQueryLog(function (): void {
+            Schema::refreshMaterializedView('test_125383', true);
+        });
+        $this->assertEquals(['refresh materialized concurrently "test_125383"'], array_column($queries, 'query'));
     }
 }
