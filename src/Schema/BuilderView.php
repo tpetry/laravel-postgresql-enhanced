@@ -94,7 +94,7 @@ trait BuilderView
     public function refreshMaterializedView(string $name, $concurrently = false): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrap($name);
-        $concurrently = $concurrently ? 'concurrently' : '';
-        $this->getConnection()->statement("refresh materialized view $concurrently {$name}");
+        $name = $concurrently ? 'concurrently ' . $name : $name;
+        $this->getConnection()->statement("refresh materialized view {$name}");
     }
 }
