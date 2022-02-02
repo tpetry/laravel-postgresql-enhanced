@@ -10,22 +10,6 @@ use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class ViewTest extends TestCase
 {
-    public function testCreateRecursiveView(): void
-    {
-        $queries = $this->withQueryLog(function (): void {
-            Schema::createRecursiveView('test_787482', DB::query()->selectRaw('random() as column_253761'), ['column_253761']);
-        });
-        $this->assertEquals(['create recursive view "test_787482" ("column_253761") as select random() as column_253761'], array_column($queries, 'query'));
-    }
-
-    public function testCreateRecursiveViewOrReplace(): void
-    {
-        $queries = $this->withQueryLog(function (): void {
-            Schema::createRecursiveViewOrReplace('test_552475', DB::query()->selectRaw('random() as column_395089'), ['column_395089']);
-        });
-        $this->assertEquals(['create or replace recursive view "test_552475" ("column_395089") as select random() as column_395089'], array_column($queries, 'query'));
-    }
-
     public function testCreateMaterializedView(): void
     {
         $queries = $this->withQueryLog(function (): void {
@@ -40,6 +24,22 @@ class ViewTest extends TestCase
             Schema::createMaterializedViewOrReplace('test_623631', DB::query()->selectRaw('random() as column_449988'));
         });
         $this->assertEquals(['create or replace view "test_623631" as select random() as column_449988'], array_column($queries, 'query'));
+    }
+
+    public function testCreateRecursiveView(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createRecursiveView('test_787482', DB::query()->selectRaw('random() as column_253761'), ['column_253761']);
+        });
+        $this->assertEquals(['create recursive view "test_787482" ("column_253761") as select random() as column_253761'], array_column($queries, 'query'));
+    }
+
+    public function testCreateRecursiveViewOrReplace(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createRecursiveViewOrReplace('test_552475', DB::query()->selectRaw('random() as column_395089'), ['column_395089']);
+        });
+        $this->assertEquals(['create or replace recursive view "test_552475" ("column_395089") as select random() as column_395089'], array_column($queries, 'query'));
     }
 
     public function testCreateView(): void

@@ -10,6 +10,26 @@ use Tpetry\PostgresqlEnhanced\Support\Helpers\Query;
 trait BuilderView
 {
     /**
+     * Create a materialized view on the schema.
+     */
+    public function createMaterializedView(string $name, QueryBuilder|string $query, array $columns): void
+    {
+        $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
+        $query = Query::toSql($query);
+        $this->getConnection()->statement("create materialized view {$name} as {$query}");
+    }
+
+    /**
+     * Create or replace a materialized view on the schema.
+     */
+    public function createMaterializedViewOrReplace(string $name, QueryBuilder|string $query, array $columns): void
+    {
+        $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
+        $query = Query::toSql($query);
+        $this->getConnection()->statement("create or replace materialized view {$name} as {$query}");
+    }
+
+    /**
      * Create a recursive view on the schema.
      */
     public function createRecursiveView(string $name, QueryBuilder|string $query, array $columns): void
@@ -29,26 +49,6 @@ trait BuilderView
         $columns = $this->getConnection()->getSchemaGrammar()->columnize($columns);
         $query = Query::toSql($query);
         $this->getConnection()->statement("create or replace recursive view {$name} ({$columns}) as {$query}");
-    }
-
-    /**
-     * Create a materialized view on the schema.
-     */
-    public function createMaterializedView(string $name, QueryBuilder|string $query, array $columns): void
-    {
-        $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
-        $query = Query::toSql($query);
-        $this->getConnection()->statement("create materialized view {$name} as {$query}");
-    }
-
-    /**
-     * Create or replace a materialized view on the schema.
-     */
-    public function createMaterializedViewOrReplace(string $name, QueryBuilder|string $query, array $columns): void
-    {
-        $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
-        $query = Query::toSql($query);
-        $this->getConnection()->statement("create or replace materialized view {$name} as {$query}");
     }
 
     /**
