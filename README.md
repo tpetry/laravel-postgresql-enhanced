@@ -143,8 +143,8 @@ use Illuminate\Support\Facades\DB;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 
 // TODO simple example explaining the concept
-Schema::createView('viewname', 'SELECT id, col1, col2 FROM ....', ['id', 'col1', 'col2']);
-Schema::createViewOrReplace('viewname', 'SELECT id, col1, col2 FROM ....', ['id', 'col1', 'col2']);
+Schema::createRecursiveView('viewname', 'SELECT id, col1, col2 FROM ....', ['id', 'col1', 'col2']);
+Schema::createRecursiveViewOrReplace('viewname', 'SELECT id, col1, col2 FROM ....', ['id', 'col1', 'col2']);
 ```
 
 #### Dropping Views
