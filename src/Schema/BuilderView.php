@@ -71,24 +71,6 @@ trait BuilderView
     }
 
     /**
-     * Drop views from the schema.
-     */
-    public function dropView(string ...$name): void
-    {
-        $names = $this->getConnection()->getSchemaGrammar()->namize($name);
-        $this->getConnection()->statement("drop view {$names}");
-    }
-
-    /**
-     * Drop views from the schema if they exist.
-     */
-    public function dropViewIfExists(string ...$name): void
-    {
-        $names = $this->getConnection()->getSchemaGrammar()->namize($name);
-        $this->getConnection()->statement("drop view if exists {$names}");
-    }
-
-    /**
      * Drop materialized views from the schema.
      */
     public function dropMaterializedView(string ...$name): void
@@ -104,6 +86,24 @@ trait BuilderView
     {
         $names = $this->getConnection()->getSchemaGrammar()->namize($name);
         $this->getConnection()->statement("drop materialized view if exists {$names}");
+    }
+
+    /**
+     * Drop views from the schema.
+     */
+    public function dropView(string ...$name): void
+    {
+        $names = $this->getConnection()->getSchemaGrammar()->namize($name);
+        $this->getConnection()->statement("drop view {$names}");
+    }
+
+    /**
+     * Drop views from the schema if they exist.
+     */
+    public function dropViewIfExists(string ...$name): void
+    {
+        $names = $this->getConnection()->getSchemaGrammar()->namize($name);
+        $this->getConnection()->statement("drop view if exists {$names}");
     }
 
     /**
