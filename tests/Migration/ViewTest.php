@@ -82,8 +82,8 @@ class ViewTest extends TestCase
 
     public function testMaterializedDropViewIfExists(): void
     {
-        DB::statement('CREATE VIEW test_450500 AS SELECT random() as column_917227');
-        DB::statement('CREATE VIEW test_210769 AS SELECT random() as column_727001');
+        DB::statement('CREATE MATERIALIZED VIEW test_450500 AS SELECT random() as column_917227');
+        DB::statement('CREATE MATERIALIZED VIEW test_210769 AS SELECT random() as column_727001');
         $queries = $this->withQueryLog(function (): void {
             Schema::dropMaterializedViewIfExists('test_450500', 'test_210769');
         });
