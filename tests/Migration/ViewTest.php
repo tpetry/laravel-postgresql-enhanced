@@ -70,6 +70,26 @@ class ViewTest extends TestCase
         $this->assertEquals(['drop view if exists "test_450510", "test_210779"'], array_column($queries, 'query'));
     }
 
+    public function testMaterializedDropView(): void
+    {
+        DB::statement('CREATE MATERIALIZED VIEW test_125372 AS SELECT random() as column_298854');
+        DB::statement('CREATE MATERIALIZED VIEW test_781683 AS SELECT random() as column_377536');
+        $queries = $this->withQueryLog(function (): void {
+            Schema::dropMaterializedView('test_125372', 'test_781683');
+        });
+        $this->assertEquals(['drop materialized view "test_125372", "test_781683"'], array_column($queries, 'query'));
+    }
+
+    public function testMaterializedDropViewIfExists(): void
+    {
+        DB::statement('CREATE VIEW test_450500 AS SELECT random() as column_917227');
+        DB::statement('CREATE VIEW test_210769 AS SELECT random() as column_727001');
+        $queries = $this->withQueryLog(function (): void {
+            Schema::dropMaterializedViewIfExists('test_450500', 'test_210769');
+        });
+        $this->assertEquals(['drop materialized view if exists "test_450500", "test_210769"'], array_column($queries, 'query'));
+    }
+
     public function testRefreshMaterializedView(): void
     {
         DB::statement('CREATE MATERIALIZED VIEW test_125383 AS SELECT random() as column_298865');

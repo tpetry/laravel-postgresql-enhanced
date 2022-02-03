@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Schema as BaseSchema;
  * @method static void dropExtensionIfExists(string ...$name)
  * @method static void dropView(string ...$name)
  * @method static void dropViewIfExists(string ...$name)
+ * @method static void dropMaterializedView(string ...$name)
+ * @method static void dropMaterializedViewIfExists(string ...$name)
  * @method static void refreshMaterializedView(string $name, bool $concurrently)
  */
 class Schema extends BaseSchema

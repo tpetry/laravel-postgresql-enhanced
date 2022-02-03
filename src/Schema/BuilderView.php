@@ -24,7 +24,7 @@ trait BuilderView
      */
     public function createMaterializedViewOrReplace(string $name, QueryBuilder|string $query): void
     {
-        $this->dropViewIfExists($name);
+        $this->dropMaterializedViewIfExists($name);
         $this->createMaterializedView($name, $query);
     }
 
@@ -86,6 +86,24 @@ trait BuilderView
     {
         $names = $this->getConnection()->getSchemaGrammar()->namize($name);
         $this->getConnection()->statement("drop view if exists {$names}");
+    }
+
+    /**
+     * Drop materialized views from the schema.
+     */
+    public function dropMaterializedView(string ...$name): void
+    {
+        $names = $this->getConnection()->getSchemaGrammar()->namize($name);
+        $this->getConnection()->statement("drop materialized view {$names}");
+    }
+
+    /**
+     * Drop materialized views from the schema if they exist.
+     */
+    public function dropMaterializedViewIfExists(string ...$name): void
+    {
+        $names = $this->getConnection()->getSchemaGrammar()->namize($name);
+        $this->getConnection()->statement("drop materialized view if exists {$names}");
     }
 
     /**

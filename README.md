@@ -168,6 +168,9 @@ use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 
 Schema::dropView('myview');
 Schema::dropViewIfExists('myview');
+
+Schema::dropMaterializedView('myview');
+Schema::dropMaterializedViewIfExists('myview');
 ```
 
 You may drop many views at once by passing multiple view names:
