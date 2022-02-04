@@ -9,4 +9,5 @@ use Illuminate\Database\Query\Grammars\PostgresGrammar;
 class Grammar extends PostgresGrammar
 {
     use GrammarFullText;
+    use GrammarReturning;
 }

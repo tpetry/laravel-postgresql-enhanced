@@ -46,6 +46,7 @@ composer require tpetry/laravel-postgresql-enhanced
     - [Explain](#explain)
     - [Fulltext Search](#fulltext-search)
     - [Lateral Subquery Joins](#lateral-subquery-joins)
+    - [Returning Data From Modified Rows](#returning-data-from-modified-rows)
 
 ## Migration
 
@@ -485,6 +486,44 @@ User::select('users.email', 'orders.*')
         'orders',
     );
 ```
+
+### Returning Data From Modified Rows
+
+Sometimes it is more useful to get the affected rows data of a `INSERT`, `UPDATE`, or `DELETE` query instead of just the number of affected rows.
+The PostgreSQL [RETURNING](https://www.postgresql.org/docs/current/dml-returning.html) feature changes the behaviour of data manipulation statements to `SELECT` the row's data after the manipulation.
+
+You can use `RETURNING` when you e.g. want to get a list of users you need to update.
+Instead of selecting all the users into memory, iterating over them and manipulating each one you can run the manipulation statement directly and get all the affected rows data.
+A typical example is reporting which old users have been deleted:
+```php
+use Illuminate\Support\Facades\DB;
+
+$inactiveUsers = DB::table('users')
+    ->where('lastlogin_at', '<', now()->subYear())
+    ->get();
+foreach ($inactiveUsers as $inactiveUser) {
+  $inactiveUser->delete();
+}
+dump('deleted Users', $inactiveUsers);
+
+// do this instead:
+
+$inactiveUsers = DB::table('users')
+    ->where('lastlogin_at', '<', now()->subYear())
+    ->deleteReturning();
+dump('deleted Users', $inactiveUsers);
+```
+
+The following modification queries have been added (analog to their Laravel implementation) which are returning the affected rows data instead of just the number of affected rows:
+
+* `deleteReturning`
+* `insertOrIgnoreReturning`
+* `insertReturning`
+* `insertUsingReturning`
+* `updateFromReturning`
+* `updateOrInsertReturning`
+* `updateReturning`
+* `upsertReturning`
 
 # Contribution
 
