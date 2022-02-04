@@ -12,7 +12,7 @@ use Illuminate\Database\Events\MigrationStarted;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\Event;
 use RuntimeException;
-use Tpetry\PostgresqlEnhanced\Concerns\ZeroDowntimeMigration;
+use Tpetry\PostgresqlEnhanced\Schema\Concerns\ZeroDowntimeMigration;
 use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 use Tpetry\PostgresqlEnhanced\ZeroDowntimeMigrationTimeoutException;
 

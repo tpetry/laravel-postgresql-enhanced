@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tpetry\PostgresqlEnhanced\Concerns;
+namespace Tpetry\PostgresqlEnhanced\Schema\Concerns;
 
 trait ZeroDowntimeMigration
 {

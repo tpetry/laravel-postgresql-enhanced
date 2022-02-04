@@ -47,6 +47,8 @@ composer require tpetry/laravel-postgresql-enhanced
     - [Fulltext Search](#fulltext-search)
     - [Lateral Subquery Joins](#lateral-subquery-joins)
     - [Returning Data From Modified Rows](#returning-data-from-modified-rows)
+- [Eloquent](#eloquent)
+    - [Refresh Data on Save](#refresh-data-on-save)
 
 ## Migration
 
@@ -59,8 +61,8 @@ If the migration exceeds a specified time limit, it is cancelled and the schema 
 
 ```php
 use Illuminate\Database\Migrations\Migration;
-use Tpetry\PostgresqlEnhanced\Concerns\ZeroDowntimeMigration;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Schema\Concerns\ZeroDowntimeMigration;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 
 class Test123 extends Migration
@@ -524,6 +526,62 @@ The following modification queries have been added (analog to their Laravel impl
 * `updateOrInsertReturning`
 * `updateReturning`
 * `upsertReturning`
+
+## Eloquent
+
+### Refresh Data on Save
+
+When you are using Laravel's `storedAs($expression)` feature in migrations to have dynamically computed columns in your database or triggers to update these columns, eloquent's behaviour is not doing exactly what you are expecting.
+After you saved the model these computed properties are not available in your model, you need to refresh it because Laravel is only updating the primary key.
+
+```php
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::create('example', function (Blueprint $table) {
+    $table->id();
+    $table->string('text');
+    $table->string('text_uppercase')->storedAs('UPPER(text)');
+});
+
+$example = Example::create(['text' => 'test']);
+dump($example); // ['id' => 1, 'text' => 'test']
+
+$example->refresh();
+dump($example); // ['id' => 1, 'text' => 'test', 'text_uppercase' => 'TEST']
+
+
+$example->fill(['text' => 'test2'])->save();
+dump($example); // ['id' => 1, 'text' => 'test2']
+
+$example->refresh();
+dump($example); // ['id' => 1, 'text' => 'test', 'text_uppercase' => 'TEST2']
+```
+
+By using the new `RefreshDataOnSave` trait the new [RETURNING statements](#returning-data-from-modified-rows) are used for saving models. Whenever Laravel saves a model any changes in the rows are automatically reflected in your model:
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Tpetry\PostgresqlEnhanced\Eloquent\Concerns\RefreshDataOnSave;
+
+class Example extends Model
+{
+    use RefreshDataOnSave;
+
+    // ...
+}
+
+$example = Example::create(['text' => 'test']);
+dump($example); // ['id' => 1, 'text' => 'test', 'text_uppercase' => 'TEST']
+
+$example->fill(['text' => 'test2'])->save();
+dump($example); // ['id' => 1, 'text' => 'test2', 'text_uppercase' => 'TES2T']
+```
+
+# Breaking Changes
+
+* 0.10.0 -> 0.11.0
+  * The `ZeroDowntimeMigration` concern namespace moved from `Tpetry\PostgresqlEnhanced\Concerns` to `Tpetry\PostgresqlEnhanced\Schema\Concerns`.
 
 # Contribution
 
