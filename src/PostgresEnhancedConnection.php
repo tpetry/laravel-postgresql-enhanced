@@ -41,6 +41,26 @@ class PostgresEnhancedConnection extends PostgresConnection
     }
 
     /**
+     * Execute an SQL statement and return the results.
+     */
+    public function returningStatement(string $query, array $bindings = []): array
+    {
+        return $this->run($query, $bindings, function ($query, $bindings) {
+            if ($this->pretending()) {
+                return [];
+            }
+
+            $statement = $this->prepared($this->getPdo()->prepare($query));
+
+            $this->bindValues($statement, $this->prepareBindings($bindings));
+
+            $statement->execute();
+
+            return $statement->fetchAll();
+        });
+    }
+
+    /**
      * Get the default query grammar instance.
      */
     protected function getDefaultQueryGrammar(): QueryGrammar

@@ -32,10 +32,10 @@ class TestCase extends Orchestra
 
     protected function withQueryLog(Closure $fn): array
     {
-        $this->app->get('db.connection')->flushQueryLog();
-        $this->app->get('db.connection')->enableQueryLog();
+        $this->getConnection()->flushQueryLog();
+        $this->getConnection()->enableQueryLog();
         $fn();
 
-        return $this->app->get('db.connection')->getQueryLog();
+        return $this->getConnection()->getQueryLog();
     }
 }
