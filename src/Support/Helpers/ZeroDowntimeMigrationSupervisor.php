@@ -12,8 +12,8 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use RuntimeException;
-use Tpetry\PostgresqlEnhanced\Concerns\ZeroDowntimeMigration;
 use Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection;
+use Tpetry\PostgresqlEnhanced\Schema\Concerns\ZeroDowntimeMigration;
 use Tpetry\PostgresqlEnhanced\ZeroDowntimeMigrationTimeoutException;
 
 class ZeroDowntimeMigrationSupervisor
