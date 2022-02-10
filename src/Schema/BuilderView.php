@@ -10,6 +10,17 @@ use Tpetry\PostgresqlEnhanced\Support\Helpers\Query;
 trait BuilderView
 {
     /**
+     * Create a materialized view on the schema.
+     */
+    public function createMaterializedView(string $name, QueryBuilder|string $query, bool $withData = true): void
+    {
+        $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
+        $query = Query::toSql($query);
+        $withData = $withData ? 'with data' : 'with no data';
+        $this->getConnection()->statement("create materialized view {$name} as {$query} {$withData}");
+    }
+
+    /**
      * Create a recursive view on the schema.
      */
     public function createRecursiveView(string $name, QueryBuilder|string $query, array $columns): void
@@ -52,6 +63,24 @@ trait BuilderView
     }
 
     /**
+     * Drop materialized views from the schema.
+     */
+    public function dropMaterializedView(string ...$name): void
+    {
+        $names = $this->getConnection()->getSchemaGrammar()->namize($name);
+        $this->getConnection()->statement("drop materialized view {$names}");
+    }
+
+    /**
+     * Drop materialized views from the schema if they exist.
+     */
+    public function dropMaterializedViewIfExists(string ...$name): void
+    {
+        $names = $this->getConnection()->getSchemaGrammar()->namize($name);
+        $this->getConnection()->statement("drop materialized view if exists {$names}");
+    }
+
+    /**
      * Drop views from the schema.
      */
     public function dropView(string ...$name): void
@@ -67,5 +96,18 @@ trait BuilderView
     {
         $names = $this->getConnection()->getSchemaGrammar()->namize($name);
         $this->getConnection()->statement("drop view if exists {$names}");
+    }
+
+    /**
+     * Refresh materialized of the schema.
+     */
+    public function refreshMaterializedView(string $name, bool $concurrently = false, bool $withData = true): void
+    {
+        $name = $this->getConnection()->getSchemaGrammar()->wrap($name);
+        $withData = $withData ? 'with data' : 'with no data';
+        match ($concurrently) {
+            true => $this->getConnection()->statement("refresh materialized view concurrently {$name} {$withData}"),
+            false => $this->getConnection()->statement("refresh materialized view {$name} {$withData}"),
+        };
     }
 }

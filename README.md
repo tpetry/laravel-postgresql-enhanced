@@ -23,6 +23,7 @@ composer require tpetry/laravel-postgresql-enhanced
     - [Zero Downtime Migration](#zero-downtime-migration)
     - [Extensions](#extensions)
     - [Views](#views)
+        - [Materialized Views](#materialized-views)
     - [Indexes](#indexes)
         - [Partial Indexes](#partial-indexes)
         - [Include Columns](#include-columns)
@@ -167,6 +168,41 @@ use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 
 Schema::dropView('myview1', 'myview2');
 Schema::dropViewIfExists('myview1', 'myview2');
+```
+
+#### Materialized Views
+
+With materialized views you can populate a view with the contents of a query's results at the time the query is executed.
+You can use them to cache expensive queries so they are not re-run all the time.
+
+Materialized views are created (and dropped) the same as normal views.
+You can either pass in a query builder or raw sql query.
+A useful method to create materialized views for very slow queries is to create them without any data initially.
+By passing the `withData: false` parameter the materialized view is created instantly and no data is stored, you need to refresh it later to contain some data.
+
+```php
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::createMaterializedView('users_with_2fa', 'SELECT * FROM users WHERE two_factor_secret IS NOT NULL');
+Schema::createMaterializedView('users_with_2fa', DB::table('users')->whereNull('two_factor_secret'));
+
+Schema::createMaterializedView('very_slow_query_materialized', 'SELECT ...', withData: false);
+
+Schema::dropMaterializedView('users_with_2fa');
+Schema::dropMaterializedViewIfExists('users_with_2fa');
+```
+
+The stored values of a created materialized view can be refreshed whenever you want to.
+When passing the `concurrently: true` parameter the command will finish instantly and PostgreSQL will refresh the values in the background.
+You can also change the materialized views behaviour to (not) contain any data anymore with the `withData: true` and `withData: false` parameter.
+
+```php
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::refreshMaterializedView('users_with_2fa');
+Schema::refreshMaterializedView('users_with_2fa', concurrently: true);
+Schema::refreshMaterializedView('users_with_2fa', withData: false);
+Schema::refreshMaterializedView('users_with_2fa', withData: true);
 ```
 
 ### Indexes
