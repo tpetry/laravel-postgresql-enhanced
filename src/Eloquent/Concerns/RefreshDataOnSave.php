@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Eloquent\Concerns;
 
-use Arr;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 
 /**
  * The implementations of these functions have been taken from the Laravel core and
