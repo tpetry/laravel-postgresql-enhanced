@@ -12,20 +12,12 @@ trait BuilderView
     /**
      * Create a materialized view on the schema.
      */
-    public function createMaterializedView(string $name, QueryBuilder|string $query): void
+    public function createMaterializedView(string $name, QueryBuilder|string $query, bool $withData = true): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
         $query = Query::toSql($query);
-        $this->getConnection()->statement("create materialized view {$name} as {$query}");
-    }
-
-    /**
-     * Create or replace a materialized view on the schema.
-     */
-    public function createMaterializedViewOrReplace(string $name, QueryBuilder|string $query): void
-    {
-        $this->dropMaterializedViewIfExists($name);
-        $this->createMaterializedView($name, $query);
+        $withData = $withData ? 'with data' : 'with no data';
+        $this->getConnection()->statement("create materialized view {$name} as {$query} {$withData}");
     }
 
     /**
@@ -107,12 +99,15 @@ trait BuilderView
     }
 
     /**
-     * Refresh materialized view from the schema.
+     * Refresh materialized of the schema.
      */
-    public function refreshMaterializedView(string $name, $concurrently = false): void
+    public function refreshMaterializedView(string $name, bool $concurrently = false, bool $withData = true): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrap($name);
-        $name = $concurrently ? 'concurrently '.$name : $name;
-        $this->getConnection()->statement("refresh materialized view {$name}");
+        $withData = $withData ? 'with data' : 'with no data';
+        match ($concurrently) {
+            true => $this->getConnection()->statement("refresh materialized view concurrently {$name} {$withData}"),
+            false => $this->getConnection()->statement("refresh materialized view {$name} {$withData}"),
+        };
     }
 }

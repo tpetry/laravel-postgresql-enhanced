@@ -10,12 +10,20 @@ use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class ViewTest extends TestCase
 {
-    public function testCreateMaterializedView(): void
+    public function testCreateMaterializedViewWithData(): void
     {
         $queries = $this->withQueryLog(function (): void {
-            Schema::createMaterializedView('test_787472', DB::query()->selectRaw('random() as column_275654'));
+            Schema::createMaterializedView('test_553409', DB::query()->selectRaw('random() as column_221817'));
         });
-        $this->assertEquals(['create materialized view "test_787472" as select random() as column_275654'], array_column($queries, 'query'));
+        $this->assertEquals(['create materialized view "test_553409" as select random() as column_221817 with data'], array_column($queries, 'query'));
+    }
+
+    public function testCreateMaterializedViewWithoutData(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createMaterializedView('test_899394', DB::query()->selectRaw('random() as column_116985'), withData: false);
+        });
+        $this->assertEquals(['create materialized view "test_899394" as select random() as column_116985 with no data'], array_column($queries, 'query'));
     }
 
     public function testCreateRecursiveView(): void
@@ -72,30 +80,49 @@ class ViewTest extends TestCase
 
     public function testMaterializedDropView(): void
     {
-        DB::statement('CREATE MATERIALIZED VIEW test_125372 AS SELECT random() as column_298854');
-        DB::statement('CREATE MATERIALIZED VIEW test_781683 AS SELECT random() as column_377536');
+        DB::statement('CREATE MATERIALIZED VIEW test_227238 AS SELECT random() as column_765917');
+        DB::statement('CREATE MATERIALIZED VIEW test_871404 AS SELECT random() as column_369372');
         $queries = $this->withQueryLog(function (): void {
-            Schema::dropMaterializedView('test_125372', 'test_781683');
+            Schema::dropMaterializedView('test_227238', 'test_871404');
         });
-        $this->assertEquals(['drop materialized view "test_125372", "test_781683"'], array_column($queries, 'query'));
+        $this->assertEquals(['drop materialized view "test_227238", "test_871404"'], array_column($queries, 'query'));
     }
 
     public function testMaterializedDropViewIfExists(): void
     {
-        DB::statement('CREATE MATERIALIZED VIEW test_450500 AS SELECT random() as column_917227');
-        DB::statement('CREATE MATERIALIZED VIEW test_210769 AS SELECT random() as column_727001');
+        DB::statement('CREATE MATERIALIZED VIEW test_495840 AS SELECT random() as column_370555');
+        DB::statement('CREATE MATERIALIZED VIEW test_739551 AS SELECT random() as column_149927');
         $queries = $this->withQueryLog(function (): void {
-            Schema::dropMaterializedViewIfExists('test_450500', 'test_210769');
+            Schema::dropMaterializedViewIfExists('test_495840', 'test_739551');
         });
-        $this->assertEquals(['drop materialized view if exists "test_450500", "test_210769"'], array_column($queries, 'query'));
+        $this->assertEquals(['drop materialized view if exists "test_495840", "test_739551"'], array_column($queries, 'query'));
     }
 
     public function testRefreshMaterializedView(): void
     {
-        DB::statement('CREATE MATERIALIZED VIEW test_125383 AS SELECT random() as column_298865');
+        DB::statement('CREATE MATERIALIZED VIEW test_302056 AS SELECT random() as column_521312');
         $queries = $this->withQueryLog(function (): void {
-            Schema::refreshMaterializedView('test_125383');
+            Schema::refreshMaterializedView('test_302056');
         });
-        $this->assertEquals(['refresh materialized view "test_125383"'], array_column($queries, 'query'));
+        $this->assertEquals(['refresh materialized view "test_302056" with data'], array_column($queries, 'query'));
+    }
+
+    public function testRefreshMaterializedViewConcurrently(): void
+    {
+        DB::statement('CREATE MATERIALIZED VIEW test_575514 AS SELECT random() as column_292611');
+        DB::statement('CREATE UNIQUE INDEX ON test_575514 (column_292611)');
+        $queries = $this->withQueryLog(function (): void {
+            Schema::refreshMaterializedView('test_575514', concurrently: true);
+        });
+        $this->assertEquals(['refresh materialized view concurrently "test_575514" with data'], array_column($queries, 'query'));
+    }
+
+    public function testRefreshMaterializedViewWithoutData(): void
+    {
+        DB::statement('CREATE MATERIALIZED VIEW test_640796 AS SELECT random() as column_127240');
+        $queries = $this->withQueryLog(function (): void {
+            Schema::refreshMaterializedView('test_640796', withData: false);
+        });
+        $this->assertEquals(['refresh materialized view "test_640796" with no data'], array_column($queries, 'query'));
     }
 }
