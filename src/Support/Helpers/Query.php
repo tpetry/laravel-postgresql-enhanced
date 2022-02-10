@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Support\Helpers;
 
-use Illuminate\Database\Connection;
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use RuntimeException;
@@ -13,6 +13,8 @@ class Query
 {
     /**
      * Transforms a query to it's sql representation.
+     *
+     * @psalm-suppress UndefinedInterfaceMethod
      */
     public static function toSql(EloquentBuilder|QueryBuilder|string $query): string
     {
@@ -32,7 +34,7 @@ class Query
                 null === $value => 'null',
                 \is_bool($value) => $value ? 'true' : 'false',
                 is_numeric($value) => $value,
-                default => with($query->getConnection(), fn (Connection $connection) => $connection->getPdo()->quote((string) $value)),
+                default => with($query->getConnection(), fn (ConnectionInterface $connection) => $connection->getPdo()->quote((string) $value)),
             };
         }, $query->toSql());
 
