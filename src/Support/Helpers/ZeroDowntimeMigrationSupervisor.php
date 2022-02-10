@@ -181,6 +181,8 @@ class ZeroDowntimeMigrationSupervisor
 
     /**
      * The migration timeouts need to updated for every query which will and has run.
+     *
+     * @psalm-suppress InvalidArgument
      */
     private function updateMigrationTimeouts(): void
     {
