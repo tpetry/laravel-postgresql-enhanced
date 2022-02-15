@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests\Query;
 
+use Illuminate\Support\Collection;
 use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class ReturningTest extends TestCase
@@ -32,7 +33,8 @@ class ReturningTest extends TestCase
                 ->where('str', 'TmBZCdqd')
                 ->deleteReturning();
 
-            $this->assertEquals([(object) ['id' => 1, 'str' => 'TmBZCdqd']], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([(object) ['id' => 1, 'str' => 'TmBZCdqd']], $result->toArray());
         });
         $this->assertEquals(['delete from "example" where "str" = ? returning *'], array_column($queries, 'query'));
     }
@@ -48,7 +50,8 @@ class ReturningTest extends TestCase
                 ->where('str', 'JT5z0MzE')
                 ->deleteReturning();
 
-            $this->assertEquals([], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([], $result->toArray());
         });
         $this->assertEquals(['delete from "example" where "str" = ? returning *'], array_column($queries, 'query'));
     }
@@ -64,7 +67,8 @@ class ReturningTest extends TestCase
                 ->where('str', 'FauLvDe6')
                 ->deleteReturning(returning: ['str']);
 
-            $this->assertEquals([(object) ['str' => 'FauLvDe6']], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([(object) ['str' => 'FauLvDe6']], $result->toArray());
         });
         $this->assertEquals(['delete from "example" where "str" = ? returning "str"'], array_column($queries, 'query'));
     }
@@ -76,7 +80,8 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->insertOrIgnoreReturning(['str' => 'XPErEjS0']);
 
-            $this->assertEquals([(object) ['id' => 1, 'str' => 'XPErEjS0']], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([(object) ['id' => 1, 'str' => 'XPErEjS0']], $result->toArray());
         });
         $this->assertEquals(['insert into "example" ("str") values (?) on conflict do nothing returning *'], array_column($queries, 'query'));
     }
@@ -88,7 +93,8 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->insertOrIgnoreReturning([]);
 
-            $this->assertEquals([], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([], $result->toArray());
         });
         $this->assertEquals([], array_column($queries, 'query'));
     }
@@ -101,7 +107,8 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->insertOrIgnoreReturning(['str' => 'Ys3bMnVE']);
 
-            $this->assertEquals([], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([], $result->toArray());
         });
         $this->assertEquals(['insert into "example" ("str") values (?) on conflict do nothing returning *'], array_column($queries, 'query'));
     }
@@ -113,7 +120,8 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->insertOrIgnoreReturning(['str' => 'HcuKu7e8'], ['str']);
 
-            $this->assertEquals([(object) ['str' => 'HcuKu7e8']], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([(object) ['str' => 'HcuKu7e8']], $result->toArray());
         });
         $this->assertEquals(['insert into "example" ("str") values (?) on conflict do nothing returning "str"'], array_column($queries, 'query'));
     }
@@ -125,7 +133,8 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->insertReturning(['str' => 'FVKHo1ne']);
 
-            $this->assertEquals([(object) ['id' => 1, 'str' => 'FVKHo1ne']], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([(object) ['id' => 1, 'str' => 'FVKHo1ne']], $result->toArray());
         });
         $this->assertEquals(['insert into "example" ("str") values (?) returning *'], array_column($queries, 'query'));
     }
@@ -137,7 +146,8 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->insertReturning([]);
 
-            $this->assertEquals([], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([], $result->toArray());
         });
         $this->assertEquals([], array_column($queries, 'query'));
     }
@@ -149,7 +159,8 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->insertReturning(['str' => 'RFqWlxkC'], ['str']);
 
-            $this->assertEquals([(object) ['str' => 'RFqWlxkC']], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([(object) ['str' => 'RFqWlxkC']], $result->toArray());
         });
         $this->assertEquals(['insert into "example" ("str") values (?) returning "str"'], array_column($queries, 'query'));
     }
@@ -161,7 +172,8 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->insertUsingReturning(['str'], "select 'AbsQM4kp'");
 
-            $this->assertEquals([(object) ['id' => 1, 'str' => 'AbsQM4kp']], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([(object) ['id' => 1, 'str' => 'AbsQM4kp']], $result->toArray());
         });
         $this->assertEquals(['insert into "example" ("str") select \'AbsQM4kp\' returning *'], array_column($queries, 'query'));
     }
@@ -173,7 +185,8 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->insertUsingReturning(['str'], 'select 1 where 0 = 1');
 
-            $this->assertEquals([], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([], $result->toArray());
         });
         $this->assertEquals(['insert into "example" ("str") select 1 where 0 = 1 returning *'], array_column($queries, 'query'));
     }
@@ -185,7 +198,8 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->insertUsingReturning(['str'], "select 'EXySSrPj'", ['str']);
 
-            $this->assertEquals([(object) ['str' => 'EXySSrPj']], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([(object) ['str' => 'EXySSrPj']], $result->toArray());
         });
         $this->assertEquals(['insert into "example" ("str") select \'EXySSrPj\' returning "str"'], array_column($queries, 'query'));
     }
@@ -203,7 +217,8 @@ class ReturningTest extends TestCase
                 ->where('example2.str', 'A6eFZk5f')
                 ->updateFromReturning(['str' => 'Im0vLxOg']);
 
-            $this->assertEquals([], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([], $result->toArray());
         });
         $this->assertEquals(['update "example" set "str" = ? from "example" as "example2" where "example2"."str" = ? and "example"."id" = "example2"."id" returning *'], array_column($queries, 'query'));
     }
@@ -222,7 +237,8 @@ class ReturningTest extends TestCase
                 ->where('example2.str', 'HlmJGJuP')
                 ->updateFromReturning(['str' => 'Jq27Xlsy'], ['example.str']);
 
-            $this->assertEquals([(object) ['str' => 'Jq27Xlsy']], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([(object) ['str' => 'Jq27Xlsy']], $result->toArray());
         });
         $this->assertEquals(['update "example" set "str" = ? from "example" as "example2" where "example2"."str" = ? and "example"."id" = "example2"."id" returning "example"."str"'], array_column($queries, 'query'));
     }
@@ -234,7 +250,8 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->updateOrInsertReturning(['str' => 'XMe8AEva']);
 
-            $this->assertEquals([(object) ['id' => 1, 'str' => 'XMe8AEva']], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([(object) ['id' => 1, 'str' => 'XMe8AEva']], $result->toArray());
         });
         $this->assertEquals([
             'select exists(select * from "example" where ("str" = ?)) as "exists"',
@@ -249,7 +266,8 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->updateOrInsertReturning(['str' => 'APck8iod'], returning: ['str']);
 
-            $this->assertEquals([(object) ['str' => 'APck8iod']], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([(object) ['str' => 'APck8iod']], $result->toArray());
         });
         $this->assertEquals([
             'select exists(select * from "example" where ("str" = ?)) as "exists"',
@@ -265,7 +283,8 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->updateOrInsertReturning(['id' => 1], ['str' => 'IxCxpIB0']);
 
-            $this->assertEquals([(object) ['id' => 1, 'str' => 'IxCxpIB0']], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([(object) ['id' => 1, 'str' => 'IxCxpIB0']], $result->toArray());
         });
         $this->assertEquals([
             'select exists(select * from "example" where ("id" = ?)) as "exists"',
@@ -281,7 +300,8 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->updateOrInsertReturning(['id' => 1]);
 
-            $this->assertEquals([], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([], $result->toArray());
         });
         $this->assertEquals([
             'select exists(select * from "example" where ("id" = ?)) as "exists"',
@@ -296,7 +316,8 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->updateOrInsertReturning(['id' => 1], ['str' => 'NoVyrAHi'], ['str']);
 
-            $this->assertEquals([(object) ['str' => 'NoVyrAHi']], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([(object) ['str' => 'NoVyrAHi']], $result->toArray());
         });
         $this->assertEquals([
             'select exists(select * from "example" where ("id" = ?)) as "exists"',
@@ -312,7 +333,8 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->updateReturning(['str' => 'A6eFZk5f']);
 
-            $this->assertEquals([(object) ['id' => 1, 'str' => 'A6eFZk5f']], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([(object) ['id' => 1, 'str' => 'A6eFZk5f']], $result->toArray());
         });
         $this->assertEquals(['update "example" set "str" = ? returning *'], array_column($queries, 'query'));
     }
@@ -325,7 +347,8 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->updateReturning(['str' => 'LUlub1Ta'], ['str']);
 
-            $this->assertEquals([(object) ['str' => 'LUlub1Ta']], $result);
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([(object) ['str' => 'LUlub1Ta']], $result->toArray());
         });
         $this->assertEquals(['update "example" set "str" = ? returning "str"'], array_column($queries, 'query'));
     }
@@ -341,10 +364,11 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->upsertReturning([['str' => 'Dm2zecf4'], ['str' => 'P0ttyoss']], ['str'], []);
 
+            $this->assertInstanceOf(Collection::class, $result);
             $this->assertEquals([
                 (object) ['id' => 1, 'str' => 'Dm2zecf4'],
                 (object) ['id' => 2, 'str' => 'P0ttyoss'],
-            ], $result);
+            ], $result->toArray());
         });
         $this->assertEquals([
             'insert into "example" ("str") values (?), (?) returning *',
@@ -362,10 +386,11 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->upsertReturning([['str' => 'KAaNsEnm'], ['str' => 'Hw2i45Ml']], ['str'], [], ['str']);
 
+            $this->assertInstanceOf(Collection::class, $result);
             $this->assertEquals([
                 (object) ['str' => 'KAaNsEnm'],
                 (object) ['str' => 'Hw2i45Ml'],
-            ], $result);
+            ], $result->toArray());
         });
         $this->assertEquals([
             'insert into "example" ("str") values (?), (?) returning "str"',
@@ -383,10 +408,11 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->upsertReturning([['str' => 'KlBTohfj'], ['str' => 'L6dgtF5Y']], ['str'], ['str']);
 
+            $this->assertInstanceOf(Collection::class, $result);
             $this->assertEquals([
                 (object) ['id' => 1, 'str' => 'KlBTohfj'],
                 (object) ['id' => 2, 'str' => 'L6dgtF5Y'],
-            ], $result);
+            ], $result->toArray());
         });
         $this->assertEquals([
             'insert into "example" ("str") values (?), (?) on conflict ("str") do update set "str" = "excluded"."str" returning *',
@@ -404,10 +430,11 @@ class ReturningTest extends TestCase
                 ->table('example')
                 ->upsertReturning([['str' => 'PXC4tW9x'], ['str' => 'R04o7y3i']], ['str'], ['str'], ['str']);
 
+            $this->assertInstanceOf(Collection::class, $result);
             $this->assertEquals([
                 (object) ['str' => 'PXC4tW9x'],
                 (object) ['str' => 'R04o7y3i'],
-            ], $result);
+            ], $result->toArray());
         });
         $this->assertEquals([
             'insert into "example" ("str") values (?), (?) on conflict ("str") do update set "str" = "excluded"."str" returning "str"',

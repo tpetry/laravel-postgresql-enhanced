@@ -618,6 +618,8 @@ dump($example); // ['id' => 1, 'text' => 'test2', 'text_uppercase' => 'TES2T']
 
 * 0.10.0 -> 0.11.0
   * The `ZeroDowntimeMigration` concern namespace moved from `Tpetry\PostgresqlEnhanced\Concerns` to `Tpetry\PostgresqlEnhanced\Schema\Concerns`.
+* 0.12.0 -> 0.12.1
+  * The return type of all returning statements was changed from `array` to `Collection` to replicate the `Query\Builder::get()` method signature.
 
 # Contribution
 

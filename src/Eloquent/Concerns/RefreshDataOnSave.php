@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tpetry\PostgresqlEnhanced\Eloquent\Concerns;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Arr;
 
 /**
  * The implementations of these functions have been taken from the Laravel core and
@@ -33,7 +32,7 @@ trait RefreshDataOnSave
         // a returning statement is executed returning all the saved and generated values. These
         // values are saved to the model which will later on in save() be synced to original.
         $returning = $query->toBase()->insertReturning($this->getAttributes());
-        $this->setRawAttributes((array) Arr::first($returning, default: []));
+        $this->setRawAttributes((array) $returning->first());
 
         // We will go ahead and set the exists property to true, so that it is set when
         // the created event is fired, just in case the developer tries to update it
@@ -75,8 +74,8 @@ trait RefreshDataOnSave
             // We're executing a standard laravel update to the database with the difference that
             // a returning statement is executed returning all the updated and generated values. These
             // values are saved to the model which will later on in save() be synced to original.
-            $returning = (array) $this->setKeysForSaveQuery($query)->toBase()->updateReturning($dirty);
-            $this->setRawAttributes((array) Arr::first($returning, default: []));
+            $returning = $this->setKeysForSaveQuery($query)->toBase()->updateReturning($dirty);
+            $this->setRawAttributes((array) $returning->first());
 
             $this->syncChanges();
 
