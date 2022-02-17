@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 * Changed returning statements to return a collection instead of array like Query\Builder::get()
 
+### Breaking Change
+* The return type of all returning statements was changed from array to Collection to replicate the Query\Builder::get() method signature.
+
 ## [0.12.0] - 2022-02-10
 ### Added
 * Materialized views
