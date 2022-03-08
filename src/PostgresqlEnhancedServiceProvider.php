@@ -7,10 +7,12 @@ namespace Tpetry\PostgresqlEnhanced;
 use Closure;
 use Doctrine\DBAL\Types\Type;
 use Illuminate\Database\Connection;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Events\MigrationsStarted;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use PDO;
+use Tpetry\PostgresqlEnhanced\Eloquent\Mixins\BuilderLazyByCursor;
 use Tpetry\PostgresqlEnhanced\Support\Helpers\ZeroDowntimeMigrationSupervisor;
 use Tpetry\PostgresqlEnhanced\Types\BitType;
 use Tpetry\PostgresqlEnhanced\Types\CidrType;
@@ -67,6 +69,8 @@ class PostgresqlEnhancedServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        EloquentBuilder::mixin(new BuilderLazyByCursor());
+
         Connection::resolverFor('pgsql', function (PDO|Closure $pdo, string $database = '', string $tablePrefix = '', array $config = []) {
             return new PostgresEnhancedConnection($pdo, $database, $tablePrefix, $config);
         });

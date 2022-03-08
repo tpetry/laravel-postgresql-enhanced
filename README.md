@@ -48,6 +48,7 @@ composer require tpetry/laravel-postgresql-enhanced
     - [Fulltext Search](#fulltext-search)
     - [Lateral Subquery Joins](#lateral-subquery-joins)
     - [Returning Data From Modified Rows](#returning-data-from-modified-rows)
+    - [Lazy By Cursor](#lazy-by-cursor)
 - [Eloquent](#eloquent)
     - [Refresh Data on Save](#refresh-data-on-save)
 
@@ -562,6 +563,35 @@ The following modification queries have been added (analog to their Laravel impl
 * `updateOrInsertReturning`
 * `updateReturning`
 * `upsertReturning`
+
+### Lazy By Cursor
+
+If you need to iterate over a large amount rows your memory may most probably not big enough.
+For these operations Laravel provides the `lazy()` method which is repeatedly using offset pagination which is getting slower and slower with increasing offsets.
+Or you can use the more efficient `lazyById` which is using the primary key to paginate the data which is much more efficient but still needs to execute the same query many times.
+
+In PostgreSQL you can do all of this a lot more efficient by using cursors:
+The query is executed once and the application can request more rows whenever it wants to so it hasn't to copy everything into memory all at once.
+
+```php
+use Illuminate\Support\Facades\DB;
+
+DB::transaction(function() {
+    User::lazyByCursor()->each(function (User $user) {
+        dump($user);
+    });
+
+    // Maximum 500 rows should be loaded into memory for every chunk.
+    User::lazyByCursor(500)->each(function (User $user) {
+        dump($user);
+    });
+
+    // Lazy loading rows also works for the query builder.
+    DB::table('users')->where('active', true)->lazyByCursor()->each(function (object $user) {
+        dump($user);
+    });
+});
+```
 
 ## Eloquent
 
