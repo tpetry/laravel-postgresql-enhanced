@@ -264,8 +264,7 @@ Columns are included in an index with the `include` method on an index created b
 
 #### Storage Parameters
 
-In some 
-s you want to specify the storage parameters of an index. If you are using gin indexes you should read the article [Debugging random slow writes in PostgreSQL](https://iamsafts.com/posts/postgres-gin-performance/) why storage parameters for a gin index are important:
+In somes you want to specify the storage parameters of an index. If you are using gin indexes you should read the article [Debugging random slow writes in PostgreSQL](https://iamsafts.com/posts/postgres-gin-performance/) why storage parameters for a gin index are important:
 
 ```php
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
