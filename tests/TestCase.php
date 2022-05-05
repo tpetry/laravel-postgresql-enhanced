@@ -7,6 +7,7 @@ namespace Tpetry\PostgresqlEnhanced\Tests;
 use Closure;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection;
 use Tpetry\PostgresqlEnhanced\PostgresqlEnhancedServiceProvider;
 
 class TestCase extends Orchestra
@@ -21,6 +22,17 @@ class TestCase extends Orchestra
     protected function connectionsToTransact(): array
     {
         return ['pgsql'];
+    }
+
+    /**
+     * Get the database connection.
+     */
+    protected function getConnection($connection = null, $table = null): PostgresEnhancedConnection
+    {
+        /** @var PostgresEnhancedConnection $connection */
+        $connection = parent::getConnection($connection, $table);
+
+        return $connection;
     }
 
     protected function getPackageProviders($app)

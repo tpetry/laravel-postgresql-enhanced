@@ -21,6 +21,17 @@ class PostgresEnhancedConnection extends PostgresConnection
     use PostgresConnectionBackport;
 
     /**
+     * Get the query grammar used by the connection.
+     */
+    public function getQueryGrammar(): QueryGrammar
+    {
+        /** @var QueryGrammar $grammar */
+        $grammar = parent::getQueryGrammar();
+
+        return $grammar;
+    }
+
+    /**
      * Get a schema builder instance for the connection.
      */
     public function getSchemaBuilder(): SchemaBuilder
@@ -30,6 +41,17 @@ class PostgresEnhancedConnection extends PostgresConnection
         }
 
         return new SchemaBuilder($this);
+    }
+
+    /**
+     * Get the schema grammar used by the connection.
+     */
+    public function getSchemaGrammar(): SchemaGrammar
+    {
+        /** @var SchemaGrammar $grammar */
+        $grammar = parent::getSchemaGrammar();
+
+        return $grammar;
     }
 
     /**
@@ -73,7 +95,10 @@ class PostgresEnhancedConnection extends PostgresConnection
      */
     protected function getDefaultSchemaGrammar(): SchemaGrammar
     {
-        return $this->withTablePrefix(new SchemaGrammar());
+        $grammar = new SchemaGrammar();
+        $grammar->setTablePrefix($this->tablePrefix);
+
+        return $grammar;
     }
 
     /**
