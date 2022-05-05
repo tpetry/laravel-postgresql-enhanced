@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Support\Helpers;
 
-use Illuminate\Database\ConnectionInterface;
+use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use RuntimeException;
@@ -20,8 +20,11 @@ class Query
             return $query;
         }
 
-        $bindings = $query->getConnection()->prepareBindings($query->getBindings());
-        $sql = preg_replace_callback('/(?<!\?)\?(?!\?)/', function () use (&$bindings, $query) {
+        /** @var Connection $connection */
+        $connection = $query->getConnection();
+
+        $bindings = $connection->prepareBindings($query->getBindings());
+        $sql = preg_replace_callback('/(?<!\?)\?(?!\?)/', function () use (&$bindings, $connection) {
             if (0 === \count($bindings)) {
                 throw new RuntimeException('Number of bindings does not match the number of placeholders');
             }
@@ -32,7 +35,7 @@ class Query
                 null === $value => 'null',
                 \is_bool($value) => $value ? 'true' : 'false',
                 is_numeric($value) => $value,
-                default => with($query->getConnection(), fn (ConnectionInterface $connection) => $connection->getPdo()->quote((string) $value)),
+                default => $connection->getPdo()->quote((string) $value),
             };
         }, $query->toSql());
 
