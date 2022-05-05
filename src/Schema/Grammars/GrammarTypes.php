@@ -15,12 +15,12 @@ trait GrammarTypes
     {
         $queries = parent::compileChange($blueprint, $command, $connection);
         foreach ($blueprint->getChangedColumns() as $changedColumn) {
-            if (null !== $changedColumn->compression) {
+            if (filled($changedColumn['compression'])) {
                 $queries[] = sprintf(
                     'ALTER TABLE %s ALTER %s SET COMPRESSION %s',
                     $this->wrapTable($blueprint->getTable()),
-                    $this->wrap($changedColumn->name),
-                    $this->wrap($changedColumn->compression),
+                    $this->wrap($changedColumn['name']),
+                    $this->wrap($changedColumn['compression']),
                 );
             }
         }
@@ -33,8 +33,8 @@ trait GrammarTypes
      */
     protected function modifyCompression(Blueprint $blueprint, Fluent $column): ?string
     {
-        if (null !== $column->compression) {
-            return " compression {$column->compression}";
+        if (filled($column['compression'])) {
+            return " compression {$column['compression']}";
         }
 
         return null;
@@ -45,7 +45,7 @@ trait GrammarTypes
      */
     protected function typeBit(Fluent $column): string
     {
-        return "bit({$column->length})";
+        return "bit({$column['length']})";
     }
 
     /**
@@ -205,9 +205,9 @@ trait GrammarTypes
      */
     protected function typeVarbit(Fluent $column): string
     {
-        return match (null === $column->length) {
+        return match (blank($column['length'])) {
             true => 'varbit',
-            false => "varbit({$column->length})",
+            false => "varbit({$column['length']})",
         };
     }
 

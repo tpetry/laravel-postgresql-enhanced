@@ -27,7 +27,7 @@ trait GrammarIndex
      */
     public function compileDropIndexIfExists(Blueprint $blueprint, Fluent $command): string
     {
-        return "drop index if exists {$this->wrap($command->index)}";
+        return "drop index if exists {$this->wrap($command['index'])}";
     }
 
     /**
@@ -51,7 +51,7 @@ trait GrammarIndex
      */
     public function compileDropUnique2(Blueprint $blueprint, Fluent $command): string
     {
-        return "drop index {$this->wrap($command->index)}";
+        return "drop index {$this->wrap($command['index'])}";
     }
 
     /**
@@ -59,7 +59,7 @@ trait GrammarIndex
      */
     public function compileDropUnique2IfExists(Blueprint $blueprint, Fluent $command): string
     {
-        return "drop index if exists {$this->wrap($command->index)}";
+        return "drop index if exists {$this->wrap($command['index'])}";
     }
 
     /**
@@ -67,7 +67,7 @@ trait GrammarIndex
      */
     public function compileDropUniqueIfExists(Blueprint $blueprint, Fluent $command): string
     {
-        return "alter table {$this->wrapTable($blueprint)} drop constraint if exists {$this->wrap($command->index)}";
+        return "alter table {$this->wrapTable($blueprint)} drop constraint if exists {$this->wrap($command['index'])}";
     }
 
     /**
@@ -75,7 +75,7 @@ trait GrammarIndex
      */
     public function compileFulltext(Blueprint $blueprint, Fluent $command): string
     {
-        $command->algorithm ??= 'gin';
+        $command['algorithm'] ??= 'gin';
 
         return $this->genericCompileCreateIndex($blueprint, $command, false);
     }
@@ -93,7 +93,9 @@ trait GrammarIndex
      */
     public function compileSpatialIndex(Blueprint $blueprint, Fluent $command): string
     {
-        return $this->genericCompileCreateIndex($blueprint, $command->algorithm('gist'), false);
+        $command['algorithm'] = 'gist';
+
+        return $this->genericCompileCreateIndex($blueprint, $command, false);
     }
 
     /**
@@ -108,21 +110,21 @@ trait GrammarIndex
     {
         // If the index is partial index using a closure a dummy query builder is provided to the closure. The query is
         // then transformed to a static query and the select part is removed to only keep the condition.
-        if ($command->where instanceof Closure) {
-            $query = ($command->where)(DB::query());
-            $command->where = trim(str_replace('select * where', '', Query::toSql($query)));
+        if ($command['where'] instanceof Closure) {
+            $query = ($command['where'])(DB::query());
+            $command['where'] = trim(str_replace('select * where', '', Query::toSql($query)));
         }
 
         // If the storage parameters for the index are provided in array form they need to be serialized to PostgreSQL's
         // string format.
-        if (\is_array($command->with)) {
+        if (\is_array($command['with'])) {
             $with = array_map(fn (mixed $value) => match ($value) {
                 true => 'on',
                 false => 'off',
                 default => (string) $value,
-            }, $command->with);
+            }, $command['with']);
             $with = array_map(fn (string $value, string $key) => "{$key} = {$value}", $with, array_keys($with));
-            $command->with = implode(', ', $with);
+            $command['with'] = implode(', ', $with);
         }
 
         // If the additions for column specifications are used the columns need to be columnized different to the
@@ -140,15 +142,15 @@ trait GrammarIndex
             $column = trim(sprintf('%s %s', $this->wrap($parts[0]), $parts[1] ?? ''));
 
             return $column;
-        }, $command->columns);
+        }, $command['columns']);
 
         // A fulltext index needs special handling to wrap the columns into to_tsvector calls.
-        if ('fulltext' === $command->name) {
+        if ('fulltext' === $command['name']) {
             $columns = array_map(function (string $column, int $index) use ($command): string {
-                $language = $command->language ?? 'english';
+                $language = $command['language'] ?? 'english';
 
-                return match (isset($command->weight[$index])) {
-                    true => "setweight(to_tsvector({$this->quoteString($language)}, {$column}), {$this->quoteString($command->weight[$index])})",
+                return match (isset($command['weight'][$index])) {
+                    true => "setweight(to_tsvector({$this->quoteString($language)}, {$column}), {$this->quoteString($command['weight'][$index])})",
                     false => "to_tsvector({$this->quoteString($language)}, {$column})",
                 };
             }, $columns, array_keys(array_values($columns)));
@@ -157,14 +159,14 @@ trait GrammarIndex
 
         $index = [
             $unique ? 'create unique index' : 'create index',
-            $this->wrap($command->index),
+            $this->wrap($command['index']),
             'on',
             $this->wrapTable($blueprint),
-            $command->algorithm ? "using {$command->algorithm}" : '',
+            $command['algorithm'] ? "using {$command['algorithm']}" : '',
             '('.implode(', ', $columns).')',
-            $command->include ? 'include ('.implode(',', $this->wrapArray(Arr::wrap($command->include))).')' : '',
-            $command->with ? "with ({$command->with})" : '',
-            $command->where ? "where {$command->where}" : '',
+            $command['include'] ? 'include ('.implode(',', $this->wrapArray(Arr::wrap($command['include']))).')' : '',
+            $command['with'] ? "with ({$command['with']})" : '',
+            $command['where'] ? "where {$command['where']}" : '',
         ];
         $sql = implode(' ', array_filter($index, fn ($part) => $part));
 
