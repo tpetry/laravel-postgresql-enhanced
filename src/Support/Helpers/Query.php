@@ -13,8 +13,6 @@ class Query
 {
     /**
      * Transforms a query to it's sql representation.
-     *
-     * @psalm-suppress UndefinedInterfaceMethod
      */
     public static function toSql(EloquentBuilder|QueryBuilder|string $query): string
     {

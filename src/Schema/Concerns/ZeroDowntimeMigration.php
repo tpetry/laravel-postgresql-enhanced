@@ -8,9 +8,6 @@ trait ZeroDowntimeMigration
 {
     /**
      * The timeout for zero downtime down migrations.
-     *
-     * @psalm-suppress RedundantCondition
-     * @psalm-suppress TypeDoesNotContainType
      */
     public function timeoutDown(): float
     {
@@ -19,9 +16,6 @@ trait ZeroDowntimeMigration
 
     /**
      * The timeout for zero downtime up migrations.
-     *
-     * @psalm-suppress RedundantCondition
-     * @psalm-suppress TypeDoesNotContainType
      */
     public function timeoutUp(): float
     {
