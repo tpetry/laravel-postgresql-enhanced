@@ -87,7 +87,8 @@ class IndexDropTest extends TestCase
     {
         // Note: Laravel ignores name of primary key, the autonamed key is used all the time
         Schema::create('test_152155', function (Blueprint $table): void {
-            $table->string('col_632746')->primary('pkey_632746');
+            $table->string('col_632746');
+            $table->primary('col_632746', 'pkey_632746');
         });
         $queries = $this->withQueryLog(function (): void {
             Schema::table('test_152155', function (Blueprint $table): void {
