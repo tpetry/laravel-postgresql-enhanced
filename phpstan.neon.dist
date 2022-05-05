@@ -6,3 +6,14 @@ parameters:
     paths:
         - src
         - tests
+    ignoreErrors:
+        # Laravel does not know of lateral joins and probably wouldn't merge a PR extending all join types with expressions
+        - message: "#^Parameter \\#1 \\$table of method Illuminate\\\\Database\\\\Query\\\\Builder\\:\\:join\\(\\) expects string, Illuminate\\\\Database\\\\Query\\\\Expression given\\.$#"
+          path: src/Query/Builder.php
+        - message: "#^Parameter \\#3 \\$table of method Illuminate\\\\Database\\\\Query\\\\Builder\\:\\:newJoinClause\\(\\) expects string, Illuminate\\\\Database\\\\Query\\\\Expression given\\.$#"
+          path: src/Query/Builder.php
+        # It's impossible to statically test whether a class uses an trait in PHPStan
+        - message: "#^Call to an undefined method Illuminate\\\\Database\\\\Migrations\\\\Migration\\:\\:timeoutDown\\(\\)\\.$#"
+          path: src/Support/Helpers/ZeroDowntimeMigrationSupervisor.php
+        - message: "#^Call to an undefined method Illuminate\\\\Database\\\\Migrations\\\\Migration\\:\\:timeoutUp\\(\\)\\.$#"
+          path: src/Support/Helpers/ZeroDowntimeMigrationSupervisor.php
