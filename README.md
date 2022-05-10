@@ -342,7 +342,7 @@ The case insensitive text type is used to store a text that will be compared cas
 $table->caseInsensitiveText(string $column);
 ```
 
-> Make sure you have created extension `Schema::createExtension('citext');`
+> You need to enable the `citext` extension with  `Schema::createExtension('citext')` or `Schema::createExtensionIfNotExists('citext')` before.
 
 #### Full Text Search
 The tsvector type is used to store a processed dictionary for full text searching.
@@ -364,6 +364,8 @@ The hstore data type is used store key/value pairs within a single PostgreSQL va
 // @see https://www.postgresql.org/docs/current/hstore.html
 $table->hstore(string $column);
 ```
+
+> You need to enable the `hstore` extension with `Schema::createExtensionIfNotExists('hstore')` or `Schema::createExtension('hstore')` before.
 
 #### Identity
 The identity data type is the new PostgreSQL standard for automatic generated values. You can even specify whether the database should be the only one generating them (`always = true`) preventing accidental overwrites.
@@ -387,12 +389,16 @@ $table->internationalStandardSerialNumber13(string $column);
 $table->universalProductNumber(string $column);
 ```
 
+> You need to enable the `isn` extension with `Schema::createExtensionIfNotExists('isn')` or `Schema::createExtension('isn')` before.
+
 #### Label Tree
 The ltree data type stores a label as its position in a tree. This provides an easy way to manage a tree without performance and complexity disadvantages compared to alternative solutions.
 ```php
 // @see https://www.postgresql.org/docs/current/ltree.html
 $table->labelTree(string $column);
 ```
+
+> You need to enable the `ltree` extension with `Schema::createExtensionIfNotExists('ltree')` or `Schema::createExtension('ltree')` before.
 
 #### Ranges
 The range data types store a range of values with optional start and end values. They can be used e.g. to describe the duration a meeting room is booked.
