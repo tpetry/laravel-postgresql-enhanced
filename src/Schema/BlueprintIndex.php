@@ -8,6 +8,9 @@ use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
 use RuntimeException;
 
+/**
+ * @method \Illuminate\Database\Schema\IndexDefinition uniqueIndex(string|string[] $columns, ?string $name = null, ?string $algorithm = null)
+ */
 trait BlueprintIndex
 {
     /**

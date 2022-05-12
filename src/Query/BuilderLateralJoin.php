@@ -12,7 +12,6 @@ trait BuilderLateralJoin
      * Add a lateral subquery cross join to the query.
      *
      * @param \Closure|\Illuminate\Database\Query\Builder|string $query
-     * @psalm-suppress ImplicitToStringCast The doctype of newJoinClause for $table is wrong
      */
     public function crossJoinSubLateral($query, string $as): static
     {
@@ -34,7 +33,6 @@ trait BuilderLateralJoin
      * @param \Closure|string $first
      * @param string|null $operator
      * @param string|null $second
-     * @psalm-suppress ImplicitToStringCast The doctype of join for $table is wrong
      */
     public function joinSubLateral($query, string $as, $first, $operator = null, $second = null, string $type = 'inner', bool $where = false): static
     {

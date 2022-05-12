@@ -87,10 +87,6 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
-        if (version_compare($this->app->version(), '8.74.0', '<')) {
-            $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
-        }
-
         Schema::create('test_517379', function (Blueprint $table): void {
             $table->string('col_383934');
             $table->string('col_996362');
@@ -105,10 +101,6 @@ class IndexOptionsTest extends TestCase
 
     public function testFulltextWeightByName(): void
     {
-        if (version_compare($this->app->version(), '8.74.0', '<')) {
-            $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
-        }
-
         if (version_compare($this->app->version(), '8.74.0', '<')) {
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }

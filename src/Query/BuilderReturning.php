@@ -183,9 +183,7 @@ trait BuilderReturning
             return collect();
         }
 
-        return collect(
-            $this->limit(1)->updateReturning($values, $returning),
-        );
+        return $this->limit(1)->updateReturning($values, $returning);
     }
 
     /**

@@ -1,0 +1,13 @@
+services:
+    - class: Tpetry\PostgresqlEnhanced\Support\Phpstan\QueryBuilderExtension
+      tags:
+        - phpstan.broker.methodsClassReflectionExtension
+    - class: Tpetry\PostgresqlEnhanced\Support\Phpstan\SchemaBlueprintExtension
+      tags:
+        - phpstan.broker.methodsClassReflectionExtension
+    - class: Tpetry\PostgresqlEnhanced\Support\Phpstan\SchemaColumnDefinitionExtension
+      tags:
+        - phpstan.broker.methodsClassReflectionExtension
+    - class: Tpetry\PostgresqlEnhanced\Support\Phpstan\SchemaIndexDefinitionExtension
+      tags:
+        - phpstan.broker.methodsClassReflectionExtension

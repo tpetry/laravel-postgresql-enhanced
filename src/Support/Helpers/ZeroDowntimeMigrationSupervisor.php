@@ -75,8 +75,6 @@ class ZeroDowntimeMigrationSupervisor
 
     /**
      * Start the supervisor for every suitable migration.
-     *
-     * @psalm-suppress UndefinedMethod
      */
     public function migrationStarted(MigrationStarted $event): void
     {
@@ -181,8 +179,6 @@ class ZeroDowntimeMigrationSupervisor
 
     /**
      * The migration timeouts need to updated for every query which will and has run.
-     *
-     * @psalm-suppress InvalidArgument
      */
     private function updateMigrationTimeouts(): void
     {

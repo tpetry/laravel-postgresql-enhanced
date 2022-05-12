@@ -1,10 +1,10 @@
-name: Psalm
+name: PHPStan
 
 on: [push, pull_request]
 
 jobs:
-  psalm:
-    name: psalm
+  phpstan:
+    name: phpstan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -12,7 +12,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.0'
+          php-version: '8.1'
           extensions: fileinfo, pdo
           coverage: none
 
@@ -25,5 +25,5 @@ jobs:
       - name: Run composer install
         run: composer install -n --prefer-dist
 
-      - name: Run psalm
-        run: ./vendor/bin/psalm --output-format=github
+      - name: Run phpstan
+        run: ./vendor/bin/phpstan analyze

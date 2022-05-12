@@ -8,23 +8,31 @@ trait ZeroDowntimeMigration
 {
     /**
      * The timeout for zero downtime down migrations.
-     *
-     * @psalm-suppress RedundantCondition
-     * @psalm-suppress TypeDoesNotContainType
      */
     public function timeoutDown(): float
     {
-        return $this->timeoutDown ?? $this->timeout ?? 1.0;
+        if (property_exists($this, 'timeoutDown')) {
+            return (float) $this->timeoutDown;
+        }
+        if (property_exists($this, 'timeout')) {
+            return (float) $this->timeout;
+        }
+
+        return 1.0;
     }
 
     /**
      * The timeout for zero downtime up migrations.
-     *
-     * @psalm-suppress RedundantCondition
-     * @psalm-suppress TypeDoesNotContainType
      */
     public function timeoutUp(): float
     {
-        return $this->timeoutUp ?? $this->timeout ?? 1.0;
+        if (property_exists($this, 'timeoutUp')) {
+            return (float) $this->timeoutUp;
+        }
+        if (property_exists($this, 'timeout')) {
+            return (float) $this->timeout;
+        }
+
+        return 1.0;
     }
 }
