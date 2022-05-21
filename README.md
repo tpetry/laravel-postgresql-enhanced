@@ -366,6 +366,7 @@ The case insensitive text type is used to store a text that will be compared cas
 $table->caseInsensitiveText(string $column);
 ```
 
+> **Note**  
 > You need to enable the `citext` extension with  `Schema::createExtension('citext')` or `Schema::createExtensionIfNotExists('citext')` before.
 
 #### Full Text Search
@@ -389,6 +390,7 @@ The hstore data type is used store key/value pairs within a single PostgreSQL va
 $table->hstore(string $column);
 ```
 
+> **Note**  
 > You need to enable the `hstore` extension with `Schema::createExtensionIfNotExists('hstore')` or `Schema::createExtension('hstore')` before.
 
 #### Identity
@@ -413,6 +415,7 @@ $table->internationalStandardSerialNumber13(string $column);
 $table->universalProductNumber(string $column);
 ```
 
+> **Note**
 > You need to enable the `isn` extension with `Schema::createExtensionIfNotExists('isn')` or `Schema::createExtension('isn')` before.
 
 #### Label Tree
@@ -422,6 +425,7 @@ The ltree data type stores a label as its position in a tree. This provides an e
 $table->labelTree(string $column);
 ```
 
+> **Note**  
 > You need to enable the `ltree` extension with `Schema::createExtensionIfNotExists('ltree')` or `Schema::createExtension('ltree')` before.
 
 #### Ranges
