@@ -30,7 +30,7 @@ trait BuilderLateralJoin
      * Add a lateral subquery join clause to the query.
      *
      * @param \Closure|\Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder|string $query
-     * @param \Closure|string $first
+     * @param \Closure|string|true $first
      * @param string|null $operator
      * @param string|null $second
      */
@@ -41,6 +41,12 @@ trait BuilderLateralJoin
         $expression = new Expression("lateral ({$query}) as {$this->grammar->wrapTable($as)}");
 
         $this->addBinding($bindings, 'join');
+        
+        if ($first === true) {
+            $first = DB::raw('true');
+            $operator = '=';
+            $second = DB::raw('true');
+        }
 
         return $this->join($expression, $first, $operator, $second, $type, $where);
     }
