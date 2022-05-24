@@ -554,7 +554,7 @@ They are used exactly like their Laravel counterparts but you are now using `cro
 A very common is case to use lateral subqueries in a for-each loop concept to e.g. get only the 3 orders with the highest price for every user: 
 ```php
 User::select('users.email', 'orders.*')
-    ->crossJoinSubLateral(
+    ->leftJoinSubLateral(
         Order::whereColumn('orders.user_id', 'users.id')
             ->orderBy('price', 'desc')
             ->limit(3),
