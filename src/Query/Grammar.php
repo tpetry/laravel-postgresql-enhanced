@@ -10,4 +10,5 @@ class Grammar extends PostgresGrammar
 {
     use GrammarFullText;
     use GrammarReturning;
+    use GrammarWhere;
 }

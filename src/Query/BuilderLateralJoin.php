@@ -49,11 +49,11 @@ trait BuilderLateralJoin
      * Add a lateral subquery left join to the query.
      *
      * @param \Closure|\Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder|string $query
-     * @param \Closure|string $first
+     * @param \Closure|string|null $first
      * @param string|null $operator
      * @param string|null $second
      */
-    public function leftJoinSubLateral($query, string $as, $first, $operator = null, $second = null): static
+    public function leftJoinSubLateral($query, string $as, $first = null, $operator = null, $second = null): static
     {
         return $this->joinSubLateral($query, $as, $first, $operator, $second, 'left');
     }
