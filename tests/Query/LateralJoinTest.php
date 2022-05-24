@@ -68,4 +68,18 @@ class LateralJoinTest extends TestCase
             array_column($queries, 'query'),
         );
     }
+
+    public function testLeftJoinSubLateralOnTrue(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()
+                ->table('example1')
+                ->leftJoinSubLateral(DB::table('example2')->whereColumn('example2.value', '<=', 'example1.max_value')->limit(3), 'example2')
+                ->get();
+        });
+        $this->assertEquals(
+            ['select * from "example1" left join lateral (select * from "example2" where "example2"."value" <= "example1"."max_value" limit 3) as "example2" on true'],
+            array_column($queries, 'query'),
+        );
+    }
 }
