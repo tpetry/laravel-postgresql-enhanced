@@ -84,4 +84,20 @@ trait RefreshDataOnSave
 
         return true;
     }
+
+    /**
+     * Perform the actual delete query on this model instance.
+     *
+     * @return void
+     */
+    protected function performDeleteOnModel()
+    {
+        $returning = $this->setKeysForSaveQuery($this->newModelQuery())->deleteReturning();
+
+        if ($returning) {
+            $this->setRawAttributes((array) $returning->first());
+        } else {
+            $this->exists = false;
+        }
+    }
 }
