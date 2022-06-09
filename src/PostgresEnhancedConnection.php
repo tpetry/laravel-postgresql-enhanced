@@ -46,9 +46,9 @@ class PostgresEnhancedConnection extends PostgresConnection
     /**
      * Get the schema grammar used by the connection.
      */
-    public function getSchemaGrammar(): SchemaGrammar
+    public function getSchemaGrammar(): ?SchemaGrammar
     {
-        /** @var SchemaGrammar $grammar */
+        /** @var SchemaGrammar|null $grammar */
         $grammar = parent::getSchemaGrammar();
 
         return $grammar;
