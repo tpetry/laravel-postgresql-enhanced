@@ -6,17 +6,26 @@ namespace Tpetry\PostgresqlEnhanced\Eloquent\Mixins;
 
 use Closure;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Tpetry\PostgresqlEnhanced\Support\Helpers\ModelHelper;
 
 /** @mixin \Illuminate\Database\Eloquent\Builder */
 class BuilderReturning
 {
     public function deleteReturning(): Closure
     {
-        return function (mixed $id = null, array $returning = ['*']): Collection {
-            /* @var \Illuminate\Database\Eloquent\Builder $this */
+        return function (array $returning = ['*']): Collection {
+            /** @var \Illuminate\Database\Eloquent\Builder $this */
+            $time = $this->getModel()->freshTimestampString();
+            $modelHelper = app(ModelHelper::class);
+
+            if ($deletedAtColumn = $modelHelper->getDeletedAtColumn($this->getModel())) {
+                return $this->updateReturning([$deletedAtColumn => $time], $returning);
+            }
+
             return $this->hydrate(
-                $this->applyScopes()->getQuery()->deleteReturning($id, $returning)->all()
-            );
+                $this->applyScopes()->getQuery()->deleteReturning(null, $returning)->all()
+            )->each(fn (Model $model) => $model->exists = false);
         };
     }
 
@@ -73,7 +82,14 @@ class BuilderReturning
     public function updateReturning(): Closure
     {
         return function (array $values, array $returning = ['*']): Collection {
-            /* @var \Illuminate\Database\Eloquent\Builder $this */
+            /** @var \Illuminate\Database\Eloquent\Builder $this */
+            $time = $this->getModel()->freshTimestampString();
+            $modelHelper = app(ModelHelper::class);
+
+            if ($updatedAtColumn = $modelHelper->getUpdatedAtColumn($this->getModel())) {
+                $values = array_merge([$updatedAtColumn => $time], $values);
+            }
+
             return $this->hydrate(
                 $this->applyScopes()->getQuery()->updateReturning($values, $returning)->all()
             );
@@ -85,7 +101,12 @@ class BuilderReturning
         return function (array $values, array|string $uniqueBy, ?array $update = null, array $returning = ['*']): Collection {
             /* @var \Illuminate\Database\Eloquent\Builder $this */
             return $this->hydrate(
-                $this->applyScopes()->getQuery()->upsertReturning($values, $uniqueBy, $update, $returning)->all()
+                $this->applyScopes()->getQuery()->upsertReturning(
+                    $this->addTimestampsToUpsertValues($values),
+                    $uniqueBy,
+                    $this->addUpdatedAtToUpsertColumns($update),
+                    $returning,
+                )->all()
             );
         };
     }
