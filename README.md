@@ -50,6 +50,7 @@ composer require tpetry/laravel-postgresql-enhanced
     - [Lateral Subquery Joins](#lateral-subquery-joins)
     - [Returning Data From Modified Rows](#returning-data-from-modified-rows)
     - [Lazy By Cursor](#lazy-by-cursor)
+    - [Where Clauses](#where-clauses)
 - [Eloquent](#eloquent)
     - [Refresh Data on Save](#refresh-data-on-save)
 
@@ -627,6 +628,12 @@ DB::transaction(function() {
         dump($user);
     });
 });
+```
+
+### Where Clauses
+
+```php
+$query->whereLike($column, $value, $caseInsensitive = false);
 ```
 
 ## Eloquent

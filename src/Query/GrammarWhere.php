@@ -9,6 +9,19 @@ use Illuminate\Database\Query\Builder;
 trait GrammarWhere
 {
     /**
+     * Compile a "like" clause.
+     *
+     * @param array{caseInsensitive: bool, column: string, value: mixed} $where
+     */
+    public function whereLike(Builder $query, $where): string
+    {
+        return match ((bool) $where['caseInsensitive']) {
+            true => "{$this->wrap($where['column'])} ilike {$this->parameter($where['value'])}",
+            false => "{$this->wrap($where['column'])} like {$this->parameter($where['value'])}",
+        };
+    }
+
+    /**
      * Compile a where clause comparing two columns.
      *
      * This method is called for the join compilation to build the join condition clause. To support left lateral joins
