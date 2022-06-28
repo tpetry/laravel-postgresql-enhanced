@@ -7,7 +7,7 @@ namespace Tpetry\PostgresqlEnhanced\Eloquent\Mixins;
 use Closure;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Tpetry\PostgresqlEnhanced\Support\Helpers\ModelHelper;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /** @mixin \Illuminate\Database\Eloquent\Builder */
 class BuilderReturning
@@ -16,13 +16,24 @@ class BuilderReturning
     {
         return function (array $returning = ['*']): Collection {
             /** @var \Illuminate\Database\Eloquent\Builder $this */
-            $time = $this->getModel()->freshTimestampString();
-            $modelHelper = app(ModelHelper::class);
+            $model = $this->getModel();
 
-            if ($deletedAtColumn = $modelHelper->getDeletedAtColumn($this->getModel())) {
-                return $this->updateReturning([$deletedAtColumn => $time], $returning);
+            $usesSoftDeletesTrait = \in_array(SoftDeletes::class, trait_uses_recursive($model::class));
+            $hasDeletedAtColumn = method_exists($model, 'getDeletedAtColumn') && filled($model->getDeletedAtColumn());
+            if ($usesSoftDeletesTrait && $hasDeletedAtColumn) {
+                return $this->updateReturning([
+                    $model->getDeletedAtColumn() => $model->freshTimestampString(),
+                ], $returning);
             }
 
+            return $this->forceDeleteReturning($returning);
+        };
+    }
+
+    public function forceDeleteReturning(): Closure
+    {
+        return function (array $returning = ['*']): Collection {
+            /* @var \Illuminate\Database\Eloquent\Builder $this */
             return $this->hydrate(
                 $this->applyScopes()->getQuery()->deleteReturning(null, $returning)->all()
             )->each(fn (Model $model) => $model->exists = false);
@@ -82,16 +93,12 @@ class BuilderReturning
     public function updateReturning(): Closure
     {
         return function (array $values, array $returning = ['*']): Collection {
-            /** @var \Illuminate\Database\Eloquent\Builder $this */
-            $time = $this->getModel()->freshTimestampString();
-            $modelHelper = app(ModelHelper::class);
-
-            if ($updatedAtColumn = $modelHelper->getUpdatedAtColumn($this->getModel())) {
-                $values = array_merge([$updatedAtColumn => $time], $values);
-            }
-
+            /* @var \Illuminate\Database\Eloquent\Builder $this */
             return $this->hydrate(
-                $this->applyScopes()->getQuery()->updateReturning($values, $returning)->all()
+                $this->applyScopes()->getQuery()->updateReturning(
+                    $this->addUpdatedAtColumn($values),
+                    $returning
+                )->all()
             );
         };
     }

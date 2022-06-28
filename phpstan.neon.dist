@@ -17,6 +17,8 @@ parameters:
           path: src/Eloquent/Mixins/BuilderReturning.php
         - message: "#^Call to protected method addUpdatedAtToUpsertColumns\\(\\) of class Illuminate\\\\Database\\\\Eloquent\\\\Builder<Illuminate\\\\Database\\\\Eloquent\\\\Model>\\.$#"
           path: src/Eloquent/Mixins/BuilderReturning.php
+        - message: "#^Call to protected method addUpdatedAtColumn\\(\\) of class Illuminate\\\\Database\\\\Eloquent\\\\Builder<Illuminate\\\\Database\\\\Eloquent\\\\Model>\\.$#"
+          path: src/Eloquent/Mixins/BuilderReturning.php
         # It's impossible to statically test whether a class uses an trait in PHPStan
         - message: "#^Call to an undefined method Illuminate\\\\Database\\\\Migrations\\\\Migration\\:\\:timeoutDown\\(\\)\\.$#"
           path: src/Support/Helpers/ZeroDowntimeMigrationSupervisor.php

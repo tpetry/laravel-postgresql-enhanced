@@ -58,7 +58,7 @@ class BuilderReturningTest extends TestCase
             $this->assertEquals([['id' => 1, 'str' => 'HVpFcyZc', 'created_at' => null, 'updated_at' => now()->getTimestamp(), 'deleted_at' => now()->getTimestamp()]], $result->toArray());
             $this->assertInstanceOf(ExampleTimestamps::class, $result->first());
         });
-        $this->assertEquals(['update "example" set "updated_at" = ?, "deleted_at" = ? where "str" = ? and "example"."deleted_at" is null returning *'], array_column($queries, 'query'));
+        $this->assertEquals(['update "example" set "deleted_at" = ?, "updated_at" = ? where "str" = ? and "example"."deleted_at" is null returning *'], array_column($queries, 'query'));
     }
 
     public function testDeleteReturningEmpty(): void
@@ -86,7 +86,7 @@ class BuilderReturningTest extends TestCase
             $this->assertInstanceOf(Collection::class, $result);
             $this->assertEquals([], $result->toArray());
         });
-        $this->assertEquals(['update "example" set "updated_at" = ?, "deleted_at" = ? where "str" = ? and "example"."deleted_at" is null returning *'], array_column($queries, 'query'));
+        $this->assertEquals(['update "example" set "deleted_at" = ?, "updated_at" = ? where "str" = ? and "example"."deleted_at" is null returning *'], array_column($queries, 'query'));
     }
 
     public function testDeleteReturningSelection(): void
@@ -118,7 +118,54 @@ class BuilderReturningTest extends TestCase
             $this->assertEquals([['str' => 'Uemf1STe']], $result->toArray());
             $this->assertInstanceOf(ExampleTimestamps::class, $result->first());
         });
-        $this->assertEquals(['update "example" set "updated_at" = ?, "deleted_at" = ? where "str" = ? and "example"."deleted_at" is null returning "str"'], array_column($queries, 'query'));
+        $this->assertEquals(['update "example" set "deleted_at" = ?, "updated_at" = ? where "str" = ? and "example"."deleted_at" is null returning "str"'], array_column($queries, 'query'));
+    }
+
+    public function testForceDeleteReturningAll(): void
+    {
+        with(new Example())->newQuery()->insert(['str' => 'SMxNkHUc']);
+        $queries = $this->withQueryLog(function (): void {
+            $result = with(new Example())
+                ->newQuery()
+                ->where('str', 'SMxNkHUc')
+                ->forceDeleteReturning();
+
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([['id' => 1, 'str' => 'SMxNkHUc', 'created_at' => null, 'updated_at' => null, 'deleted_at' => null]], $result->toArray());
+            $this->assertInstanceOf(Example::class, $result->first());
+            $this->assertFalse($result->first()->exists);
+        });
+        $this->assertEquals(['delete from "example" where "str" = ? returning *'], array_column($queries, 'query'));
+    }
+
+    public function testForceDeleteReturningEmpty(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            $result = with(new Example())
+                ->newQuery()
+                ->where('str', 'PrLPFJ4s')
+                ->forceDeleteReturning();
+
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([], $result->toArray());
+        });
+        $this->assertEquals(['delete from "example" where "str" = ? returning *'], array_column($queries, 'query'));
+    }
+
+    public function testForceDeleteReturningSelection(): void
+    {
+        with(new Example())->newQuery()->insert(['str' => 'XT4wRUzX']);
+        $queries = $this->withQueryLog(function (): void {
+            $result = with(new Example())
+                ->newQuery()
+                ->where('str', 'XT4wRUzX')
+                ->forceDeleteReturning(returning: ['str']);
+
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([['str' => 'XT4wRUzX']], $result->toArray());
+            $this->assertFalse($result->first()->exists);
+        });
+        $this->assertEquals(['delete from "example" where "str" = ? returning "str"'], array_column($queries, 'query'));
     }
 
     public function testInsertOrIgnoreReturningAll(): void
@@ -411,7 +458,7 @@ class BuilderReturningTest extends TestCase
             $this->assertEquals([['id' => 1, 'str' => 'EOUuTNYm', 'created_at' => null, 'updated_at' => now()->getTimestamp(), 'deleted_at' => null]], $result->toArray());
             $this->assertInstanceOf(ExampleTimestamps::class, $result->first());
         });
-        $this->assertEquals(['update "example" set "updated_at" = ?, "str" = ? where "example"."deleted_at" is null returning *'], array_column($queries, 'query'));
+        $this->assertEquals(['update "example" set "str" = ?, "updated_at" = ? where "example"."deleted_at" is null returning *'], array_column($queries, 'query'));
     }
 
     public function testUpdateReturningSelection(): void
@@ -441,7 +488,7 @@ class BuilderReturningTest extends TestCase
             $this->assertEquals([['str' => 'BBmUFsI1']], $result->toArray());
             $this->assertInstanceOf(ExampleTimestamps::class, $result->first());
         });
-        $this->assertEquals(['update "example" set "updated_at" = ?, "str" = ? where "example"."deleted_at" is null returning "str"'], array_column($queries, 'query'));
+        $this->assertEquals(['update "example" set "str" = ?, "updated_at" = ? where "example"."deleted_at" is null returning "str"'], array_column($queries, 'query'));
     }
 
     public function testUpsertReturningInsertAll(): void
