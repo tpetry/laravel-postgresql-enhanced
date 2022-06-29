@@ -634,6 +634,41 @@ class BuilderReturningTest extends TestCase
         });
         $this->assertEquals(['insert into "example" ("created_at", "str", "updated_at") values (?, ?, ?) on conflict ("str") do update set "str" = "excluded"."str", "updated_at" = "excluded"."updated_at" returning "str"'], array_column($queries, 'query'));
     }
+
+    public function testUpsertReturningWithEmptyValuesAndNullUpdates(): void
+    {
+        if (version_compare($this->app->version(), '8.10.0', '<')) {
+            $this->markTestSkipped('Upsert() has been added in a later Laravel version.');
+        }
+
+        $queries = $this->withQueryLog(function (): void {
+            $result = with(new Example())
+                ->newQuery()
+                ->upsertReturning([], ['str']);
+
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([], $result->toArray());
+        });
+        $this->assertEquals([], array_column($queries, 'query'));
+    }
+
+    public function testUpsertReturningWithNullUpdates(): void
+    {
+        if (version_compare($this->app->version(), '8.10.0', '<')) {
+            $this->markTestSkipped('Upsert() has been added in a later Laravel version.');
+        }
+
+        $queries = $this->withQueryLog(function (): void {
+            $result = with(new Example())
+                ->newQuery()
+                ->upsertReturning([['str' => 'PeKB2qK5']], ['str']);
+
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([['id' => 1, 'str' => 'PeKB2qK5', 'created_at' => null, 'updated_at' => null, 'deleted_at' => null]], $result->toArray());
+            $this->assertInstanceOf(Example::class, $result->first());
+        });
+        $this->assertEquals(['insert into "example" ("str") values (?) on conflict ("str") do update set "str" = "excluded"."str" returning *'], array_column($queries, 'query'));
+    }
 }
 
 class Example extends Model

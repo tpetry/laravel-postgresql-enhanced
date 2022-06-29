@@ -107,6 +107,14 @@ class BuilderReturning
     {
         return function (array $values, array|string $uniqueBy, ?array $update = null, array $returning = ['*']): Collection {
             /* @var \Illuminate\Database\Eloquent\Builder $this */
+            if (0 === \count($values)) {
+                return new Collection();
+            }
+
+            if (null === $update) {
+                $update = array_keys(reset($values));
+            }
+
             return $this->hydrate(
                 $this->applyScopes()->getQuery()->upsertReturning(
                     $this->addTimestampsToUpsertValues($values),
