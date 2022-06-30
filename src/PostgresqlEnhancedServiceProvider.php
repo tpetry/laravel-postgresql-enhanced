@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use PDO;
 use Tpetry\PostgresqlEnhanced\Eloquent\Mixins\BuilderLazyByCursor;
+use Tpetry\PostgresqlEnhanced\Eloquent\Mixins\BuilderReturning;
 use Tpetry\PostgresqlEnhanced\Support\Helpers\ZeroDowntimeMigrationSupervisor;
 use Tpetry\PostgresqlEnhanced\Types\BitType;
 use Tpetry\PostgresqlEnhanced\Types\CidrType;
@@ -70,6 +71,7 @@ class PostgresqlEnhancedServiceProvider extends ServiceProvider
     public function register(): void
     {
         EloquentBuilder::mixin(new BuilderLazyByCursor());
+        EloquentBuilder::mixin(new BuilderReturning());
 
         Connection::resolverFor('pgsql', function (PDO|Closure $pdo, string $database = '', string $tablePrefix = '', array $config = []) {
             return new PostgresEnhancedConnection($pdo, $database, $tablePrefix, $config);
