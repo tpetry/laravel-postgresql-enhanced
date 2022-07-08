@@ -67,11 +67,12 @@ trait BuilderReturning
 
         $sqlInsert = $this->getGrammar()->compileInsertOrIgnore($this, $values);
         $sqlReturning = $this->getGrammar()->compileReturning($this, $returning);
+        $bindings = [...$this->bindings['expressions'], ...Arr::flatten($values, 1)];
 
         return collect(
             $this->getConnection()->returningStatement(
                 "{$sqlInsert} {$sqlReturning}",
-                $this->cleanBindings(Arr::flatten($values, 1)),
+                $this->cleanBindings($bindings),
             ),
         );
     }
@@ -109,6 +110,7 @@ trait BuilderReturning
 
         $sqlInsert = $this->getGrammar()->compileInsert($this, $values);
         $sqlReturning = $this->getGrammar()->compileReturning($this, $returning);
+        $bindings = [...$this->bindings['expressions'], ...Arr::flatten($values, 1)];
 
         // Finally, we will run this query against the database connection and return
         // the results. We will need to also flatten these bindings before running
@@ -116,7 +118,7 @@ trait BuilderReturning
         return collect(
             $this->getConnection()->returningStatement(
                 "{$sqlInsert} {$sqlReturning}",
-                $this->cleanBindings(Arr::flatten($values, 1)),
+                $this->cleanBindings($bindings),
             ),
         );
     }
@@ -138,6 +140,7 @@ trait BuilderReturning
 
         $sqlInsert = $this->getGrammar()->compileInsertUsing($this, $columns, $sql);
         $sqlReturning = $this->getGrammar()->compileReturning($this, $returning);
+        $bindings = [...$this->bindings['expressions'], ...$bindings];
 
         return collect(
             $this->getConnection()->returningStatement(
@@ -158,14 +161,16 @@ trait BuilderReturning
             $this->applyBeforeQueryCallbacks();
         }
 
-        $sqlUpdate = $this->getGrammar()->compileUpdateFrom($this, $values);
-        $sqlReturning = $this->getGrammar()->compileReturning($this, $returning);
+        return $this->getConnection()->runWithAdditionalBindings(function () use ($returning, $values) {
+            $sqlUpdate = $this->getGrammar()->compileUpdateFrom($this, $values);
+            $sqlReturning = $this->getGrammar()->compileReturning($this, $returning);
 
-        return collect(
-            $this->getConnection()->returningStatement("{$sqlUpdate} {$sqlReturning}", $this->cleanBindings(
-                $this->getGrammar()->prepareBindingsForUpdateFrom($this->bindings, $values)
-            )),
-        );
+            return collect(
+                $this->getConnection()->returningStatement("{$sqlUpdate} {$sqlReturning}", $this->cleanBindings(
+                    $this->getGrammar()->prepareBindingsForUpdateFrom(['expressions' => []] + $this->bindings, $values)
+                )),
+            );
+        }, prepend: $this->bindings['expressions']);
     }
 
     /**
@@ -197,14 +202,16 @@ trait BuilderReturning
             $this->applyBeforeQueryCallbacks();
         }
 
-        $sqlUpdate = $this->getGrammar()->compileUpdate($this, $values);
-        $sqlReturning = $this->getGrammar()->compileReturning($this, $returning);
+        return $this->getConnection()->runWithAdditionalBindings(function () use ($returning, $values) {
+            $sqlUpdate = $this->getGrammar()->compileUpdate($this, $values);
+            $sqlReturning = $this->getGrammar()->compileReturning($this, $returning);
 
-        return collect(
-            $this->getConnection()->returningStatement("{$sqlUpdate} {$sqlReturning}", $this->cleanBindings(
-                $this->getGrammar()->prepareBindingsForUpdate($this->bindings, $values),
-            )),
-        );
+            return collect(
+                $this->getConnection()->returningStatement("{$sqlUpdate} {$sqlReturning}", $this->cleanBindings(
+                    $this->getGrammar()->prepareBindingsForUpdate(['expressions' => []] + $this->bindings, $values),
+                )),
+            );
+        }, prepend: $this->bindings['expressions']);
     }
 
     /**
@@ -247,6 +254,7 @@ trait BuilderReturning
 
         $sqlUpsert = $this->getGrammar()->compileUpsert($this, $values, (array) $uniqueBy, $update);
         $sqlReturning = $this->getGrammar()->compileReturning($this, $returning);
+        $bindings = [...$this->bindings['expressions'], ...$bindings];
 
         return collect(
             $this->getConnection()->returningStatement(

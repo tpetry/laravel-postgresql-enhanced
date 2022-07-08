@@ -49,6 +49,7 @@ composer require tpetry/laravel-postgresql-enhanced
     - [Fulltext Search](#fulltext-search)
     - [Lateral Subquery Joins](#lateral-subquery-joins)
     - [Returning Data From Modified Rows](#returning-data-from-modified-rows)
+    - [Common Table Expressions (CTE)](#common-table-expressions-cte)
     - [Lazy By Cursor](#lazy-by-cursor)
     - [Where Clauses](#where-clauses)
 - [Eloquent](#eloquent)
@@ -600,6 +601,35 @@ The following modification queries have been added (analog to their Laravel impl
 * `updateOrInsertReturning`
 * `updateReturning`
 * `upsertReturning`
+
+### Common Table Expressions (CTE)
+
+You can use Common Table Expressions or CTEs for all select, insert, update and delete methods to write auxiliary statements for use in a larger query.
+The `withExpression` method needs to be passed an alias for the CTE, a query string or object and an optional array of options for more control on the CTE.
+
+```php
+$query->withExpression($as, $query, $options = []);
+
+$lastLoginQuery = Login::query()
+    ->selectRaw('user_id, MAX(created_at) AS last_login_at')
+    ->groupBy('user_id');
+User::query()
+    ->withExpression('users_lastlogin', $lastLoginQuery)
+    ->join('users_lastlogin', 'users_lastlogin.user_id', 'users.id')
+    ->where('users_lastlogin.created_at', '>=', now()->subHour());
+```
+
+In addition to the basic form of a Common Table Expression these optional settings are available to support all PostgreSQL options:
+
+| Option       | Type     | Description                                                                                                                                                                                              |
+|--------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| materialized | `bool`   | Whether the CTE should be (not) materialized. This overrides PostgreSQL's automatic materialization decision. [(Documentation)](https://www.postgresql.org/docs/current/queries-with.html#id-1.5.6.12.7) |
+| recursive    | `bool`   | Whether to use a recursive CTE. [(Documentation)](https://www.postgresql.org/docs/current/queries-with.html#QUERIES-WITH-RECURSIVE)                                                                      |
+| cycle        | `string` | Specify the automatic cycle detection settings for recursive queries. [(Documentation)](https://www.postgresql.org/docs/current/queries-with.html#QUERIES-WITH-CYCLE)                                    |
+| search       | `string` | Specify the tree search mode setting for recursive queries. [(Documentation)](https://www.postgresql.org/docs/current/queries-with.html#QUERIES-WITH-SEARCH)                                             |
+
+> **Note**  
+> When you are using recursive CTEs **always** use the `cycle` option to prevent infinite running queries because of loops in the data.
 
 ### Lazy By Cursor
 

@@ -21,6 +21,13 @@ class PostgresEnhancedConnection extends PostgresConnection
     use PostgresConnectionBackport;
 
     /**
+     * Additional bindings which will be used in run().
+     *
+     * @var ?array{append: array<int, mixed>, prepend: array<int, mixed>}
+     */
+    private ?array $additionalBindings = null;
+
+    /**
      * Get the query grammar used by the connection.
      */
     public function getQueryGrammar(): QueryGrammar
@@ -80,6 +87,20 @@ class PostgresEnhancedConnection extends PostgresConnection
 
             return $statement->fetchAll();
         });
+    }
+
+    /**
+     * Run a query with additional bindings (used for CTEs).
+     */
+    public function runWithAdditionalBindings(callable $callback, array $prepend = [], array $append = []): mixed
+    {
+        try {
+            $this->additionalBindings = compact('prepend', 'append');
+
+            return $callback();
+        } finally {
+            $this->additionalBindings = null;
+        }
     }
 
     /**
@@ -150,5 +171,22 @@ class PostgresEnhancedConnection extends PostgresConnection
 
             throw $handleException;
         }
+    }
+
+    /**
+     * Run a SQL statement and log its execution context.
+     *
+     * @param string $query
+     * @param array<int, mixed> $bindings
+     */
+    protected function run($query, $bindings, Closure $callback): mixed
+    {
+        $bindings = [
+            ...$this->additionalBindings['prepend'] ?? [],
+            ...$bindings,
+            ...$this->additionalBindings['append'] ?? [],
+        ];
+
+        return parent::run($query, $bindings, $callback);
     }
 }
