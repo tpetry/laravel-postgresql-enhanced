@@ -9,6 +9,14 @@ use Illuminate\Database\Schema\ColumnDefinition;
 trait BlueprintTypes
 {
     /**
+     * Create a new big integer multi-range column on the table.
+     */
+    public function bigIntegerMultiRange(string $column): ColumnDefinition
+    {
+        return $this->addColumn('int8multirange', $column);
+    }
+
+    /**
      * Create a new big integer range column on the table.
      */
     public function bigIntegerRange(string $column): ColumnDefinition
@@ -33,11 +41,27 @@ trait BlueprintTypes
     }
 
     /**
+     * Create a new date multi-range column on the table.
+     */
+    public function dateMultiRange(string $column): ColumnDefinition
+    {
+        return $this->addColumn('datemultirange', $column);
+    }
+
+    /**
      * Create a new date range column on the table.
      */
     public function dateRange(string $column): ColumnDefinition
     {
         return $this->addColumn('daterange', $column);
+    }
+
+    /**
+     * Create a new decimal multi-range column on the table.
+     */
+    public function decimalMultiRange(string $column): ColumnDefinition
+    {
+        return $this->addColumn('nummultirange', $column);
     }
 
     /**
@@ -70,6 +94,14 @@ trait BlueprintTypes
     public function identity(string $column = 'id', bool $always = false): ColumnDefinition
     {
         return parent::bigInteger($column)->generatedAs()->always($always);
+    }
+
+    /**
+     * Create a new integer multi-range column on the table.
+     */
+    public function integerMultiRange(string $column): ColumnDefinition
+    {
+        return $this->addColumn('int4multirange', $column);
     }
 
     /**
@@ -145,11 +177,27 @@ trait BlueprintTypes
     }
 
     /**
+     * Create a new timestamp multi-range column on the table.
+     */
+    public function timestampMultiRange(string $column): ColumnDefinition
+    {
+        return $this->addColumn('tsmultirange', $column);
+    }
+
+    /**
      * Create a new timestamp range column on the table.
      */
     public function timestampRange(string $column): ColumnDefinition
     {
         return $this->addColumn('tsrange', $column);
+    }
+
+    /**
+     * Create a new timestamp (with time zone) multi-range column on the table.
+     */
+    public function timestampTzMultiRange(string $column): ColumnDefinition
+    {
+        return $this->addColumn('tstzmultirange', $column);
     }
 
     /**

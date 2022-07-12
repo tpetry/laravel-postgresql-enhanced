@@ -435,11 +435,17 @@ The range data types store a range of values with optional start and end values.
 ```php
 // @see https://www.postgresql.org/docs/current/rangetypes.html
 $table->bigIntegerRange(string $column);
+$table->bigIntegerMultiRange(string $column);
 $table->dateRange(string $column);
+$table->dateMultiRange(string $column);
 $table->decimalRange(string $column);
+$table->decimalMultiRange(string $column);
 $table->integerRange(string $column);
+$table->integerMultiRange(string $column);
 $table->timestampRange(string $column);
+$table->timestampMultiRange(string $column);
 $table->timestampTzRange(string $column);
+$table->timestampTzMultiRange(string $column);
 ```
 
 #### XML

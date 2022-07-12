@@ -65,6 +65,14 @@ trait GrammarTypes
     }
 
     /**
+     * Create the column definition for a date multi-range type.
+     */
+    protected function typeDatemultirange(Fluent $column): string
+    {
+        return 'datemultirange';
+    }
+
+    /**
      * Create the column definition for a date range type.
      */
     protected function typeDaterange(Fluent $column): string
@@ -89,11 +97,27 @@ trait GrammarTypes
     }
 
     /**
+     * Create the column definition for an integer multi-range type.
+     */
+    protected function typeInt4multirange(Fluent $column): string
+    {
+        return 'int4multirange';
+    }
+
+    /**
      * Create the column definition for an integer range type.
      */
     protected function typeInt4range(Fluent $column): string
     {
         return 'int4range';
+    }
+
+    /**
+     * Create the column definition for a big integer multi-range type.
+     */
+    protected function typeInt8multirange(Fluent $column): string
+    {
+        return 'int8multirange';
     }
 
     /**
@@ -161,6 +185,14 @@ trait GrammarTypes
     }
 
     /**
+     * Create the column definition for a decimal multi-range type.
+     */
+    protected function typeNummultirange(Fluent $column): string
+    {
+        return 'nummultirange';
+    }
+
+    /**
      * Create the column definition for a decimal range type.
      */
     protected function typeNumrange(Fluent $column): string
@@ -169,11 +201,27 @@ trait GrammarTypes
     }
 
     /**
+     * Create the column definition for a timestamp multi-range type.
+     */
+    protected function typeTsmultirange(Fluent $column): string
+    {
+        return 'tsmultirange';
+    }
+
+    /**
      * Create the column definition for a timestamp range type.
      */
     protected function typeTsrange(Fluent $column): string
     {
         return 'tsrange';
+    }
+
+    /**
+     * Create the column definition for a timestamp (with time zone) multi-range type.
+     */
+    protected function typeTstzmultirange(Fluent $column): string
+    {
+        return 'tstzmultirange';
     }
 
     /**
