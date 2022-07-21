@@ -12,6 +12,7 @@ use PHPStan\Reflection\MethodsClassReflectionExtension;
 use PHPStan\Type\Generic\TemplateTypeMap;
 use PHPStan\Type\ObjectType;
 use PHPStan\Type\StringType;
+use PHPStan\Type\IntegerType;
 use Tpetry\PostgresqlEnhanced\Support\Phpstan\Values\ReflectedMethod;
 use Tpetry\PostgresqlEnhanced\Support\Phpstan\Values\ReflectedParameter;
 
@@ -28,7 +29,7 @@ class SchemaColumnDefinitionExtension implements MethodsClassReflectionExtension
             return false;
         }
 
-        return \in_array($methodName, ['compression']);
+        return \in_array($methodName, ['compression', 'array']);
     }
 
     private function getCompressionMethod(ClassReflection $classReflection): MethodReflection
@@ -39,6 +40,20 @@ class SchemaColumnDefinitionExtension implements MethodsClassReflectionExtension
         return new ReflectedMethod(
             classReflection: $classReflection,
             name: 'compression',
+            variants: [
+                new FunctionVariant(TemplateTypeMap::createEmpty(), null, $parameters, false, $returnType),
+            ],
+        );
+    }
+
+    private function getArrayMethod(ClassReflection $classReflection): MethodReflection
+    {
+        $parameters = [new ReflectedParameter('depth', new IntegerType())];
+        $returnType = new ObjectType(ColumnDefinition::class);
+
+        return new ReflectedMethod(
+            classReflection: $classReflection,
+            name: 'array',
             variants: [
                 new FunctionVariant(TemplateTypeMap::createEmpty(), null, $parameters, false, $returnType),
             ],

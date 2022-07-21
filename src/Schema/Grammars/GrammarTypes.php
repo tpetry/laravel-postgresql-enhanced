@@ -23,9 +23,32 @@ trait GrammarTypes
                     $this->wrap($changedColumn['compression']),
                 );
             }
+
+            if (filled($changedColumn['array'])) {
+                $type = $this->getType($changedColumn);
+
+                $queries[] = sprintf(
+                    'ALTER TABLE %s ALTER %s TYPE %s[]',
+                    $this->wrapTable($blueprint->getTable()),
+                    $this->wrap($changedColumn['name']),
+                    $type,
+                );
+            }
         }
 
         return $queries;
+    }
+
+    /**
+     * Get the SQL for a default column modifier.
+     */
+    protected function modifyArray(Blueprint $blueprint, Fluent $column): ?string
+    {
+        if (filled($column['array'])) {
+            return '[]';
+        }
+
+        return null;
     }
 
     /**
