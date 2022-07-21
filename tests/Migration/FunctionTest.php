@@ -23,12 +23,12 @@ class FunctionTest extends TestCase
                 'p_second' => 'int',
             ], 'int', 'SELECT p_first + p_second', [
                 'language' => 'sql',
-                'parallel safe'
+                'parallel' => 'safe'
             ]);
         });
         $this->assertEquals([
-            'CREATE FUNCTION calculate_plpgsql_sum(p_first int, p_second int) RETURNS int AS $$ BEGIN return p_first + p_second; END $$ language plpgsql',
-            'CREATE FUNCTION calculate_sql_sum(p_first int, p_second int) RETURNS int AS $$ SELECT p_first + p_second $$ language sql parallel safe'
+            'CREATE FUNCTION calculate_plpgsql_sum(p_first int, p_second int) RETURNS int AS $$ BEGIN return p_first + p_second; END $$ LANGUAGE plpgsql',
+            'CREATE FUNCTION calculate_sql_sum(p_first int, p_second int) RETURNS int AS $$ SELECT p_first + p_second $$ LANGUAGE sql PARALLEL safe'
         ], array_column($queries, 'query'));
     }
 
@@ -45,12 +45,12 @@ class FunctionTest extends TestCase
                 'p_second' => 'int',
             ], 'int', 'SELECT p_first + p_second', [
                 'language' => 'sql',
-                'parallel safe'
+                'parallel' => 'safe'
             ]);
         });
         $this->assertEquals([
-            'CREATE OR REPLACE FUNCTION calculate_plpgsql_sum(p_first int, p_second int) RETURNS int AS $$ BEGIN return p_first + p_second; END $$ language plpgsql',
-            'CREATE OR REPLACE FUNCTION calculate_sql_sum(p_first int, p_second int) RETURNS int AS $$ SELECT p_first + p_second $$ language sql parallel safe'
+            'CREATE OR REPLACE FUNCTION calculate_plpgsql_sum(p_first int, p_second int) RETURNS int AS $$ BEGIN return p_first + p_second; END $$ LANGUAGE plpgsql',
+            'CREATE OR REPLACE FUNCTION calculate_sql_sum(p_first int, p_second int) RETURNS int AS $$ SELECT p_first + p_second $$ LANGUAGE sql PARALLEL safe'
         ], array_column($queries, 'query'));
     }
 

@@ -58,7 +58,7 @@ trait BuilderExtension
         ];
         $mergedModifiers = array_merge($defaultModifiers, $modifiers);
         array_walk($mergedModifiers, function ($value, $key) use(&$preparedModifiers) {
-            array_push($preparedModifiers, is_int($key) ? $value : "$key $value");
+            array_push($preparedModifiers, sprintf('%1$s %2$s', strtoupper($key), $value));
         });
         $compiledModifiers = implode(' ', $preparedModifiers);
 
