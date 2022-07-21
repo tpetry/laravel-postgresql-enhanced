@@ -26,14 +26,12 @@ trait GrammarTypes
 
             if (filled($changedColumn['array'])) {
                 $type = $this->getType($changedColumn);
-                $depth = $changedColumn['array'] === true ? 1 : intval($changedColumn['array']);
 
                 $queries[] = sprintf(
-                    'ALTER TABLE %s ALTER %s TYPE %s%s',
+                    'ALTER TABLE %s ALTER %s TYPE %s[]',
                     $this->wrapTable($blueprint->getTable()),
                     $this->wrap($changedColumn['name']),
                     $type,
-                    str_repeat("[]", $depth),
                 );
             }
         }
@@ -47,9 +45,7 @@ trait GrammarTypes
     protected function modifyArray(Blueprint $blueprint, Fluent $column): ?string
     {
         if (filled($column['array'])) {
-            $depth = $column['array'] === true ? 1 : intval($column['array']);
-
-            return str_repeat("[]", $depth);
+            return '[]';
         }
 
         return null;

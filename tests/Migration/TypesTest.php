@@ -67,11 +67,11 @@ class TypesTest extends TestCase
     public function testArrayModifierCompressionIsSupported(): void
     {
         $queries = $this->runMigrations(
-            fnCreate: fn (Blueprint $table) => $table->string('col')->array(2),
+            fnCreate: fn (Blueprint $table) => $table->string('col')->array(),
             fnChange: fn (Blueprint $table) => $table->string('col')->array()->change(),
         );
 
-        $this->assertEquals('create table "test" ("col" varchar(255)[][] not null)', $queries[0]['query'] ?? null);
+        $this->assertEquals('create table "test" ("col" varchar(255)[] not null)', $queries[0]['query'] ?? null);
         $this->assertEquals('ALTER TABLE "test" ALTER "col" TYPE varchar(255)[]', $queries[1]['query'] ?? null);
     }
 

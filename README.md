@@ -344,12 +344,11 @@ Schema::table('book', function (Blueprint $table) {
 
 ### Column Options
 #### Arrays
-PostgreSQL allows columns of a table to be defined as variable-length multidimensional arrays. You can pass the depth of the array via the first parameter.
+PostgreSQL allows columns of a table to be defined as variable-length multidimensional arrays.
 
 ```php
 // @see https://www.postgresql.org/docs/current/arrays.html
 $table->string('col')->array();
-$table->string('col')->array(2);
 ```
 
 #### Compression
