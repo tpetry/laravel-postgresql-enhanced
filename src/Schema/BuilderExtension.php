@@ -41,4 +41,54 @@ trait BuilderExtension
         $names = $this->getConnection()->getSchemaGrammar()->namize($name);
         $this->getConnection()->statement("drop extension if exists {$names}");
     }
+
+    /**
+     * Create function.
+     */
+    public function createFunction(string $name, string|array $parameters, string $return, string $body, array $modifiers = [], bool $replace = false): void
+    {
+        $parameters = is_string($parameters) ? $parameters : implode(', ', array_map(function (string $key, string $value) {
+          return "$key $value";
+        }, array_keys($parameters), array_values($parameters)));
+
+        // Compile modifiers
+        $preparedModifiers = [];
+        $defaultModifiers = [
+            'language' => 'plpgsql',
+        ];
+        $mergedModifiers = array_merge($defaultModifiers, $modifiers);
+        array_walk($mergedModifiers, function ($value, $key) use(&$preparedModifiers) {
+            array_push($preparedModifiers, is_int($key) ? $value : "$key $value");
+        });
+        $compiledModifiers = implode(' ', $preparedModifiers);
+
+        $this->getConnection()->statement(sprintf(
+            '%1$s FUNCTION %2$s(%3$s) RETURNS %4$s AS $$ %5$s $$ %6$s',
+            $replace ? 'CREATE OR REPLACE' : 'CREATE',
+            $name,
+            $parameters,
+            $return,
+            $body,
+            $compiledModifiers
+        ));
+    }
+
+    /**
+     * Create or replace function.
+     */
+    public function createOrReplaceFunction(string $name, string|array $parameters, string $return, string $body, array $modifiers = []): void
+    {
+        $this->createFunction($name, $parameters, $return, $body, $modifiers, true);
+    }
+
+    /**
+     * Drop function.
+     */
+    public function dropFunction(string $name): void
+    {
+        $this->getConnection()->statement(sprintf(
+            'DROP FUNCTION %1$s',
+            $name
+        ));
+    }
 }
