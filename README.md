@@ -343,6 +343,14 @@ Schema::table('book', function (Blueprint $table) {
 ```
 
 ### Column Options
+#### Arrays
+PostgreSQL allows columns of a table to be defined as variable-length multidimensional arrays. Arrays of any built-in or user-defined base type, enum type, composite type, range type, or domain can be created.
+
+```php
+// @see https://www.postgresql.org/docs/current/arrays.html
+$table->string('col')->array();
+```
+
 #### Compression
 PostgreSQL 14 introduced the possibility to specify the compression method for toast-able data types.
 You can choose between the default method `pglz`, the recently added `lz4` algorithm and the value `default` to use the server default setting.

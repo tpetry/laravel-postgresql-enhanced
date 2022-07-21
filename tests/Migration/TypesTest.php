@@ -64,6 +64,17 @@ class TypesTest extends TestCase
         $this->assertEquals('ALTER TABLE "test" ALTER "col" SET COMPRESSION "lz4"', $queries[1]['query'] ?? null);
     }
 
+    public function testArrayModifierCompressionIsSupported(): void
+    {
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->string('col')->array(2),
+            fnChange: fn (Blueprint $table) => $table->string('col')->array()->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" varchar(255)[][] not null)', $queries[0]['query'] ?? null);
+        $this->assertEquals('ALTER TABLE "test" ALTER "col" TYPE varchar(255)[]', $queries[1]['query'] ?? null);
+    }
+
     public function testDateMultiRangeTypeIsSupported(): void
     {
         $queries = $this->runMigrations(
