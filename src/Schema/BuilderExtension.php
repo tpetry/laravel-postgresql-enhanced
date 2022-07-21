@@ -58,7 +58,24 @@ trait BuilderExtension
         ];
         $mergedModifiers = array_merge($defaultModifiers, $modifiers);
         array_walk($mergedModifiers, function ($value, $key) use(&$preparedModifiers) {
-            array_push($preparedModifiers, sprintf('%1$s %2$s', strtoupper($key), $value));
+            $preparedModifier = match(strtolower($key)) {
+                'language' => sprintf('LANGUAGE %1$s', $value),
+                'transform' => sprintf('TRANSFORM %1$s', $value),
+                'mutability' => $value,
+                'leakproof' => $value ? 'LEAKPROOF' : 'NOT LEAKPROOF',
+                'strict' => $value === true ? 'STRICT' : $value,
+                'security' => $value,
+                'parallel' => sprintf('PARALLEL %1$s', $value),
+                'cost' => sprintf('COST %1$s', $value),
+                'rows' => sprintf('ROWS %1$s', $value),
+                'support' => sprintf('SUPPORT %1$s', $value),
+                'set' => sprintf('SET %1$s', $value),
+                'as' => sprintf('AS %1$s', $value),
+            };
+
+            if ($preparedModifier) {
+                array_push($preparedModifiers, $preparedModifier);
+            }
         });
         $compiledModifiers = implode(' ', $preparedModifiers);
 
