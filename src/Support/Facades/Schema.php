@@ -22,6 +22,9 @@ use Illuminate\Support\Facades\Schema as BaseSchema;
  * @method static void dropMaterializedView(string ...$name)
  * @method static void dropMaterializedViewIfExists(string ...$name)
  * @method static void refreshMaterializedView(string $name, bool $concurrently = false, bool $withData = true)
+ * @method static void createFunction(string $name, string|array $parameters, string $return, string $body, array $modifiers = [])
+ * @method static void createOrReplaceFunction(string $name, string|array $parameters, string $return, string $body, array $modifiers = [])
+ * @method static void dropFunction(string $name)
  */
 class Schema extends BaseSchema
 {
