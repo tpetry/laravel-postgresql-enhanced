@@ -77,8 +77,17 @@ trait BuilderExtension
                 array_push($preparedModifiers, $preparedModifier);
             }
         });
-        $compiledModifiers = implode(' ', $preparedModifiers);
 
+        // Use atomic mode in PLPGSQL if possible
+        if (strtolower($mergedModifiers['language']) === 'plpgsql') {
+            $version = $this->getConnection()->selectOne('SHOW server_version')->server_version;
+            if (version_compare($version, '14') >= 0) {
+                $body = preg_replace('/BEGIN(?! atomic)/i', 'BEGIN ATOMIC', $body);
+            }
+        }
+
+        // Create function
+        $compiledModifiers = implode(' ', $preparedModifiers);
         $this->getConnection()->statement(sprintf(
             '%1$s FUNCTION %2$s(%3$s) RETURNS %4$s AS $$ %5$s $$ %6$s',
             $replace ? 'CREATE OR REPLACE' : 'CREATE',
