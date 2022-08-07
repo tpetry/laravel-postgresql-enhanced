@@ -11,6 +11,7 @@ use Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection;
 class Builder extends PostgresBuilder
 {
     use BuilderExtension;
+    use BuilderFunction;
     use BuilderView;
 
     /**

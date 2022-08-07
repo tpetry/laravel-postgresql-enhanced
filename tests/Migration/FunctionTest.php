@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests\Migration;
 
-use Illuminate\Support\Facades\DB;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
@@ -26,12 +25,12 @@ class FunctionTest extends TestCase
                 'parallel' => 'safe',
                 'leakproof' => false,
                 'mutability' => 'stable',
-                'cost' => '1'
+                'cost' => '1',
             ]);
         });
         $this->assertEquals([
             'CREATE FUNCTION calculate_plpgsql_sum(p_first int, p_second int) RETURNS int AS $$ BEGIN return p_first + p_second; END $$ LANGUAGE plpgsql',
-            'CREATE FUNCTION calculate_sql_sum(p_first int, p_second int) RETURNS int AS $$ SELECT p_first + p_second $$ LANGUAGE sql PARALLEL safe NOT LEAKPROOF stable COST 1'
+            'CREATE FUNCTION calculate_sql_sum(p_first int, p_second int) RETURNS int AS $$ SELECT p_first + p_second $$ LANGUAGE sql PARALLEL safe NOT LEAKPROOF stable COST 1',
         ], array_column($queries, 'query'));
     }
 
@@ -51,12 +50,12 @@ class FunctionTest extends TestCase
                 'parallel' => 'safe',
                 'leakproof' => false,
                 'mutability' => 'stable',
-                'cost' => '1'
+                'cost' => '1',
             ]);
         });
         $this->assertEquals([
             'CREATE OR REPLACE FUNCTION calculate_plpgsql_sum(p_first int, p_second int) RETURNS int AS $$ BEGIN return p_first + p_second; END $$ LANGUAGE plpgsql',
-            'CREATE OR REPLACE FUNCTION calculate_sql_sum(p_first int, p_second int) RETURNS int AS $$ SELECT p_first + p_second $$ LANGUAGE sql PARALLEL safe NOT LEAKPROOF stable COST 1'
+            'CREATE OR REPLACE FUNCTION calculate_sql_sum(p_first int, p_second int) RETURNS int AS $$ SELECT p_first + p_second $$ LANGUAGE sql PARALLEL safe NOT LEAKPROOF stable COST 1',
         ], array_column($queries, 'query'));
     }
 
