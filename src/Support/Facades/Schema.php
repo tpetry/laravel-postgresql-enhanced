@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Schema as BaseSchema;
  * @method static void createViewOrReplace(string $name, Builder|string $query)
  * @method static void dropExtension(string ...$name)
  * @method static void dropExtensionIfExists(string ...$name)
+ * @method static void dropFunction(string $name, ?array $arguments = null)
+ * @method static void dropFunctionIfExists(string $name, ?array $arguments = null)
  * @method static void dropView(string ...$name)
  * @method static void dropViewIfExists(string ...$name)
  * @method static void dropMaterializedView(string ...$name)
@@ -24,7 +26,6 @@ use Illuminate\Support\Facades\Schema as BaseSchema;
  * @method static void refreshMaterializedView(string $name, bool $concurrently = false, bool $withData = true)
  * @method static void createFunction(string $name, string|array $parameters, string $return, string $body, array $modifiers = [])
  * @method static void createOrReplaceFunction(string $name, string|array $parameters, string $return, string $body, array $modifiers = [])
- * @method static void dropFunction(string $name)
  */
 class Schema extends BaseSchema
 {

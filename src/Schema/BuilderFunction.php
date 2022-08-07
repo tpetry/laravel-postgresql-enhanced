@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Schema;
 
+use Illuminate\Support\Arr;
+
 trait BuilderFunction
 {
     /**
@@ -73,13 +75,36 @@ trait BuilderFunction
     }
 
     /**
-     * Drop function.
+     * Drop function from the schema.
+     *
+     * @param ?array<int, string> $arguments
      */
-    public function dropFunction(string $name): void
+    public function dropFunction(string $name, ?array $arguments = null): void
     {
-        $this->getConnection()->statement(sprintf(
-            'DROP FUNCTION %1$s',
-            $name
-        ));
+        $name = $this->getConnection()->getSchemaGrammar()->wrap($name);
+        $argumentsStr = implode(',', Arr::wrap($arguments));
+
+        $sql = match (\is_array($arguments)) {
+            true => "drop function {$name}({$argumentsStr})",
+            false => "drop function {$name}",
+        };
+        $this->getConnection()->statement($sql);
+    }
+
+    /**
+     * Drop function from the schema if they exist.
+     *
+     * @param ?array<int, string> $arguments
+     */
+    public function dropFunctionIfExists(string $name, ?array $arguments = null): void
+    {
+        $name = $this->getConnection()->getSchemaGrammar()->wrap($name);
+        $argumentsStr = implode(',', Arr::wrap($arguments));
+
+        $sql = match (\is_array($arguments)) {
+            true => "drop function if exists {$name}({$argumentsStr})",
+            false => "drop function if exists {$name}",
+        };
+        $this->getConnection()->statement($sql);
     }
 }

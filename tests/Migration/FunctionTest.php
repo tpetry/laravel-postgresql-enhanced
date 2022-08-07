@@ -61,14 +61,55 @@ class FunctionTest extends TestCase
 
     public function testDropFunction(): void
     {
-        Schema::createFunction('calculate_plpgsql_sum', [
-            'p_first' => 'int',
-            'p_second' => 'int',
-        ], 'int', 'BEGIN return p_first + p_second; END');
-
+        $this->getConnection()->statement("create function test_151316(integer) returns int as 'select $1' language sql");
         $queries = $this->withQueryLog(function (): void {
-            Schema::dropFunction('calculate_plpgsql_sum');
+            Schema::dropFunction('test_151316');
         });
-        $this->assertEquals(['DROP FUNCTION calculate_plpgsql_sum'], array_column($queries, 'query'));
+        $this->assertEquals(['drop function "test_151316"'], array_column($queries, 'query'));
+    }
+
+    public function testDropFunctionIfExists(): void
+    {
+        $this->getConnection()->statement("create function test_216089(integer) returns int as 'select $1' language sql");
+        $queries = $this->withQueryLog(function (): void {
+            Schema::dropFunctionIfExists('test_216089');
+        });
+        $this->assertEquals(['drop function if exists "test_216089"'], array_column($queries, 'query'));
+    }
+
+    public function testDropFunctionIfExistsWithArguments(): void
+    {
+        $this->getConnection()->statement("create function test_675622(integer) returns int as 'select $1' language sql");
+        $queries = $this->withQueryLog(function (): void {
+            Schema::dropFunctionIfExists('test_675622', ['integer']);
+        });
+        $this->assertEquals(['drop function if exists "test_675622"(integer)'], array_column($queries, 'query'));
+    }
+
+    public function testDropFunctionIfExistsWithEmptyArguments(): void
+    {
+        $this->getConnection()->statement("create function test_780129() returns int as 'select 1' language sql");
+        $queries = $this->withQueryLog(function (): void {
+            Schema::dropFunctionIfExists('test_780129', []);
+        });
+        $this->assertEquals(['drop function if exists "test_780129"()'], array_column($queries, 'query'));
+    }
+
+    public function testDropFunctionWithArguments(): void
+    {
+        $this->getConnection()->statement("create function test_355700(integer) returns int as 'select $1' language sql");
+        $queries = $this->withQueryLog(function (): void {
+            Schema::dropFunction('test_355700', ['integer']);
+        });
+        $this->assertEquals(['drop function "test_355700"(integer)'], array_column($queries, 'query'));
+    }
+
+    public function testDropFunctionWithEmptyArguments(): void
+    {
+        $this->getConnection()->statement("create function test_421087() returns int as 'select 1' language sql");
+        $queries = $this->withQueryLog(function (): void {
+            Schema::dropFunction('test_421087', []);
+        });
+        $this->assertEquals(['drop function "test_421087"()'], array_column($queries, 'query'));
     }
 }
