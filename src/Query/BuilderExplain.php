@@ -11,7 +11,7 @@ trait BuilderExplain
 {
     public function explain(bool $analyze = false): Collection
     {
-        $version = $this->getConnection()->selectOne('SHOW server_version')->server_version;
+        $version = $this->getConnection()->serverVersion();
         $options = match (true) {
             $analyze && version_compare($version, '13') >= 0 => 'ANALYZE TRUE, BUFFERS TRUE, SETTINGS TRUE, VERBOSE TRUE, WAL TRUE',
             $analyze && version_compare($version, '12') >= 0 => 'ANALYZE TRUE, BUFFERS TRUE, SETTINGS TRUE, VERBOSE TRUE',

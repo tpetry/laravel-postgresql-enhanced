@@ -9,54 +9,54 @@ use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class FunctionTest extends TestCase
 {
-    public function testCreateFunction(): void
+    public function testCreateFunctionLanguagePlpgsql(): void
     {
         $queries = $this->withQueryLog(function (): void {
-            Schema::createFunction('calculate_plpgsql_sum', [
-                'p_first' => 'int',
-                'p_second' => 'int',
-            ], 'int', 'BEGIN return p_first + p_second; END');
-
-            Schema::createFunction('calculate_sql_sum', [
-                'p_first' => 'int',
-                'p_second' => 'int',
-            ], 'int', 'SELECT p_first + p_second', [
-                'language' => 'sql',
-                'parallel' => 'safe',
-                'leakproof' => false,
-                'mutability' => 'stable',
-                'cost' => '1',
-            ]);
+            Schema::createFunction('test_666644', ['p700746' => 'int'], 'int', 'plpgsql', 'begin select abs(p700746);end');
         });
-        $this->assertEquals([
-            'CREATE FUNCTION calculate_plpgsql_sum(p_first int, p_second int) RETURNS int AS $$ BEGIN return p_first + p_second; END $$ LANGUAGE plpgsql',
-            'CREATE FUNCTION calculate_sql_sum(p_first int, p_second int) RETURNS int AS $$ SELECT p_first + p_second $$ LANGUAGE sql PARALLEL safe NOT LEAKPROOF stable COST 1',
-        ], array_column($queries, 'query'));
+        $this->assertEquals(['create function "test_666644"("p700746" int) returns int language plpgsql as $$ begin select abs(p700746);end $$'], array_column($queries, 'query'));
     }
 
-    public function testCreateOrReplaceFunction(): void
+    public function testCreateFunctionLanguageSql(): void
     {
-        $queries = $this->withQueryLog(function (): void {
-            Schema::createOrReplaceFunction('calculate_plpgsql_sum', [
-                'p_first' => 'int',
-                'p_second' => 'int',
-            ], 'int', 'BEGIN return p_first + p_second; END');
+        if (version_compare($this->getConnection()->serverVersion(), '14') < 0) {
+            $this->markTestSkipped('SQL function bodies are first supported with PostgreSQL 14.');
+        }
 
-            Schema::createOrReplaceFunction('calculate_sql_sum', [
-                'p_first' => 'int',
-                'p_second' => 'int',
-            ], 'int', 'SELECT p_first + p_second', [
-                'language' => 'sql',
-                'parallel' => 'safe',
-                'leakproof' => false,
-                'mutability' => 'stable',
-                'cost' => '1',
-            ]);
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createFunction('test_515491', ['p903046' => 'int'], 'int', 'sql', 'select abs(p903046)');
         });
-        $this->assertEquals([
-            'CREATE OR REPLACE FUNCTION calculate_plpgsql_sum(p_first int, p_second int) RETURNS int AS $$ BEGIN return p_first + p_second; END $$ LANGUAGE plpgsql',
-            'CREATE OR REPLACE FUNCTION calculate_sql_sum(p_first int, p_second int) RETURNS int AS $$ SELECT p_first + p_second $$ LANGUAGE sql PARALLEL safe NOT LEAKPROOF stable COST 1',
-        ], array_column($queries, 'query'));
+        $this->assertEquals(['create function "test_515491"("p903046" int) returns int language sql begin atomic; select abs(p903046); end'], array_column($queries, 'query'));
+    }
+
+    public function testCreateFunctionLanguageSqlExpression(): void
+    {
+        if (version_compare($this->getConnection()->serverVersion(), '14') < 0) {
+            $this->markTestSkipped('SQL function bodies are first supported with PostgreSQL 14.');
+        }
+
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createFunction('test_892788', ['p436580' => 'int'], 'int', 'sql:expression', 'abs(p436580)');
+        });
+        $this->assertEquals(['create function "test_892788"("p436580" int) returns int language sql return (abs(p436580))'], array_column($queries, 'query'));
+    }
+
+    public function testCreateFunctionLanguageSqlExpressionPg13(): void
+    {
+        if (version_compare($this->getConnection()->serverVersion(), '14') >= 0) {
+            $this->markTestSkipped('SQL function bodies are supported with PostgreSQL 14 and will be preferred.');
+        }
+
+        $this->markTestSkipped('TODO: implement');
+    }
+
+    public function testCreateFunctionLanguageSqlPg13(): void
+    {
+        if (version_compare($this->getConnection()->serverVersion(), '14') >= 0) {
+            $this->markTestSkipped('SQL function bodies are supported with PostgreSQL 14 and will be preferred.');
+        }
+
+        $this->markTestSkipped('TODO: implement');
     }
 
     public function testDropFunction(): void

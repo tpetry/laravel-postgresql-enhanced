@@ -104,6 +104,14 @@ class PostgresEnhancedConnection extends PostgresConnection
     }
 
     /**
+     * Return the version of the PostgreSQL database server.
+     */
+    public function serverVersion(): string
+    {
+        return $this->getPdo()->query('SHOW server_version')->fetchColumn();
+    }
+
+    /**
      * Get the default query grammar instance.
      */
     protected function getDefaultQueryGrammar(): QueryGrammar
