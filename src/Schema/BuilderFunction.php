@@ -23,7 +23,7 @@ trait BuilderFunction
      * Create or replace a new function on the schema.
      *
      * @param array<string, string> $parameters
-     * @param array{calledonnull?: bool, cost?: int, leakproof?: bool, parallel?: 'restricted'|'safe'|'unsafe', security?: 'definer'|'invoker', volatility?: 'immutable'|'stable'|'volatile'} $options
+     * @param array{calledOnNull?: bool, cost?: int, leakproof?: bool, parallel?: 'restricted'|'safe'|'unsafe', security?: 'definer'|'invoker', volatility?: 'immutable'|'stable'|'volatile'} $options
      */
     public function createFunctionOrReplace(string $name, array $parameters, string $return, string $language, string $body, array $options = []): void
     {
@@ -68,7 +68,7 @@ trait BuilderFunction
      * Create a new function on the schema.
      *
      * @param array<string, string> $parameters
-     * @param array{calledonnull?: bool, cost?: int, leakproof?: bool, parallel?: 'restricted'|'safe'|'unsafe', security?: 'definer'|'invoker', volatility?: 'immutable'|'stable'|'volatile'} $options
+     * @param array{calledOnNull?: bool, cost?: int, leakproof?: bool, parallel?: 'restricted'|'safe'|'unsafe', security?: 'definer'|'invoker', volatility?: 'immutable'|'stable'|'volatile'} $options
      */
     private function createGenericFunction(string $name, array $parameters, string $return, string $language, string $body, array $options, bool $createOrReplace): void
     {
