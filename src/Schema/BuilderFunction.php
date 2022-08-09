@@ -12,7 +12,7 @@ trait BuilderFunction
      * Create a new function on the schema.
      *
      * @param array<string, string> $parameters
-     * @param array{calledonnull?: bool, cost?: int, leakproof?: bool, parallel?: 'restricted'|'safe'|'unsafe', security?: 'definer'|'invoker', volatility?: 'immutable'|'stable'|'volatile'} $options
+     * @param array{calledOnNull?: bool, cost?: int, leakproof?: bool, parallel?: 'restricted'|'safe'|'unsafe', security?: 'definer'|'invoker', volatility?: 'immutable'|'stable'|'volatile'} $options
      */
     public function createFunction(string $name, array $parameters, string $return, string $language, string $body, array $options = []): void
     {
@@ -85,8 +85,7 @@ trait BuilderFunction
         $modifiers = ["language {$language}"];
         foreach ($options as $key => $value) {
             $modifiers[] = match (true) {
-                'calledonnull' === $key => $value ? 'called on null input' : 'returns null on input',
-                'cost' === $key => "cost {$value}",
+                'calledOnNull' === $key => $value ? 'called on null input' : 'returns null on null input',
                 'leakproof' === $key => $value ? 'leakproof' : 'not leakproof',
                 'volatility' === $key => $value,
                 \in_array($key, ['cost', 'parallel', 'security']) => "{$key} {$value}",
