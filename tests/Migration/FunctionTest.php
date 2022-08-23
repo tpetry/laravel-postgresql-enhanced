@@ -77,7 +77,10 @@ class FunctionTest extends TestCase
             $this->markTestSkipped('SQL function bodies are supported with PostgreSQL 14 and will be preferred.');
         }
 
-        $this->markTestSkipped('TODO: implement'); // TODO test
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createFunction('test_978064', ['p250541' => 'int'], 'int', 'sql:expression', 'abs(p250541)');
+        });
+        $this->assertEquals(['create function "test_978064"("p250541" int) returns int language sql as $$ select (abs(p250541)) $$'], array_column($queries, 'query'));
     }
 
     public function testCreateFunctionLanguageSqlPg13(): void
@@ -86,7 +89,10 @@ class FunctionTest extends TestCase
             $this->markTestSkipped('SQL function bodies are supported with PostgreSQL 14 and will be preferred.');
         }
 
-        $this->markTestSkipped('TODO: implement'); // TODO test
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createFunction('test_283558', ['p406352' => 'int'], 'int', 'sql', 'select abs(p406352)');
+        });
+        $this->assertEquals(['create function "test_283558"("p406352" int) returns int language sql as $$ select abs(p406352) $$'], array_column($queries, 'query'));
     }
 
     public function testCreateFunctionLeakproofFalse(): void
@@ -182,7 +188,10 @@ class FunctionTest extends TestCase
             $this->markTestSkipped('SQL function bodies are supported with PostgreSQL 14 and will be preferred.');
         }
 
-        $this->markTestSkipped('TODO: implement'); // TODO test
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createFunctionOrReplace('test_626780', ['p149769' => 'int'], 'int', 'sql:expression', 'abs(p149769)');
+        });
+        $this->assertEquals(['create or replace function "test_626780"("p149769" int) returns int language sql as $$ select (abs(p149769)) $$'], array_column($queries, 'query'));
     }
 
     public function testCreateFunctionOrReplaceLanguageSqlPg13(): void
@@ -191,7 +200,10 @@ class FunctionTest extends TestCase
             $this->markTestSkipped('SQL function bodies are supported with PostgreSQL 14 and will be preferred.');
         }
 
-        $this->markTestSkipped('TODO: implement'); // TODO test
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createFunctionOrReplace('test_737995', ['p591006' => 'int'], 'int', 'sql', 'select abs(p591006)');
+        });
+        $this->assertEquals(['create or replace function "test_737995"("p591006" int) returns int language sql as $$ select abs(p591006) $$'], array_column($queries, 'query'));
     }
 
     public function testCreateFunctionOrReplaceLeakproofFalse(): void
