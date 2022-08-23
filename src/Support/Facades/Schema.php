@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Schema as BaseSchema;
 /**
  * @method static void createExtension(string $name)
  * @method static void createExtensionIfNotExists(string $name)
+ * @method static void createFunction(string $name, array $parameters, string $return, string $language, string $body, array $options = [])
+ * @method static void createFunctionOrReplace(string $name, array $parameters, string $return, string $language, string $body, array $options = [])
  * @method static void createRecursiveView(string $name, Builder|string $query, array $columns)
  * @method static void createRecursiveViewOrReplace(string $name, Builder|string $query, array $columns)
  * @method static void createMaterializedView(string $name, Builder|string $query, bool $withData = true)
@@ -17,6 +19,8 @@ use Illuminate\Support\Facades\Schema as BaseSchema;
  * @method static void createViewOrReplace(string $name, Builder|string $query)
  * @method static void dropExtension(string ...$name)
  * @method static void dropExtensionIfExists(string ...$name)
+ * @method static void dropFunction(string $name, ?array $arguments = null)
+ * @method static void dropFunctionIfExists(string $name, ?array $arguments = null)
  * @method static void dropView(string ...$name)
  * @method static void dropViewIfExists(string ...$name)
  * @method static void dropMaterializedView(string ...$name)
