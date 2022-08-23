@@ -23,6 +23,7 @@ composer require tpetry/laravel-postgresql-enhanced
 - [Migration](#migration)
     - [Zero Downtime Migration](#zero-downtime-migration)
     - [Extensions](#extensions)
+    - [Functions](#functions)
     - [Views](#views)
         - [Materialized Views](#materialized-views)
     - [Indexes](#indexes)
@@ -152,6 +153,55 @@ use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 
 Schema::dropExtension('tablefunc', 'fuzzystrmatch');
 Schema::dropExtensionIfExists('tablefunc', 'fuzzystrmatch');
+```
+
+### Functions
+
+#### Create Functions
+
+The `Schema` facade supports the creation of functions with the `createFunction` and `createFunctionOrReplace` methods. For the definition of your function you have to provide the name of the function, the parameters, the return type, the function's language and body:
+
+```php
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::createFunction('sales_tax', ['subtotal' => 'numeric'], 'numeric', 'plpgsql', '
+  BEGIN
+    RETURN subtotal * 0.06;
+  END;
+');
+```
+
+A sixth parameter lets you define further options for the function. Please [read the manual](https://www.postgresql.org/docs/current/sql-createfunction.html) for the exact meaning, some of them set enable or disable ways for PostgreSQL to optimize the execution.
+
+| Option         | Values                            | Description                                                                                                    |
+|----------------|-----------------------------------|----------------------------------------------------------------------------------------------------------------|
+| `calledOnNull` | bool                              | Defines whether the function should be called for NULL values.                                                 |
+| `cost`         | integer                           | Defines the cost for executing the function.                                                                   |
+| `leakproof`    | bool                              | Informs whether the function has side effects.                                                                 |
+| `parallel`     | `restricted`, `safe`, `unsafe`    | Defines whether the function can be executed in parallel.                                                      |
+| `security`     | `definer`, `invoker`              | Defines that the function will be executed with the privileges of the current user or creator of the function. |
+| `volatility`   | `immutable`, `stable`, `volatile` | Informs whether the function changes database values.                                                          |
+
+The former example can be optimized by using the special `sql:expression` language identifier created by this driver. The function body can only be one SQL expression, but it will be inlined in the query instead of executed with recent PostgreSQL versions for much better performance: 
+
+```php
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::createFunction('sales_tax', ['subtotal' => 'numeric'], 'numeric', 'sql:expression', 'subtotal * 0.06', [
+  'parallel' => 'safe',
+  'volatility' => 'immutable',
+]);
+```
+
+#### Drop Functions
+
+To remove functions, you may use the `dropFunction` and `dropFunctionIfExists` methods provided by the `Schema` facade:
+
+```php
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::dropFunction('sales_tax');
+Schema::dropFunctionIfExists('sales_tax');
 ```
 
 ### Views
