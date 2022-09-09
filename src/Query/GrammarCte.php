@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Query;
 
+use Illuminate\Database\Query\Builder as BaseBuilder;
+
 trait GrammarCte
 {
     public function compileExpressions(Builder $query, array $expressions): string
@@ -33,9 +35,12 @@ trait GrammarCte
     /**
      * Prepend common table expression sql to query.
      */
-    private function prependCtes(Builder $query, string $sql): string
+    private function prependCtes(BaseBuilder $query, string $sql): string
     {
-        if (filled($query->expressions)) {
+        // Some malforming code may create query builders by itself instead of getting them from the connection but
+        // nevertheless it will be sqlized by this driver's grammar implementation. To not break on misbehaving
+        // implementations the code has to check that a correct builder is passed to execute the CTE logic.
+        if ($query instanceof Builder && filled($query->expressions)) {
             $with = $this->compileExpressions($query, $query->expressions);
 
             $sql = "{$with} {$sql}";
