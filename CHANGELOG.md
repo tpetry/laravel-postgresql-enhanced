@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.20.1] - 2022-09-09
+### Fixed
+* Manually created `\Illuminate\Database\Query\Builder` instances failed when trying to process CTE expressions
+
 ## [0.20.0] - 2022-08-23
 ### Added
 * Creating and deleting functions in migrations
