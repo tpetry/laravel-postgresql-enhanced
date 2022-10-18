@@ -9,6 +9,26 @@ use Illuminate\Database\Query\Expression;
 trait BuilderWhere
 {
     /**
+     * Add an or where all statement to the query.
+     *
+     * @param \Illuminate\Database\Query\Expression|string $column
+     */
+    public function orWhereAll($column, string $operator, iterable $values): static
+    {
+        return $this->whereAll($column, $operator, $values, boolean: 'or');
+    }
+
+    /**
+     * Add an or where any statement to the query.
+     *
+     * @param \Illuminate\Database\Query\Expression|string $column
+     */
+    public function orWhereAny($column, string $operator, iterable $values): static
+    {
+        return $this->whereAny($column, $operator, $values, boolean: 'or');
+    }
+
+    /**
      * Add an or where between symmetric statement to the query.
      *
      * @param \Illuminate\Database\Query\Expression|string $column
@@ -40,6 +60,26 @@ trait BuilderWhere
     }
 
     /**
+     * Add an or where not all statement to the query.
+     *
+     * @param \Illuminate\Database\Query\Expression|string $column
+     */
+    public function orWhereNotAll($column, string $operator, iterable $values): static
+    {
+        return $this->whereAll($column, $operator, $values, boolean: 'or', not: true);
+    }
+
+    /**
+     * Add an or where not any statement to the query.
+     *
+     * @param \Illuminate\Database\Query\Expression|string $column
+     */
+    public function orWhereNotAny($column, string $operator, iterable $values): static
+    {
+        return $this->whereAny($column, $operator, $values, boolean: 'or', not: true);
+    }
+
+    /**
      * Add an or where not between symmetric statement to the query.
      *
      * @param \Illuminate\Database\Query\Expression|string $column
@@ -57,6 +97,38 @@ trait BuilderWhere
     public function orWhereNotBoolean($column, bool $value): static
     {
         return $this->orWhere($column, '!=', new Expression(var_export($value, true)));
+    }
+
+    /**
+     * Add a where all statement to the query.
+     *
+     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param 'and'|'or' $boolean
+     */
+    public function whereAll($column, string $operator, iterable $values, string $boolean = 'and', bool $not = false): static
+    {
+        $type = 'all';
+
+        $this->wheres[] = compact('type', 'column', 'operator', 'values', 'boolean', 'not');
+        $this->addBinding($this->cleanBindings(collect($values)->toArray()), 'where');
+
+        return $this;
+    }
+
+    /**
+     * Add a where any statement to the query.
+     *
+     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param 'and'|'or' $boolean
+     */
+    public function whereAny($column, string $operator, iterable $values, string $boolean = 'and', bool $not = false): static
+    {
+        $type = 'any';
+
+        $this->wheres[] = compact('type', 'column', 'operator', 'values', 'boolean', 'not');
+        $this->addBinding($this->cleanBindings(collect($values)->toArray()), 'where');
+
+        return $this;
     }
 
     /**
@@ -99,6 +171,26 @@ trait BuilderWhere
         $this->addBinding($value);
 
         return $this;
+    }
+
+    /**
+     * Add a where not all statement to the query.
+     *
+     * @param \Illuminate\Database\Query\Expression|string $column
+     */
+    public function whereNotAll($column, string $operator, iterable $values): static
+    {
+        return $this->whereAll($column, $operator, $values, not: true);
+    }
+
+    /**
+     * Add a where not any statement to the query.
+     *
+     * @param \Illuminate\Database\Query\Expression|string $column
+     */
+    public function whereNotAny($column, string $operator, iterable $values): static
+    {
+        return $this->whereAny($column, $operator, $values, not: true);
     }
 
     /**

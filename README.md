@@ -718,6 +718,33 @@ DB::transaction(function() {
 
 ### Where Clauses
 
+#### Any/All
+
+PostgreSQL provides very nifty filtering functions to check a column against multiple values without writing many `AND` or `OR` conditions.
+You can say that at least one of the values needs to match the operator with the' ANY' keyword.
+While for the `ALL` keyword, all values have to match.
+
+```php
+// instead of:
+$query->where('invoice', 'like', 'RV-%')->orWhere('invoice', 'like', 'RZ-%');
+$query->where('json', '??', 'key1')->where('json', '??', 'key2');
+
+// you can do:
+$query->whereAny('invoice', 'like', ['RV-%', 'RZ-%']);
+$query->whereAll('json', '??', ['key1', 'key2']);
+```
+
+```php
+$query->whereAll($column, string $operator, iterable $values);
+$query->whereNotAll($column, string $operator, iterable $values);
+$query->orWhereAll($column, string $operator, iterable $values);
+$query->orWhereNotAll($column, string $operator, iterable $values)
+$query->whereAny($column, string $operator, iterable $values);
+$query->whereNotAny($column, string $operator, iterable $values);
+$query->orWhereAny($column, string $operator, iterable $values);
+$query->orWhereNotAny($column, string $operator, iterable $values)
+```
+
 #### Boolean
 
 As Laravel always casts boolean values to integers you will get a PostgreSQL errors like `operator does not exist: boolean = integer` sometimes.

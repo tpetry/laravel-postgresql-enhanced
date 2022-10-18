@@ -4,10 +4,45 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Query;
 
+use Exception;
 use Illuminate\Database\Query\Builder;
 
 trait GrammarWhere
 {
+    /**
+     * Compile an "all" clause.
+     *
+     * @param array{column: string, not: bool, operator: string, values: array|\ArrayAccess} $where
+     */
+    public function whereAll(Builder $query, $where): string
+    {
+        if (!\in_array($where['operator'], [...$this->operators, '??'], strict: true)) {
+            throw new Exception("Invalid operator '{$where['operator']}' used.");
+        }
+
+        return match ($where['not']) {
+            true => "not {$this->wrap($where['column'])} {$where['operator']} all(array[{$this->parameterize($where['values'])}])",
+            false => "{$this->wrap($where['column'])} {$where['operator']} all(array[{$this->parameterize($where['values'])}])",
+        };
+    }
+
+    /**
+     * Compile an "any" clause.
+     *
+     * @param array{column: string, not: bool, operator: string, values: array|\ArrayAccess} $where
+     */
+    public function whereAny(Builder $query, $where): string
+    {
+        if (!\in_array($where['operator'], [...$this->operators, '??'], strict: true)) {
+            throw new Exception("Invalid operator '{$where['operator']}' used.");
+        }
+
+        return match ($where['not']) {
+            true => "not {$this->wrap($where['column'])} {$where['operator']} any(array[{$this->parameterize($where['values'])}])",
+            false => "{$this->wrap($where['column'])} {$where['operator']} any(array[{$this->parameterize($where['values'])}])",
+        };
+    }
+
     /**
      * Compile a "like" clause.
      *
