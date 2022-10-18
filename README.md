@@ -718,8 +718,37 @@ DB::transaction(function() {
 
 ### Where Clauses
 
+#### Like
+
+With the `whereLike` scope you can compare a column to a (case-insensitive) value. 
+
 ```php
 $query->whereLike($column, $value, $caseInsensitive = false);
+$query->orWhereLike($column, $value, $caseInsensitive = false);
+```
+
+#### Between Symmetric
+
+Laravel already provides a `whereBetween` clause, but you have to provide the values in sorted order that the smaller value is the first and the bigger one the second array item (`[4, 80]`).
+With PostgreSQL's `BETWEEN SYMMETRIC` keyword you don't have to do this anymore, it will automatically reorder the values.
+
+You can now use e.g. min/max values with the following code without having to reorder these values if the meaning has been swapped by the user when entering them:
+```php
+$min = $request->integer('min');
+$min = $request->integer('max');
+
+// before:
+$query->whereBetween('price', [min($min, $max), max($min, $max)]);
+
+// now:
+$query->whereBetweenSymmetric('price', [$min, $max]);
+```
+
+```php
+$query->whereBetweenSymmetric($column, iterable $values);
+$query->whereNotBetweenSymmetric($column, iterable $values);
+$query->orWhereBetweenSymmetric($column, iterable $values);
+$query->orWhereNotBetweenSymmetric($column, iterable $values);
 ```
 
 ## Eloquent

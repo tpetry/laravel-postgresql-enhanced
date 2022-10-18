@@ -22,6 +22,22 @@ trait GrammarWhere
     }
 
     /**
+     * Compile a "between symmetric" where clause.
+     *
+     * @param array{column: string, not: bool, values: array|\ArrayAccess} $where
+     */
+    protected function whereBetweenSymmetric(Builder $query, array $where): string
+    {
+        $min = $this->parameter(\is_array($where['values']) ? reset($where['values']) : $where['values'][0]);
+        $max = $this->parameter(\is_array($where['values']) ? end($where['values']) : $where['values'][1]);
+
+        return match ($where['not']) {
+            true => "{$this->wrap($where['column'])} not between symmetric {$min} and {$max}",
+            false => "{$this->wrap($where['column'])} between symmetric {$min} and {$max}",
+        };
+    }
+
+    /**
      * Compile a where clause comparing two columns.
      *
      * This method is called for the join compilation to build the join condition clause. To support left lateral joins
