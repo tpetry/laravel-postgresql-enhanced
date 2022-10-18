@@ -18,6 +18,11 @@ trait BuilderWhere
         return $this->whereBetweenSymmetric($column, $values, boolean: 'or');
     }
 
+    /**
+     * Add an or where boolean statement to the query.
+     *
+     * @param \Illuminate\Database\Query\Expression|string $column
+     */
     public function orWhereBoolean($column, bool $value): static
     {
         return $this->orWhere($column, new Expression(var_export($value, true)));
@@ -44,6 +49,11 @@ trait BuilderWhere
         return $this->whereBetweenSymmetric($column, $values, boolean: 'or', not: true);
     }
 
+    /**
+     * Add an or where not boolean statement to the query.
+     *
+     * @param \Illuminate\Database\Query\Expression|string $column
+     */
     public function orWhereNotBoolean($column, bool $value): static
     {
         return $this->orWhere($column, '!=', new Expression(var_export($value, true)));
@@ -64,6 +74,11 @@ trait BuilderWhere
         return $this;
     }
 
+    /**
+     * Add a where boolean statement to the query.
+     *
+     * @param \Illuminate\Database\Query\Expression|string $column
+     */
     public function whereBoolean($column, bool $value): static
     {
         return $this->where($column, new Expression(var_export($value, true)));
@@ -96,6 +111,11 @@ trait BuilderWhere
         return $this->whereBetweenSymmetric($column, $values, not: true);
     }
 
+    /**
+     * Add a where not boolean statement to the query.
+     *
+     * @param \Illuminate\Database\Query\Expression|string $column
+     */
     public function whereNotBoolean($column, bool $value): static
     {
         return $this->where($column, '!=', new Expression(var_export($value, true)));
