@@ -718,6 +718,19 @@ DB::transaction(function() {
 
 ### Where Clauses
 
+#### Boolean
+
+As Laravel always casts boolean values to integers you will get a PostgreSQL errors like `operator does not exist: boolean = integer` sometimes.
+In most cases PostgreSQL is intelligent enough to cast the value but when e.g. creating partial indexes you will get the error.
+To resolve that problem you can use the special `whereBoolean` functions that do not cast a boolean to `0` or `1`.
+
+```php
+$query->whereBoolean($column, bool $value);
+$query->whereNotBoolean($column, bool $value);
+$query->orWhereBoolean($column, bool $value);
+$query->orWhereNotBoolean($column, bool $value);
+```
+
 #### Like
 
 With the `whereLike` scope you can compare a column to a (case-insensitive) value. 

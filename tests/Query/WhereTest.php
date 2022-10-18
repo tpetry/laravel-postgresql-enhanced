@@ -30,6 +30,19 @@ class WhereTest extends TestCase
         );
     }
 
+    public function testOrWhereBoolean(): void
+    {
+        $this->getConnection()->unprepared('CREATE TABLE example (val bool)');
+
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->orWhereBoolean('val', true)->orWhereBoolean('val', false)->get();
+        });
+        $this->assertEquals(
+            ['select * from "example" where "val" = true or "val" = false'],
+            array_column($queries, 'query'),
+        );
+    }
+
     public function testOrWhereLike(): void
     {
         $this->getConnection()->unprepared('CREATE TABLE example (str text)');
@@ -65,6 +78,19 @@ class WhereTest extends TestCase
         );
     }
 
+    public function testOrWhereNotBoolean(): void
+    {
+        $this->getConnection()->unprepared('CREATE TABLE example (val bool)');
+
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->orWhereNotBoolean('val', true)->orWhereNotBoolean('val', false)->get();
+        });
+        $this->assertEquals(
+            ['select * from "example" where "val" != true or "val" != false'],
+            array_column($queries, 'query'),
+        );
+    }
+
     public function testWhereBetweenSymmetric(): void
     {
         $this->getConnection()->unprepared('CREATE TABLE example (val int)');
@@ -79,6 +105,19 @@ class WhereTest extends TestCase
         $this->assertEquals(
             [[585333, 226048]],
             array_column($queries, 'bindings'),
+        );
+    }
+
+    public function testWhereBoolean(): void
+    {
+        $this->getConnection()->unprepared('CREATE TABLE example (val bool)');
+
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->whereBoolean('val', true)->whereBoolean('val', false)->get();
+        });
+        $this->assertEquals(
+            ['select * from "example" where "val" = true and "val" = false'],
+            array_column($queries, 'query'),
         );
     }
 
@@ -114,6 +153,19 @@ class WhereTest extends TestCase
         $this->assertEquals(
             [[762192, 196082]],
             array_column($queries, 'bindings'),
+        );
+    }
+
+    public function testWhereNotBoolean(): void
+    {
+        $this->getConnection()->unprepared('CREATE TABLE example (val bool)');
+
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->whereNotBoolean('val', true)->whereNotBoolean('val', false)->get();
+        });
+        $this->assertEquals(
+            ['select * from "example" where "val" != true and "val" != false'],
+            array_column($queries, 'query'),
         );
     }
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Query;
 
+use Illuminate\Database\Query\Expression;
+
 trait BuilderWhere
 {
     /**
@@ -14,6 +16,11 @@ trait BuilderWhere
     public function orWhereBetweenSymmetric($column, iterable $values): static
     {
         return $this->whereBetweenSymmetric($column, $values, boolean: 'or');
+    }
+
+    public function orWhereBoolean($column, bool $value): static
+    {
+        return $this->orWhere($column, new Expression(var_export($value, true)));
     }
 
     /**
@@ -37,6 +44,11 @@ trait BuilderWhere
         return $this->whereBetweenSymmetric($column, $values, boolean: 'or', not: true);
     }
 
+    public function orWhereNotBoolean($column, bool $value): static
+    {
+        return $this->orWhere($column, '!=', new Expression(var_export($value, true)));
+    }
+
     /**
      * Add a where between symmetric statement to the query.
      *
@@ -50,6 +62,11 @@ trait BuilderWhere
         $this->wheres[\count($this->wheres) - 1]['type'] = 'betweenSymmetric';
 
         return $this;
+    }
+
+    public function whereBoolean($column, bool $value): static
+    {
+        return $this->where($column, new Expression(var_export($value, true)));
     }
 
     /**
@@ -77,5 +94,10 @@ trait BuilderWhere
     public function whereNotBetweenSymmetric($column, iterable $values): static
     {
         return $this->whereBetweenSymmetric($column, $values, not: true);
+    }
+
+    public function whereNotBoolean($column, bool $value): static
+    {
+        return $this->where($column, '!=', new Expression(var_export($value, true)));
     }
 }
