@@ -30,9 +30,9 @@ class BuilderReturningTest extends TestCase
 
     public function testDeleteReturningAll(): void
     {
-        with(new Example())->newQuery()->insert(['str' => 'Adrv9nlq']);
+        (new Example())->newQuery()->insert(['str' => 'Adrv9nlq']);
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new Example())
+            $result = (new Example())
                 ->newQuery()
                 ->where('str', 'Adrv9nlq')
                 ->deleteReturning();
@@ -47,9 +47,9 @@ class BuilderReturningTest extends TestCase
 
     public function testDeleteReturningAllWithSoftDeletes(): void
     {
-        with(new ExampleTimestamps())->newQuery()->insert(['str' => 'HVpFcyZc']);
+        (new ExampleTimestamps())->newQuery()->insert(['str' => 'HVpFcyZc']);
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->where('str', 'HVpFcyZc')
                 ->deleteReturning();
@@ -64,7 +64,7 @@ class BuilderReturningTest extends TestCase
     public function testDeleteReturningEmpty(): void
     {
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new Example())
+            $result = (new Example())
                 ->newQuery()
                 ->where('str', 'FmmwcCEa')
                 ->deleteReturning();
@@ -78,7 +78,7 @@ class BuilderReturningTest extends TestCase
     public function testDeleteReturningEmptyWithSoftDeletes(): void
     {
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->where('str', 'KNfGPTun')
                 ->deleteReturning();
@@ -91,9 +91,9 @@ class BuilderReturningTest extends TestCase
 
     public function testDeleteReturningSelection(): void
     {
-        with(new Example())->newQuery()->insert(['str' => 'ERyX7zrJ']);
+        (new Example())->newQuery()->insert(['str' => 'ERyX7zrJ']);
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new Example())
+            $result = (new Example())
                 ->newQuery()
                 ->where('str', 'ERyX7zrJ')
                 ->deleteReturning(returning: ['str']);
@@ -107,9 +107,9 @@ class BuilderReturningTest extends TestCase
 
     public function testDeleteReturningSelectionWithSoftDeletes(): void
     {
-        with(new ExampleTimestamps())->newQuery()->insert(['str' => 'Uemf1STe']);
+        (new ExampleTimestamps())->newQuery()->insert(['str' => 'Uemf1STe']);
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->where('str', 'Uemf1STe')
                 ->deleteReturning(returning: ['str']);
@@ -123,9 +123,9 @@ class BuilderReturningTest extends TestCase
 
     public function testForceDeleteReturningAll(): void
     {
-        with(new Example())->newQuery()->insert(['str' => 'SMxNkHUc']);
+        (new Example())->newQuery()->insert(['str' => 'SMxNkHUc']);
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new Example())
+            $result = (new Example())
                 ->newQuery()
                 ->where('str', 'SMxNkHUc')
                 ->forceDeleteReturning();
@@ -141,7 +141,7 @@ class BuilderReturningTest extends TestCase
     public function testForceDeleteReturningEmpty(): void
     {
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new Example())
+            $result = (new Example())
                 ->newQuery()
                 ->where('str', 'PrLPFJ4s')
                 ->forceDeleteReturning();
@@ -154,9 +154,9 @@ class BuilderReturningTest extends TestCase
 
     public function testForceDeleteReturningSelection(): void
     {
-        with(new Example())->newQuery()->insert(['str' => 'XT4wRUzX']);
+        (new Example())->newQuery()->insert(['str' => 'XT4wRUzX']);
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new Example())
+            $result = (new Example())
                 ->newQuery()
                 ->where('str', 'XT4wRUzX')
                 ->forceDeleteReturning(returning: ['str']);
@@ -171,7 +171,7 @@ class BuilderReturningTest extends TestCase
     public function testInsertOrIgnoreReturningAll(): void
     {
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->insertOrIgnoreReturning(['str' => 'GfzH1fba']);
 
@@ -185,7 +185,7 @@ class BuilderReturningTest extends TestCase
     public function testInsertOrIgnoreReturningEmpty(): void
     {
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->insertOrIgnoreReturning([]);
 
@@ -197,9 +197,9 @@ class BuilderReturningTest extends TestCase
 
     public function testInsertOrIgnoreReturningIgnored(): void
     {
-        with(new ExampleTimestamps())->newQuery()->insert(['str' => 'ASWTUBhJ']);
+        (new ExampleTimestamps())->newQuery()->insert(['str' => 'ASWTUBhJ']);
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->insertOrIgnoreReturning(['str' => 'ASWTUBhJ']);
 
@@ -212,7 +212,7 @@ class BuilderReturningTest extends TestCase
     public function testInsertOrIgnoreReturningSelection(): void
     {
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->insertOrIgnoreReturning(['str' => 'WHKzRCy3'], ['str']);
 
@@ -226,7 +226,7 @@ class BuilderReturningTest extends TestCase
     public function testInsertReturningAll(): void
     {
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->insertReturning(['str' => 'L55uRXMI']);
 
@@ -240,7 +240,7 @@ class BuilderReturningTest extends TestCase
     public function testInsertReturningEmpty(): void
     {
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->insertReturning([]);
 
@@ -253,7 +253,7 @@ class BuilderReturningTest extends TestCase
     public function testInsertReturningSelection(): void
     {
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->insertReturning(['str' => 'HarJvEmz'], ['str']);
 
@@ -267,7 +267,7 @@ class BuilderReturningTest extends TestCase
     public function testInsertUsingReturningAll(): void
     {
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->insertUsingReturning(['str'], "select 'LOfbaRG4'");
 
@@ -281,7 +281,7 @@ class BuilderReturningTest extends TestCase
     public function testInsertUsingReturningEmpty(): void
     {
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->insertUsingReturning(['str'], 'select 1 where 0 = 1');
 
@@ -294,7 +294,7 @@ class BuilderReturningTest extends TestCase
     public function testInsertUsingReturningSelection(): void
     {
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->insertUsingReturning(['str'], "select 'CT4TfugQ'", ['str']);
 
@@ -312,7 +312,7 @@ class BuilderReturningTest extends TestCase
         }
 
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->join('example as example2', 'example.id', 'example2.id')
                 ->where('example2.str', 'Ru9faGcF')
@@ -330,9 +330,9 @@ class BuilderReturningTest extends TestCase
             $this->markTestSkipped('UpdateFrom() has been added in a later Laravel version.');
         }
 
-        with(new ExampleTimestamps())->newQuery()->insert(['str' => 'NkAKoLip']);
+        (new ExampleTimestamps())->newQuery()->insert(['str' => 'NkAKoLip']);
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->join('example as example2', 'example.id', 'example2.id')
                 ->where('example2.str', 'NkAKoLip')
@@ -348,7 +348,7 @@ class BuilderReturningTest extends TestCase
     public function testUpdateOrInsertReturningInsertAll(): void
     {
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->updateOrInsertReturning(['str' => 'SQXSCwPM']);
 
@@ -365,7 +365,7 @@ class BuilderReturningTest extends TestCase
     public function testUpdateOrInsertReturningInsertSelection(): void
     {
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->updateOrInsertReturning(['str' => 'MrAom5QZ'], returning: ['str']);
 
@@ -381,9 +381,9 @@ class BuilderReturningTest extends TestCase
 
     public function testUpdateOrInsertReturningUpdateAll(): void
     {
-        with(new ExampleTimestamps())->newQuery()->insert(['str' => 'NEI9yhO2']);
+        (new ExampleTimestamps())->newQuery()->insert(['str' => 'NEI9yhO2']);
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->updateOrInsertReturning(['id' => 1], ['str' => 'FDuHP01C']);
 
@@ -399,9 +399,9 @@ class BuilderReturningTest extends TestCase
 
     public function testUpdateOrInsertReturningUpdateEmpty(): void
     {
-        with(new ExampleTimestamps())->newQuery()->insert(['str' => 'IrwHoXrF']);
+        (new ExampleTimestamps())->newQuery()->insert(['str' => 'IrwHoXrF']);
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->updateOrInsertReturning(['id' => 1]);
 
@@ -415,9 +415,9 @@ class BuilderReturningTest extends TestCase
 
     public function testUpdateOrInsertReturningUpdateSelection(): void
     {
-        with(new ExampleTimestamps())->newQuery()->insert(['str' => 'GYyLmamo']);
+        (new ExampleTimestamps())->newQuery()->insert(['str' => 'GYyLmamo']);
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->updateOrInsertReturning(['id' => 1], ['str' => 'ZAnrBoQB'], ['str']);
 
@@ -433,9 +433,9 @@ class BuilderReturningTest extends TestCase
 
     public function testUpdateReturningAll(): void
     {
-        with(new Example())->newQuery()->insert(['str' => 'Vho2ATQW']);
+        (new Example())->newQuery()->insert(['str' => 'Vho2ATQW']);
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new Example())
+            $result = (new Example())
                 ->newQuery()
                 ->updateReturning(['str' => 'M3bJmjWz']);
 
@@ -448,9 +448,9 @@ class BuilderReturningTest extends TestCase
 
     public function testUpdateReturningAllWithTimestamps(): void
     {
-        with(new Example())->newQuery()->insert(['str' => 'OWaZuXS8']);
+        (new Example())->newQuery()->insert(['str' => 'OWaZuXS8']);
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->updateReturning(['str' => 'EOUuTNYm']);
 
@@ -463,9 +463,9 @@ class BuilderReturningTest extends TestCase
 
     public function testUpdateReturningSelection(): void
     {
-        with(new Example())->newQuery()->insert(['str' => 'IKDZd35j']);
+        (new Example())->newQuery()->insert(['str' => 'IKDZd35j']);
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new Example())
+            $result = (new Example())
                 ->newQuery()
                 ->updateReturning(['str' => 'VI5pTLsg'], ['str']);
 
@@ -478,9 +478,9 @@ class BuilderReturningTest extends TestCase
 
     public function testUpdateReturningSelectionwithTimestamps(): void
     {
-        with(new Example())->newQuery()->insert(['str' => 'MzD2gVTR']);
+        (new Example())->newQuery()->insert(['str' => 'MzD2gVTR']);
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->updateReturning(['str' => 'BBmUFsI1'], ['str']);
 
@@ -498,7 +498,7 @@ class BuilderReturningTest extends TestCase
         }
 
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new Example())
+            $result = (new Example())
                 ->newQuery()
                 ->upsertReturning([['str' => 'WDrZatGx']], ['str'], []);
 
@@ -516,7 +516,7 @@ class BuilderReturningTest extends TestCase
         }
 
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->upsertReturning([['str' => 'WDrZatGx']], ['str'], []);
 
@@ -534,7 +534,7 @@ class BuilderReturningTest extends TestCase
         }
 
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new Example())
+            $result = (new Example())
                 ->newQuery()
                 ->upsertReturning([['str' => 'WdSnJCZP']], ['str'], [], ['str']);
 
@@ -552,7 +552,7 @@ class BuilderReturningTest extends TestCase
         }
 
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->upsertReturning([['str' => 'WdSnJCZP']], ['str'], [], ['str']);
 
@@ -570,7 +570,7 @@ class BuilderReturningTest extends TestCase
         }
 
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new Example())
+            $result = (new Example())
                 ->newQuery()
                 ->upsertReturning([['str' => 'PeKB2qK5']], ['str'], ['str']);
 
@@ -588,7 +588,7 @@ class BuilderReturningTest extends TestCase
         }
 
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->upsertReturning([['str' => 'PeKB2qK5']], ['str'], ['str']);
 
@@ -606,7 +606,7 @@ class BuilderReturningTest extends TestCase
         }
 
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new Example())
+            $result = (new Example())
                 ->newQuery()
                 ->upsertReturning([['str' => 'MjcznPbN']], ['str'], ['str'], ['str']);
 
@@ -624,7 +624,7 @@ class BuilderReturningTest extends TestCase
         }
 
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new ExampleTimestamps())
+            $result = (new ExampleTimestamps())
                 ->newQuery()
                 ->upsertReturning([['str' => 'MjcznPbN']], ['str'], ['str'], ['str']);
 
@@ -642,7 +642,7 @@ class BuilderReturningTest extends TestCase
         }
 
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new Example())
+            $result = (new Example())
                 ->newQuery()
                 ->upsertReturning([], ['str']);
 
@@ -659,7 +659,7 @@ class BuilderReturningTest extends TestCase
         }
 
         $queries = $this->withQueryLog(function (): void {
-            $result = with(new Example())
+            $result = (new Example())
                 ->newQuery()
                 ->upsertReturning([['str' => 'PeKB2qK5']], ['str']);
 
