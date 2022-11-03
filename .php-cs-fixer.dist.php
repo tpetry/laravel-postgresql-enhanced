@@ -16,6 +16,7 @@ $config
         '@Symfony:risky' => true,
         '@Symfony' => true,
         'binary_operator_spaces' => ['operators' => ['|' => null]], // https://github.com/FriendsOfPHP/PHP-CS-Fixer/issues/5495
+        'global_namespace_import' => false,
         'ordered_class_elements' => [
             'order' => [
                 'use_trait',
