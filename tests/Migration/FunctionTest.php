@@ -261,6 +261,14 @@ class FunctionTest extends TestCase
         $this->assertEquals(['create or replace function "test_431469"("p555860" int) returns int language plpgsql parallel unsafe as $$ begin select abs(p555860);end $$'], array_column($queries, 'query'));
     }
 
+    public function testCreateFunctionOrReplaceReturnTable(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createFunctionOrReplace('test_492625', ['p245753' => 'int'], ['p583449' => 'int'], 'plpgsql', 'begin select p583449 * -1;end');
+        });
+        $this->assertEquals(['create or replace function "test_492625"("p245753" int) returns table("p583449" int) language plpgsql as $$ begin select p583449 * -1;end $$'], array_column($queries, 'query'));
+    }
+
     public function testCreateFunctionOrReplaceSecurityDefiner(): void
     {
         $queries = $this->withQueryLog(function (): void {
@@ -309,6 +317,14 @@ class FunctionTest extends TestCase
             ]);
         });
         $this->assertEquals(['create function "test_731603"("p823743" int) returns int language plpgsql parallel unsafe as $$ begin select abs(p823743);end $$'], array_column($queries, 'query'));
+    }
+
+    public function testCreateFunctionReturnTable(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createFunction('test_569214', ['p647361' => 'int'], ['p428739' => 'int'], 'plpgsql', 'begin select p647361 * -1;end');
+        });
+        $this->assertEquals(['create function "test_569214"("p647361" int) returns table("p428739" int) language plpgsql as $$ begin select p647361 * -1;end $$'], array_column($queries, 'query'));
     }
 
     public function testCreateFunctionSecurityDefiner(): void

@@ -12,9 +12,10 @@ trait BuilderFunction
      * Create a new function on the schema.
      *
      * @param array<string, string> $parameters
+     * @param array<string, string>|string $return
      * @param array{calledOnNull?: bool, cost?: int, leakproof?: bool, parallel?: 'restricted'|'safe'|'unsafe', security?: 'definer'|'invoker', volatility?: 'immutable'|'stable'|'volatile'} $options
      */
-    public function createFunction(string $name, array $parameters, string $return, string $language, string $body, array $options = []): void
+    public function createFunction(string $name, array $parameters, array|string $return, string $language, string $body, array $options = []): void
     {
         $this->createGenericFunction($name, $parameters, $return, $language, $body, $options, false);
     }
@@ -23,9 +24,10 @@ trait BuilderFunction
      * Create or replace a new function on the schema.
      *
      * @param array<string, string> $parameters
+     * @param array<string, string>|string $return
      * @param array{calledOnNull?: bool, cost?: int, leakproof?: bool, parallel?: 'restricted'|'safe'|'unsafe', security?: 'definer'|'invoker', volatility?: 'immutable'|'stable'|'volatile'} $options
      */
-    public function createFunctionOrReplace(string $name, array $parameters, string $return, string $language, string $body, array $options = []): void
+    public function createFunctionOrReplace(string $name, array $parameters, array|string $return, string $language, string $body, array $options = []): void
     {
         $this->createGenericFunction($name, $parameters, $return, $language, $body, $options, true);
     }
@@ -68,9 +70,10 @@ trait BuilderFunction
      * Create a new function on the schema.
      *
      * @param array<string, string> $parameters
+     * @param array<string, string>|string $return
      * @param array{calledOnNull?: bool, cost?: int, leakproof?: bool, parallel?: 'restricted'|'safe'|'unsafe', security?: 'definer'|'invoker', volatility?: 'immutable'|'stable'|'volatile'} $options
      */
-    private function createGenericFunction(string $name, array $parameters, string $return, string $language, string $body, array $options, bool $createOrReplace): void
+    private function createGenericFunction(string $name, array $parameters, array|string $return, string $language, string $body, array $options, bool $createOrReplace): void
     {
         [$language, $languageOption] = match ($language) {
             'sql:expression' => ['sql', 'expression'],
@@ -81,6 +84,16 @@ trait BuilderFunction
             return "{$this->getConnection()->getSchemaGrammar()->wrap($name)} {$type}";
         }, array_keys($parameters), array_values($parameters));
         $parametersStr = implode(', ', $parameters);
+
+        $sqlReturn = $return;
+        if (\is_array($return)) {
+            $columns = array_map(function (string $name, string $type) {
+                return "{$this->getConnection()->getSchemaGrammar()->wrap($name)} {$type}";
+            }, array_keys($return), array_values($return));
+            $columns = implode(', ', $columns);
+
+            $sqlReturn = "table({$columns})";
+        }
 
         $modifiers = ["language {$language}"];
         foreach ($options as $key => $value) {
@@ -103,8 +116,8 @@ trait BuilderFunction
         };
 
         $sqlCreate = match ($createOrReplace) {
-            true => "create or replace function {$this->getConnection()->getSchemaGrammar()->wrap($name)}({$parametersStr}) returns {$return}",
-            false => "create function {$this->getConnection()->getSchemaGrammar()->wrap($name)}({$parametersStr}) returns {$return}",
+            true => "create or replace function {$this->getConnection()->getSchemaGrammar()->wrap($name)}({$parametersStr}) returns {$sqlReturn}",
+            false => "create function {$this->getConnection()->getSchemaGrammar()->wrap($name)}({$parametersStr}) returns {$sqlReturn}",
         };
 
         $this->getConnection()->statement("{$sqlCreate} {$sqlModifiers} {$sqlBody}");

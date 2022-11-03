@@ -164,11 +164,17 @@ The `Schema` facade supports the creation of functions with the `createFunction`
 ```php
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 
-Schema::createFunction('sales_tax', ['subtotal' => 'numeric'], 'numeric', 'plpgsql', '
-  BEGIN
-    RETURN subtotal * 0.06;
-  END;
-');
+Schema::createFunction(
+  name: 'sales_tax',
+  parameters: ['subtotal' => 'numeric'],
+  return: 'numeric',
+  language: 'plpgsql',
+  body: '
+    BEGIN
+      RETURN subtotal * 0.06;
+    END;
+  '
+);
 ```
 
 A sixth parameter lets you define further options for the function. Please [read the manual](https://www.postgresql.org/docs/current/sql-createfunction.html) for the exact meaning, some of them set enable or disable ways for PostgreSQL to optimize the execution.
@@ -191,6 +197,16 @@ Schema::createFunction('sales_tax', ['subtotal' => 'numeric'], 'numeric', 'sql:e
   'parallel' => 'safe',
   'volatility' => 'immutable',
 ]);
+```
+
+If you want your function to return a table, you have to provide the columns as return type:
+
+```php
+Schema::createFunction('search_user', ['pattern' => 'text'], ['id' => 'int', 'email' => 'text'], 'plpgsql', "
+  BEGIN
+    RETURN QUERY select user_id, contactemail from users where name ilike '%' || pattern || '%';
+  END;
+");
 ```
 
 #### Drop Functions
