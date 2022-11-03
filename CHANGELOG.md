@@ -4,8 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.22.0] - 2022-11-03
+### Added
+* Functions created in migrations can also return tables
+* Unique indexes with NULLS NOT DISTINCT options
+
 ## [0.21.0] - 2022-10-18
-### Fixed
+### Added
 * `whereAll` clause for query builder
 * `whereAny` clause for query builder
 * `whereBoolean` clause for query builder
