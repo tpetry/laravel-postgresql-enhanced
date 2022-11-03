@@ -33,6 +33,9 @@ class SchemaIndexDefinitionExtension implements MethodsClassReflectionExtension
                 $this->createFunctionVariant([new ReflectedParameter('columns', new StringType())]),
                 $this->createFunctionVariant([new ReflectedParameter('columns', new ArrayType(new IntegerType(), new StringType()))]),
             ]),
+            'nullsNotDistinct' => new ReflectedMethod($classReflection, $methodName, [
+                $this->createFunctionVariant([]),
+            ]),
             'weight' => new ReflectedMethod($classReflection, $methodName, [
                 $this->createFunctionVariant([new ReflectedParameter('labels', new ArrayType(new IntegerType(), new StringType()))]),
             ]),
@@ -54,7 +57,7 @@ class SchemaIndexDefinitionExtension implements MethodsClassReflectionExtension
             return false;
         }
 
-        return \in_array($methodName, ['include', 'weight', 'where', 'with']);
+        return \in_array($methodName, ['include', 'nullsNotDistinct', 'weight', 'where', 'with']);
     }
 
     /**

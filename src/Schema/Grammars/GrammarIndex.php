@@ -165,6 +165,7 @@ trait GrammarIndex
             $command['algorithm'] ? "using {$command['algorithm']}" : '',
             '('.implode(', ', $columns).')',
             $command['include'] ? 'include ('.implode(',', $this->wrapArray(Arr::wrap($command['include']))).')' : '',
+            $command['nullsNotDistinct'] ? 'nulls not distinct' : '',
             $command['with'] ? "with ({$command['with']})" : '',
             $command['where'] ? "where {$command['where']}" : '',
         ];

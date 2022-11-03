@@ -27,6 +27,7 @@ composer require tpetry/laravel-postgresql-enhanced
     - [Views](#views)
         - [Materialized Views](#materialized-views)
     - [Indexes](#indexes)
+        - [Nulls Not Distinct](#nulls-not-distinct)
         - [Partial Indexes](#partial-indexes)
         - [Include Columns](#include-columns)
         - [Storage Parameters](#storage-parameters)
@@ -319,6 +320,30 @@ Schema::table('users', function(Blueprint $table) {
 
 In addition to the Laravel methods to drop indexes, methods to drop indexes if they exist have been added.
 The methods `dropFullTextIfExists`, `dropIndexIfExists`, `dropPrimaryIfExists`, `dropSpatialIndexIfExists` and `dropSpatialIndexIfExists` match the semantics of their laravel originals.
+
+#### Nulls Not Distinct
+
+NULL values in unique indexes are handled in a non-comprehensible way for most developers.
+When you e.g. save active subscriptions, you want to limit every user to have only one active subscription by e.g. creating a unique index on `(user_id, cancelled_at)`.
+But as active subscriptions don't have a `cancelled_at` timestamp, multiple rows can be entered with the same `user_id` and a `NULL` value for `cancelled_at` because two `NULL` values are never the same.
+But with PostgreSQL 15 you can now instruct the database not to allow those duplicate rows by handling `NULL` values as not distinct:
+
+```php
+use Illuminate\Database\Query\Builder;
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::create('subscriptions', function(Blueprint $table) {
+    $table->id('user_id');
+    $table->timestampTz('cancelled_at');
+
+
+    $table->uniqueIndex(['user_id', 'cancelled_at'])->nullsNotDistinct();
+});
+```
+
+> **Note**  
+> For this example you could also use a unique partial index on `user_id` with limiting thw rows to `cancelled_at IS NOT NULL`.
 
 #### Partial Indexes
 

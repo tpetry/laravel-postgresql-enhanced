@@ -343,6 +343,40 @@ class IndexOptionsTest extends TestCase
         $this->assertEquals(['create unique index "index_151431" on "test_114041" ("col_878088") include ("col_958638")'], array_column($queries, 'query'));
     }
 
+    public function testUniqueIndexNullsNotDistinctByColumn(): void
+    {
+        if (version_compare($this->getConnection()->serverVersion(), '15') < 0) {
+            $this->markTestSkipped('Null distinct handling is first supported with PostgreSQL 15.');
+        }
+
+        Schema::create('test_362300', function (Blueprint $table): void {
+            $table->string('col_175058')->nullable();
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_362300', function (Blueprint $table): void {
+                $table->uniqueIndex(['col_175058'])->nullsNotDistinct();
+            });
+        });
+        $this->assertEquals(['create unique index "test_362300_col_175058_unique" on "test_362300" ("col_175058") nulls not distinct'], array_column($queries, 'query'));
+    }
+
+    public function testUniqueIndexNullsNotDistinctByName(): void
+    {
+        if (version_compare($this->getConnection()->serverVersion(), '15') < 0) {
+            $this->markTestSkipped('Null distinct handling is first supported with PostgreSQL 15.');
+        }
+
+        Schema::create('test_269321', function (Blueprint $table): void {
+            $table->string('col_729148')->nullable();
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_269321', function (Blueprint $table): void {
+                $table->uniqueIndex(['col_729148'], 'index_992648')->nullsNotDistinct();
+            });
+        });
+        $this->assertEquals(['create unique index "index_992648" on "test_269321" ("col_729148") nulls not distinct'], array_column($queries, 'query'));
+    }
+
     public function testUniqueIndexPartialByColumn(): void
     {
         Schema::create('test_262832', function (Blueprint $table): void {
