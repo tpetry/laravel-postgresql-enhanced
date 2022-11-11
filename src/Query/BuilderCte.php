@@ -14,7 +14,7 @@ trait BuilderCte
     /**
      * Adds a common table expression to the query.
      *
-     * @param \Closure|\Illuminate\Database\Query\Builder|string $query
+     * @param \Closure|\Illuminate\Contracts\Database\Query\Builder|string $query
      * @param array{cycle?: string, materialized?: bool, recursive?: true, search?: string} $options
      */
     public function withExpression(string $as, $query, array $options = []): static

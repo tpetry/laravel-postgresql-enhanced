@@ -11,7 +11,7 @@ trait BuilderLateralJoin
     /**
      * Add a lateral subquery cross join to the query.
      *
-     * @param \Closure|\Illuminate\Database\Query\Builder|string $query
+     * @param \Closure|\Illuminate\Contracts\Database\Query\Builder|string $query
      */
     public function crossJoinSubLateral($query, string $as): static
     {
@@ -29,7 +29,7 @@ trait BuilderLateralJoin
     /**
      * Add a lateral subquery join clause to the query.
      *
-     * @param \Closure|\Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder|string $query
+     * @param \Closure|\Illuminate\Contracts\Database\Query\Builder|string $query
      * @param \Closure|string $first
      * @param string|null $operator
      * @param string|null $second
@@ -48,7 +48,7 @@ trait BuilderLateralJoin
     /**
      * Add a lateral subquery left join to the query.
      *
-     * @param \Closure|\Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder|string $query
+     * @param \Closure|\Illuminate\Contracts\Database\Query\Builder|string $query
      * @param \Closure|string|null $first
      * @param string|null $operator
      * @param string|null $second

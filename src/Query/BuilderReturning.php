@@ -126,7 +126,7 @@ trait BuilderReturning
     /**
      * Insert new records into the table using a subquery.
      *
-     * @param \Closure|\Illuminate\Database\Query\Builder|string $query
+     * @param \Closure|\Illuminate\Contracts\Database\Query\Builder|string $query
      *
      * @return \Illuminate\Support\Collection<int, object>
      */
