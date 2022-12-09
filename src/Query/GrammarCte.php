@@ -18,7 +18,7 @@ trait GrammarCte
         foreach ($expressions as $expression) {
             $parts = [
                 transform($expression['options']['recursive'] ?? null, fn ($recursive) => $recursive ? 'recursive' : 'null'),
-                $this->wrapTable($expression['as']),
+                $this->escapeFunctionalCtes($expression['as']),
                 'as',
                 transform($expression['options']['materialized'] ?? null, fn ($materialized) => $materialized ? 'materialized' : 'not materialized'),
                 "({$expression['query']})",
