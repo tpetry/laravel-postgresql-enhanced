@@ -31,6 +31,31 @@ trait GrammarCte
 
         return 'with '.implode(', ', $ctes);
     }
+    
+    /**
+     * Escape the function elements
+     */
+    private function escapeFunctionalCtes(string $cteTableName): string
+    {
+        // Only escape table name if not a function
+        if (!str_contains($cteTableName, '(')) return $this->wrapTable($cteTableName);
+
+        // extract function and arguments
+        [$functionName, $functionArguments] = explode('(', $cteTableName);
+
+        $functionName = $this->wrapTable($functionName);
+
+        // wrap every arguments
+        $functionArguments = trim($functionArguments, ')');
+        $functionArguments = explode(',', $functionArguments);
+        $functionArguments = array_map(
+            fn (string $argument) => $this->wrapTable(trim($argument)),
+            $functionArguments
+        );
+        $functionArguments = implode(',', $functionArguments);
+
+        return "{$functionName}({$functionArguments})";
+    }
 
     /**
      * Prepend common table expression sql to query.
