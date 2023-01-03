@@ -916,9 +916,9 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [icon-codestyle]: https://img.shields.io/github/workflow/status/tpetry/laravel-postgresql-enhanced/PHP%20CS%20Fixer?label=Code%20Style
 [icon-license]: https://img.shields.io/github/license/tpetry/laravel-postgresql-enhanced?color=blue&label=License
 [icon-phpstanconfig]: https://img.shields.io/badge/PHPStan%20Level-5-blue
-[icon-phpstantest]: https://img.shields.io/github/workflow/status/tpetry/laravel-postgresql-enhanced/PHPStan?label=PHPStan
+[icon-phpstantest]: https://img.shields.io/github/actions/workflow/status/tpetry/laravel-postgresql-enhanced/phpstan.yml?label=PHPStan
 [icon-php]: https://img.shields.io/packagist/php-v/tpetry/laravel-postgresql-enhanced?color=blue&label=PHP
-[icon-style]: https://img.shields.io/github/workflow/status/tpetry/laravel-postgresql-enhanced/PHP%20CS%20Fixer?label=Code%20Style
-[icon-tests]: https://img.shields.io/github/workflow/status/tpetry/laravel-postgresql-enhanced/PHPUnit?label=Tests
+[icon-style]: https://img.shields.io/github/actions/workflow/status/tpetry/laravel-postgresql-enhanced/php_cs_fixer.yml?label=Code%20Style
+[icon-tests]: https://img.shields.io/github/actions/workflow/status/tpetry/laravel-postgresql-enhanced/phpunit.yml?label=Tests
 [icon-version]: https://img.shields.io/packagist/v/tpetry/laravel-postgresql-enhanced.svg?label=Packagist
 [logo]: .art/teaser.png
