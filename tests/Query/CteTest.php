@@ -391,6 +391,28 @@ class CteTest extends TestCase
         $this->assertEquals([['KIqJENSm', 'KIqJENSm']], array_column($queries, 'bindings'));
     }
 
+    public function testSyntaxRecursiveMultiple(): void
+    {
+        // The recursive query doesn't make any sense! But it's the simplest one I can imagine to just the correct query building.
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()
+                ->table('example')
+                ->withExpression('cte1', $this->getConnection()->table('example')->where('str', 'HgG7LfhI'), [
+                    'recursive' => true,
+                ])
+                ->withExpression('cte2', $this->getConnection()->table('example')->where('str', 'KiaCDOqa'), [
+                    'recursive' => true,
+                ])
+                ->get();
+        });
+
+        $this->assertEquals(
+            ['with recursive "cte1" as (select * from "example" where "str" = ?), "cte2" as (select * from "example" where "str" = ?) select * from "example"'],
+            array_column($queries, 'query'),
+        );
+        $this->assertEquals([['HgG7LfhI', 'KiaCDOqa']], array_column($queries, 'bindings'));
+    }
+
     public function testSyntaxRecursiveSearch(): void
     {
         // The recursive query doesn't make any sense! But it's the simplest one I can imagine to just the correct query building.
@@ -414,6 +436,25 @@ class CteTest extends TestCase
             array_column($queries, 'query'),
         );
         $this->assertEquals([['UmdXoTb1', 'UmdXoTb1']], array_column($queries, 'bindings'));
+    }
+
+    public function testSyntaxSameAlias(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()
+                ->table('example')
+                ->withExpression('cte1', $this->getConnection()->table('example')->where('str', 'HH7qHsCr'))
+                ->withExpression('cte2', $this->getConnection()->table('example')->where('str', 'M1oRd4NG'))
+                ->withExpression('cte1', $this->getConnection()->table('example')->where('str', 'YZwoaSWU'))
+
+                ->get();
+        });
+
+        $this->assertEquals(
+            ['with "cte2" as (select * from "example" where "str" = ?), "cte1" as (select * from "example" where "str" = ?) select * from "example"'],
+            array_column($queries, 'query'),
+        );
+        $this->assertEquals([['M1oRd4NG', 'YZwoaSWU']], array_column($queries, 'bindings'));
     }
 
     public function testSyntaxSimple(): void
