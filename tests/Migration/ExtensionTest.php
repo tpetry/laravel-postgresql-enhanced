@@ -16,6 +16,11 @@ class ExtensionTest extends TestCase
             Schema::createExtension('tablefunc');
         });
         $this->assertEquals(['create extension "tablefunc"'], array_column($queries, 'query'));
+
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createExtension('tablefunc', 'extensions');
+        });
+        $this->assertEquals(['create extension "tablefunc" schema "extensions"'], array_column($queries, 'query'));
     }
 
     public function testCreateExtensionIfNotExists(): void
@@ -24,6 +29,11 @@ class ExtensionTest extends TestCase
             Schema::createExtensionIfNotExists('tablefunc');
         });
         $this->assertEquals(['create extension if not exists "tablefunc"'], array_column($queries, 'query'));
+
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createExtensionIfNotExists('tablefunc', 'extensions');
+        });
+        $this->assertEquals(['create extension if not exists "tablefunc" schema "extensions"'], array_column($queries, 'query'));
     }
 
     public function testDropExtension(): void
