@@ -39,7 +39,7 @@ class ExtensionTest extends TestCase
     {
         DB::statement('CREATE SCHEMA IF NOT EXISTS extensions');
         $queries = $this->withQueryLog(function (): void {
-            Schema::createExtension('intarray', 'extensions');
+            Schema::createExtension('tablefunc', 'extensions');
         });
         $this->assertEquals(['create extension "tablefunc" schema "extensions"'], array_column($queries, 'query'));
     }
