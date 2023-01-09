@@ -13,7 +13,7 @@ trait BuilderExtension
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrap($name);
 
-        $sql = match (!!$schema) {
+        $sql = match (filled($schema)) {
             true => "create extension {$name} schema {$this->getConnection()->getSchemaGrammar()->wrap($schema)}",
             false => "create extension {$name}",
         };
@@ -27,7 +27,7 @@ trait BuilderExtension
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrap($name);
 
-        $sql = match (!!$schema) {
+        $sql = match (filled($schema)) {
             true => "create extension if not exists {$name} schema {$this->getConnection()->getSchemaGrammar()->wrap($schema)}",
             false => "create extension if not exists {$name}",
         };
