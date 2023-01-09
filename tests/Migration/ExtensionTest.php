@@ -28,6 +28,7 @@ class ExtensionTest extends TestCase
 
     public function testCreateExtensionIfNotExistsWithSchema(): void
     {
+        DB::statement('CREATE SCHEMA IF NOT EXISTS extensions');
         $queries = $this->withQueryLog(function (): void {
             Schema::createExtensionIfNotExists('tablefunc', 'extensions');
         });
@@ -36,6 +37,7 @@ class ExtensionTest extends TestCase
 
     public function testCreateExtensionWithSchema(): void
     {
+        DB::statement('CREATE SCHEMA IF NOT EXISTS extensions');
         $queries = $this->withQueryLog(function (): void {
             Schema::createExtension('intarray', 'extensions');
         });
