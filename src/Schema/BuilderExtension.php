@@ -9,19 +9,29 @@ trait BuilderExtension
     /**
      * Create a new extension on the schema.
      */
-    public function createExtension(string $name): void
+    public function createExtension(string $name, ?string $schema = null): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrap($name);
-        $this->getConnection()->statement("create extension {$name}");
+
+        $sql = match (filled($schema)) {
+            true => "create extension {$name} schema {$this->getConnection()->getSchemaGrammar()->wrap($schema)}",
+            false => "create extension {$name}",
+        };
+        $this->getConnection()->statement($sql);
     }
 
     /**
      * Create a new extension on the schema if it does not exist.
      */
-    public function createExtensionIfNotExists(string $name): void
+    public function createExtensionIfNotExists(string $name, ?string $schema = null): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrap($name);
-        $this->getConnection()->statement("create extension if not exists {$name}");
+
+        $sql = match (filled($schema)) {
+            true => "create extension if not exists {$name} schema {$this->getConnection()->getSchemaGrammar()->wrap($schema)}",
+            false => "create extension if not exists {$name}",
+        };
+        $this->getConnection()->statement($sql);
     }
 
     /**
