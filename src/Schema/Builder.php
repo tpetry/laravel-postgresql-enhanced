@@ -10,6 +10,7 @@ use Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection;
 
 class Builder extends PostgresBuilder
 {
+    use BuilderDomain;
     use BuilderExtension;
     use BuilderFunction;
     use BuilderView;

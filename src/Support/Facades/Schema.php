@@ -8,6 +8,10 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Schema as BaseSchema;
 
 /**
+ * @method static void changeDomainConstraint(string $name, null|string|(callable(\Tpetry\PostgresqlEnhanced\Query\Builder): mixed) $check)
+ * @method static void createDomain(string $name, string $type, string|(callable(\Tpetry\PostgresqlEnhanced\Query\Builder): mixed) $check = null)
+ * @method static void dropDomain(string ...$name)
+ * @method static void dropDomainIfExists(string ...$name)
  * @method static void createExtension(string $name, ?string $schema = null)
  * @method static void createExtensionIfNotExists(string $name, ?string $schema = null)
  * @method static void createFunction(string $name, array $parameters, array|string $return, string $language, string $body, array $options = [])

@@ -33,6 +33,7 @@ composer require tpetry/laravel-postgresql-enhanced
         - [Storage Parameters](#storage-parameters)
         - [Functional Indexes / Column Options](#functional-indexes--column-options)
         - [Fulltext Indexes](#fulltext-indexes)
+    - [Domain Types](#domain-types)
     - [Column Options](#column-options)
         - [Compression](#compression)
     - [Column Types](#column-types)
@@ -431,6 +432,78 @@ Schema::table('book', function (Blueprint $table) {
         ->language('spanish')
         ->weight(['A', 'B']);
 });
+```
+
+### Domain Types
+
+A relational database like PostgreSQL provides a lot of data types you can choose from.
+But they are only generic types that should match thousands of applications.
+Your specific requirements are not covered.
+But with domain types, you can add application-specific types like a price column that has a specific amount of digits and is never negative:
+An existing base type (`numeric(9,2)`) is aliased to a new type with an optional condition that all values have to match.
+You can use that to create repeatable price columns in your tables or create completely new types like a license plate type that has to match a specific format.
+
+#### Create A Domain Type
+
+The Schema facade supports the creation of domain types with the `createDomain` method by passing the name, the base type and an optional SQL condition to validate any value.
+
+```php
+use Tpetry\PostgresqlEnhanced\Query\Builder;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::createDomain('price', 'numeric(9,2)');
+Schema::createDomain('price', 'numeric(9,2)', 'VALUE >= 0');
+Schema::createDomain('price', 'numeric(9,2)', fn (Builder $query) => $query->where('VALUE', '>=', 0));
+```
+
+#### Use Domain Types
+
+Your created domain types can be used in a migration like every other column by using the `domain` column type and using the column name and domain type name:
+
+```php
+Schema::create('products', function (Blueprint $table): void {
+  $table->id();
+  $table->string('item_name');
+  $table->domain('item_price', 'price');
+  $table->timestampsTz();
+});
+
+```
+
+#### Altering Domain Types
+
+The base type of a domain type can't be changed after it has been created.
+But you can change the condition to validate the values by removing it or replacing it with a new one:
+
+```php
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+// To drop the validation condition:
+Schema::changeDomainConstraint('price', null);
+
+// To change validation condition:
+Schema::changeDomainConstraint('price', 'VALUE > 0');
+Schema::changeDomainConstraint('price', fn (Builder $query) => $query->where('VALUE', '>', 0));
+```
+
+#### Dropping Domain Types
+
+To remove domain types, you have first to drop all column using them (or change their type) and then use `dropDomain` or `dropDomainIfExists` provided by the Schema facade:
+
+```php
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::dropDomain('price');
+Schema::dropDomainIfExists('price');
+```
+
+You may drop many domain types at once by passing multiple domain names:
+
+```php
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::dropDomain('price', 'license_plate');
+Schema::dropDomainIfExists('price', 'license_plate');
 ```
 
 ### Column Options

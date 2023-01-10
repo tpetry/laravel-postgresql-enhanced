@@ -81,6 +81,14 @@ trait GrammarTypes
     }
 
     /**
+     * Create the column definition for a domain type.
+     */
+    protected function typeDomain(Fluent $column): string
+    {
+        return $column['domain'];
+    }
+
+    /**
      * Create the column definition for an european article number type.
      */
     protected function typeEan13(Fluent $column): string
