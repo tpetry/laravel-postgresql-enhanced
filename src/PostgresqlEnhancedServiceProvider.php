@@ -91,10 +91,9 @@ class PostgresqlEnhancedServiceProvider extends ServiceProvider
         $this->app->singleton(ZeroDowntimeMigrationSupervisor::class);
 
         Event::listen(MigrationsStarted::class, function (): void {
-            $this->registerDoctrineTypes();
             $this->app->get(ZeroDowntimeMigrationSupervisor::class)->start();
         });
-        if ($this->app->runningUnitTests()) {
+        if ($this->app->runningUnitTests() || $this->app->runningInConsole()) {
             $this->registerDoctrineTypes();
         }
     }
