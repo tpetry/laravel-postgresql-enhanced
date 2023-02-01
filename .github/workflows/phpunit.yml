@@ -19,13 +19,13 @@ jobs:
             doctrine: ^2.6
             testbench: 5.*
           - laravel: 8.*
-            doctrine: ^3.1
+            doctrine: ^3.5
             testbench: 6.*
           - laravel: 9.*
-            doctrine: ^3.1
+            doctrine: ^3.5
             testbench: 7.*
           - laravel: 10.*
-            doctrine: ^3.1
+            doctrine: ^3.5
             testbench: 8.*
         exclude:
           - php: 8.0
