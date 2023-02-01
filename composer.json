@@ -27,7 +27,7 @@
         "orchestra/testbench": "^4.0|^5.0|^6.0|^7.0|^8.0",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^1.5",
-        "phpunit/phpunit": "^8.5.23|^9.5.13|^9.5.10"
+        "phpunit/phpunit": "^8.5.23|^9.5.13"
     },
     "autoload": {
         "psr-4": {
@@ -61,9 +61,7 @@
         }
     },
     "archive": {
-        "exclude": [
-            "/.art"
-        ]
+        "exclude": ["/.art"]
     },
     "minimum-stability": "dev",
     "prefer-stable": true
