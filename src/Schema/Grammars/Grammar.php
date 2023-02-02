@@ -16,7 +16,7 @@ class Grammar extends PostgresGrammar
      *
      * @var string[]
      */
-    protected $modifiers = ['Compression', 'Collate', 'Increment', 'Nullable', 'Default', 'VirtualAs', 'StoredAs'];
+    protected $modifiers = ['Compression', 'Collate', 'Nullable', 'Default', 'VirtualAs', 'StoredAs', 'GeneratedAs', 'Increment'];
 
     /**
      * Convert an array of names into a delimited string.
