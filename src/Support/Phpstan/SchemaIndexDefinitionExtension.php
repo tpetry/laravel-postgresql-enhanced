@@ -73,16 +73,4 @@ class SchemaIndexDefinitionExtension implements MethodsClassReflectionExtension
             returnType: new ObjectType(IndexDefinition::class),
         );
     }
-
-    private function createReflectedMethod(ClassReflection $classReflection, string $methodName, array $variants): ReflectedMethod
-    {
-        return new ReflectedMethod(
-            classReflection: $classReflection,
-            name: $methodName,
-            variants: [
-                $this->createFunctionVariant([new ReflectedParameter('columns', new StringType())]),
-                $this->createFunctionVariant([new ReflectedParameter('columns', new ArrayType(new IntegerType(), new StringType()))]),
-            ],
-        );
-    }
 }

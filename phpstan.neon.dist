@@ -8,8 +8,6 @@ parameters:
         - tests
     ignoreErrors:
         # Laravel does not know of lateral joins and probably wouldn't merge a PR extending all join types with expressions
-        - message: "#^Parameter \\#1 \\$table of method Illuminate\\\\Database\\\\Query\\\\Builder\\:\\:join\\(\\) expects string, Illuminate\\\\Database\\\\Query\\\\Expression given\\.$#"
-          path: src/Query/Builder.php
         - message: "#^Parameter \\#3 \\$table of method Illuminate\\\\Database\\\\Query\\\\Builder\\:\\:newJoinClause\\(\\) expects string, Illuminate\\\\Database\\\\Query\\\\Expression given\\.$#"
           path: src/Query/Builder.php
         # The eloquent builder mixin is calling protected methods because it's part of the builder object
