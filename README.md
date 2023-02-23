@@ -24,6 +24,7 @@ composer require tpetry/laravel-postgresql-enhanced
     - [Zero Downtime Migration](#zero-downtime-migration)
     - [Extensions](#extensions)
     - [Functions](#functions)
+    - [Triggers](#triggers)
     - [Views](#views)
         - [Materialized Views](#materialized-views)
     - [Indexes](#indexes)
@@ -220,6 +221,49 @@ use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 
 Schema::dropFunction('sales_tax');
 Schema::dropFunctionIfExists('sales_tax');
+```
+
+### Triggers
+
+#### Create Triggers
+
+On your `Blueprint` you can add triggers to a table.
+You need to pass in a unique name, call of a function you've created before and the action that will fire the trigger:
+
+```php
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::table('projects', function (Blueprint $table): void {
+    $table->trigger('rollup_quota', 'update_quota_by_projects()', 'AFTER INSERT OR DELETE');
+});
+```
+
+The following table contains all of the available trigger modifiers:
+
+| Modifier                                                                          | Description                                                                                                                                                        |
+|-----------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `->forEachRow()`                                                                  | The trigger will be called for every row.                                                                                                                          |
+| `->forEachStatement()`                                                            | The trigger will be called once for each statement *(default)*.                                                                                                    |
+| `->transitionTables(`<br>`  old: 'oldrows',`<br>`  new: 'newrows',`<br>`)`        | The forEachStatement-trigger will provide the before/after state of the affected rows in special tables. You can omit either option if not valid for this trigger. |
+| `->when('NEW.type = 4')`<br>`->when(fn ($query) => $query->where('NEW.type', 4))` | The trigger should only be called when the condition matches *(only with forEachRow)*.                                                                             |
+| `->replace(true)`                                                                 | The trigger will replace an existing one defined with the same name.                                                                                               |
+
+> **Note**
+> PostgreSQL always updates rows even if nothing changed, which may affect your performance. You can add the `suppress_redundant_updates_trigger()` trigger with a `BEFORE UPDATE` action to all tables.
+
+#### Drop Triggers
+
+To remove trigger, you may use the `dropTrigger` and `dropTriggerIfExists` methods provided by the table's `Blueprint` class:
+
+```php
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::table('projects', function (Blueprint $table): void {
+    $table->dropTrigger('update_quota');
+    $table->dropTriggerIfExists('update_quota');
+});
 ```
 
 ### Views
