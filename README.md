@@ -1,8 +1,8 @@
 
 [![License][icon-license]][href-license]
 [![PHP][icon-php]][href-php]
-[![PHP][icon-phpstanconfig]][href-phpstanconfig]
 [![Latest Version on Packagist][icon-version]][href-version]
+[![Downloads on Packagist][icon-downloads]][href-downloads]
 [![GitHub PHPUnit Action Status][icon-tests]][href-tests]
 [![GitHub PHPStan Action Status][icon-phpstantest]][href-phpstantest]
 [![GitHub PhpCsFixer Action Status][icon-style]][href-style]
@@ -1025,17 +1025,17 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 [href-license]: LICENSE.md
 [href-php]: https://packagist.org/packages/tpetry/laravel-postgresql-enhanced
-[href-phpstanconfig]: phpstan.neon.dist
 [href-phpstantest]: https://github.com/tpetry/laravel-postgresql-enhanced/actions/workflows/phpstan.yml
 [href-style]: https://github.com/tpetry/laravel-postgresql-enhanced/actions/workflows/php_cs_fixer.yml
 [href-tests]: https://github.com/tpetry/laravel-postgresql-enhanced/actions/workflows/phpunit.yml
 [href-version]: https://packagist.org/packages/tpetry/laravel-postgresql-enhanced
+[href-downloads]: [phpstan.neon.dist](https://packagist.org/packages/tpetry/laravel-postgresql-enhanced)
 [icon-codestyle]: https://img.shields.io/github/workflow/status/tpetry/laravel-postgresql-enhanced/PHP%20CS%20Fixer?label=Code%20Style
 [icon-license]: https://img.shields.io/github/license/tpetry/laravel-postgresql-enhanced?color=blue&label=License
-[icon-phpstanconfig]: https://img.shields.io/badge/PHPStan%20Level-5-blue
 [icon-phpstantest]: https://img.shields.io/github/actions/workflow/status/tpetry/laravel-postgresql-enhanced/phpstan.yml?label=PHPStan
 [icon-php]: https://img.shields.io/packagist/php-v/tpetry/laravel-postgresql-enhanced?color=blue&label=PHP
 [icon-style]: https://img.shields.io/github/actions/workflow/status/tpetry/laravel-postgresql-enhanced/php_cs_fixer.yml?label=Code%20Style
 [icon-tests]: https://img.shields.io/github/actions/workflow/status/tpetry/laravel-postgresql-enhanced/phpunit.yml?label=Tests
 [icon-version]: https://img.shields.io/packagist/v/tpetry/laravel-postgresql-enhanced.svg?label=Packagist
+[icon-downloads]: https://img.shields.io/packagist/dt/tpetry/laravel-postgresql-enhanced.svg?color=orange&label=Downloads
 [logo]: .art/teaser.png
