@@ -62,6 +62,74 @@ class IndexColumnsTest extends TestCase
         $this->assertEquals(['create index "test_185445_col_803421_index" on "test_185445" ("col_803421")'], array_column($queries, 'query'));
     }
 
+    public function testRawIndexEscapedColumn(): void
+    {
+        if (version_compare($this->app->version(), '7.7.0', '<')) {
+            $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
+        }
+
+        Schema::create('test_828707', function (Blueprint $table): void {
+            $table->string('col_594662');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_828707', function (Blueprint $table): void {
+                $table->rawIndex('"col_594662"', 'idx_224324');
+            });
+        });
+        $this->assertEquals(['create index "idx_224324" on "test_828707" ("col_594662")'], array_column($queries, 'query'));
+    }
+
+    public function testRawIndexFunctionalExpression(): void
+    {
+        if (version_compare($this->app->version(), '7.7.0', '<')) {
+            $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
+        }
+
+        Schema::create('test_470192', function (Blueprint $table): void {
+            $table->jsonb('col_996346');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_470192', function (Blueprint $table): void {
+                $table->rawIndex("(col_996346->'items')", 'idx_245601');
+            });
+        });
+        $this->assertEquals(['create index "idx_245601" on "test_470192" ((col_996346->\'items\'))'], array_column($queries, 'query'));
+    }
+
+    public function testRawIndexParametrized(): void
+    {
+        if (version_compare($this->app->version(), '7.7.0', '<')) {
+            $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
+        }
+
+        Schema::create('test_601845', function (Blueprint $table): void {
+            $table->string('col_112904');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_601845', function (Blueprint $table): void {
+                $table->rawIndex('col_112904 NULLS FIRST', 'idx_828598');
+            });
+        });
+        $this->assertEquals(['create index "idx_828598" on "test_601845" (col_112904 NULLS FIRST)'], array_column($queries, 'query'));
+    }
+
+    public function testRawIndexUnescapedColumn(): void
+    {
+        if (version_compare($this->app->version(), '7.7.0', '<')) {
+            $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
+        }
+
+        Schema::create('test_124336', function (Blueprint $table): void {
+            $table->string('col_347405');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_124336', function (Blueprint $table): void {
+                $table->rawIndex('col_347405', 'idx_562680');
+            });
+        });
+        $this->assertEquals(['create index "idx_562680" on "test_124336" (col_347405)'], array_column($queries, 'query'));
+    }
+
     public function testSpatialIndexEscapedColumn(): void
     {
         Schema::create('test_703492', function (Blueprint $table): void {

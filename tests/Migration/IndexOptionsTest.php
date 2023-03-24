@@ -233,6 +233,80 @@ class IndexOptionsTest extends TestCase
         $this->assertEquals(['create index "index_477176" on "test_533609" ("col_889546") with (fillfactor = 80)'], array_column($queries, 'query'));
     }
 
+    public function testRawIndexInclude(): void
+    {
+        if (version_compare($this->app->version(), '7.7.0', '<')) {
+            $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
+        }
+
+        Schema::create('test_550509', function (Blueprint $table): void {
+            $table->string('col_197581');
+            $table->string('col_535872');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_550509', function (Blueprint $table): void {
+                $table->rawIndex('col_197581', 'idx_253616')->include(['col_535872']);
+            });
+        });
+        $this->assertEquals(['create index "idx_253616" on "test_550509" (col_197581) include ("col_535872")'], array_column($queries, 'query'));
+    }
+
+    public function testRawIndexNullsNotDistinct(): void
+    {
+        if (version_compare($this->app->version(), '7.7.0', '<')) {
+            $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
+        }
+
+        if (version_compare($this->getConnection()->serverVersion(), '15') < 0) {
+            $this->markTestSkipped('Null distinct handling is first supported with PostgreSQL 15.');
+        }
+
+        Schema::create('test_235072', function (Blueprint $table): void {
+            $table->string('col_864636')->nullable();
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_235072', function (Blueprint $table): void {
+                $table->rawIndex('col_864636', 'idx_400631')->nullsNotDistinct();
+            });
+        });
+        $this->assertEquals(['create index "idx_400631" on "test_235072" (col_864636) nulls not distinct'], array_column($queries, 'query'));
+    }
+
+    public function testRawIndexPartial(): void
+    {
+        if (version_compare($this->app->version(), '7.7.0', '<')) {
+            $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
+        }
+
+        Schema::create('test_992618', function (Blueprint $table): void {
+            $table->string('col_306901');
+            $table->integer('col_554001');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_992618', function (Blueprint $table): void {
+                $table->rawIndex('col_306901', 'idx_836465')->where(fn (Builder $query) => $query->where('col_554001', 611288));
+            });
+        });
+        $this->assertEquals(['create index "idx_836465" on "test_992618" (col_306901) where "col_554001" = 611288'], array_column($queries, 'query'));
+    }
+
+    public function testRawIndexWith(): void
+    {
+        if (version_compare($this->app->version(), '7.7.0', '<')) {
+            $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
+        }
+
+        Schema::create('test_136121', function (Blueprint $table): void {
+            $table->string('col_933646');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_136121', function (Blueprint $table): void {
+                $table->rawIndex('col_933646', 'idx_547689')->with(['deduplicate_items' => true]);
+            });
+        });
+        $this->assertEquals(['create index "idx_547689" on "test_136121" (col_933646) with (deduplicate_items = on)'], array_column($queries, 'query'));
+    }
+
     public function testSpatialIndexIncludeByColumn(): void
     {
         Schema::create('test_780591', function (Blueprint $table): void {
