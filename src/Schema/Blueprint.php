@@ -9,6 +9,7 @@ use Illuminate\Database\Schema\Blueprint as BaseBlueprint;
 class Blueprint extends BaseBlueprint
 {
     use BlueprintIndex;
+    use BlueprintTable;
     use BlueprintTrigger;
     use BlueprintTypes;
 }

@@ -35,6 +35,8 @@ composer require tpetry/laravel-postgresql-enhanced
         - [Functional Indexes / Column Options](#functional-indexes--column-options)
         - [Fulltext Indexes](#fulltext-indexes)
     - [Domain Types](#domain-types)
+    - [Table Options](#table-options)
+        - [Unlogged](#unlogged)
     - [Column Options](#column-options)
         - [Compression](#compression)
     - [Column Types](#column-types)
@@ -548,6 +550,28 @@ use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 
 Schema::dropDomain('price', 'license_plate');
 Schema::dropDomainIfExists('price', 'license_plate');
+```
+
+### Table Options
+
+#### Unlogged
+
+You can mark high-write load tables as unlogged if losing that data is not an issue and you want a big speed boost for write operations.
+Unlogged tables are written to disk by PostgreSQL but some durability requirements to be crash-safe are skipped.
+They behave like every other table and keep their data on a clean shutdown while on a server crash all data is lost.
+This is a perfect option for temporary data which you are okay with to lose like e.g. sessions as every user can just login again.
+You can activate and deactivate the unlogged table mode with the `unlogged` method on the table blueprint.
+```php
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::table('sessions', function (Blueprint $table): void {
+    // make the table unlogged
+    $table->unlogged();
+    
+    // make the table crash-safe again
+    $table->unlogged(false);
+});
 ```
 
 ### Column Options
