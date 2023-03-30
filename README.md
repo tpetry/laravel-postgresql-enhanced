@@ -31,12 +31,13 @@ composer require tpetry/laravel-postgresql-enhanced
         - [Nulls Not Distinct](#nulls-not-distinct)
         - [Partial Indexes](#partial-indexes)
         - [Include Columns](#include-columns)
-        - [Storage Parameters](#storage-parameters)
+        - [Storage Parameters](#storage-parameters-index)
         - [Functional Indexes / Column Options](#functional-indexes--column-options)
         - [Fulltext Indexes](#fulltext-indexes)
     - [Domain Types](#domain-types)
     - [Table Options](#table-options)
         - [Unlogged](#unlogged)
+        - [Storage Parameters](#storage-parameters-table)
     - [Column Options](#column-options)
         - [Compression](#compression)
     - [Column Types](#column-types)
@@ -426,7 +427,7 @@ Schema::table('users', function(Blueprint $table) {
 ```
 Columns are included in an index with the `include` method on an index created by `index()`, `spatialIndex` or `uniqueIndex`.
 
-#### Storage Parameters
+#### Storage Parameters (Index)
 
 In some cases you want to specify the storage parameters of an index. If you are using gin indexes you should read the article [Debugging random slow writes in PostgreSQL](https://iamsafts.com/posts/postgres-gin-performance/) why storage parameters for a gin index are important:
 
@@ -571,6 +572,30 @@ Schema::table('sessions', function (Blueprint $table): void {
     
     // make the table crash-safe again
     $table->unlogged(false);
+});
+```
+
+#### Storage Parameters (Table)
+
+With storage parameters, you can fine-tune tables to your application requirements and it's specific workload.
+Storage parameters and options you may want to change:
+
+* `fillfactor` for faster UPDATEs: [HOT updates for better performance](https://www.cybertec-postgresql.com/en/hot-updates-in-postgresql-for-better-performance/)
+* `autovacuum_analyze_scale_factor` for tables with millions of rows: [Explained configuration value](https://postgresqlco.nf/doc/en/param/autovacuum_analyze_scale_factor/), [Table Maintenance after Bulk Modifications](https://sqlfordevs.com/table-maintenance-bulk-modification)
+
+You can find more suggestions for specific workloads in [tuning autovacuum](https://www.cybertec-postgresql.com/en/tuning-autovacuum-postgresql/) guide.
+
+```php
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::table('sessions', function (Blueprint $table): void {
+    $table->with([
+        // Tune statistics generation for tables with millions of records
+        'autovacuum_analyze_scale_factor' => 0.02,
+        // Tune table for frequent UPDATE statements
+        'fillfactor' => 90,
+    ]);
 });
 ```
 

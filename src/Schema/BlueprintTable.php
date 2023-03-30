@@ -15,4 +15,14 @@ trait BlueprintTable
     {
         return $this->addCommand('unlogged', compact('value'));
     }
+
+    /**
+     * Set a table's storage options.
+     *
+     * @param array<string, scalar> $options
+     */
+    public function with(array $options): Fluent
+    {
+        return $this->addCommand('storageParameters', compact('options'));
+    }
 }
