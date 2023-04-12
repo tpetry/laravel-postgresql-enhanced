@@ -22,3 +22,6 @@ parameters:
           path: src/Support/Helpers/ZeroDowntimeMigrationSupervisor.php
         - message: "#^Call to an undefined method Illuminate\\\\Database\\\\Migrations\\\\Migration\\:\\:timeoutUp\\(\\)\\.$#"
           path: src/Support/Helpers/ZeroDowntimeMigrationSupervisor.php
+        # The compileAdd() method should return a string which will be cast to an array. As two queries need to be generated an array is returned
+        - message: "#^Return type \\(array\\<int, string\\>\\) of method Tpetry\\\\PostgresqlEnhanced\\\\Schema\\\\Grammars\\\\Grammar\\:\\:compileAdd\\(\\) should be compatible with return type \\(string\\) of method Illuminate\\\\Database\\\\Schema\\\\Grammars\\\\PostgresGrammar\\:\\:compileAdd\\(\\)$#"
+          path: src/Schema/Grammars/Grammar.php

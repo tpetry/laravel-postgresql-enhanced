@@ -40,6 +40,7 @@ composer require tpetry/laravel-postgresql-enhanced
         - [Storage Parameters](#storage-parameters-table)
     - [Column Options](#column-options)
         - [Compression](#compression)
+        - [Initial](#initial)
     - [Column Types](#column-types)
         - [Bit Strings](#bit-strings)
         - [Case Insensitive Text](#case-insensitive-text)
@@ -604,8 +605,28 @@ Schema::table('sessions', function (Blueprint $table): void {
 PostgreSQL 14 introduced the possibility to specify the compression method for toast-able data types.
 You can choose between the default method `pglz`, the recently added `lz4` algorithm and the value `default` to use the server default setting.
 ```php
-// @see https://www.postgresql.org/docs/current/storage-toast.html
-$table->string('col')->compression('lz4');
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::table('books', function (Blueprint $table): void {
+    // @see https://www.postgresql.org/docs/current/storage-toast.html
+    $table->string('summary')->compression('lz4');
+});
+```
+
+#### Initial
+
+Sometimes a new column needs to be added and all existing rows should get an initial value.
+With the `initial` modifier, you can assign a value to all present rows while all new ones will have no default value or a different one.
+
+```php
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::table('users', function (Blueprint $table): void {
+    $table->boolean('acl_admin')->initial(false);
+    $table->boolean('acl_read')->initial(false)->default(true);
+});
 ```
 
 ### Column Types
