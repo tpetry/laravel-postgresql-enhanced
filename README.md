@@ -62,6 +62,7 @@ composer require tpetry/laravel-postgresql-enhanced
     - [Where Clauses](#where-clauses)
 - [Eloquent](#eloquent)
     - [Refresh Data on Save](#refresh-data-on-save)
+    - [Date Formats](#date-formats)
 
 ## PHPStan
 
@@ -1042,7 +1043,6 @@ dump($example); // ['id' => 1, 'text' => 'test']
 $example->refresh();
 dump($example); // ['id' => 1, 'text' => 'test', 'text_uppercase' => 'TEST']
 
-
 $example->fill(['text' => 'test2'])->save();
 dump($example); // ['id' => 1, 'text' => 'test2']
 
@@ -1069,6 +1069,48 @@ dump($example); // ['id' => 1, 'text' => 'test', 'text_uppercase' => 'TEST']
 $example->fill(['text' => 'test2'])->save();
 dump($example); // ['id' => 1, 'text' => 'test2', 'text_uppercase' => 'TES2T']
 ```
+
+### Date Formats
+
+Laravel migrations support more dates than the standard `Y-m-d H:i:s` format:
+You can use the improved `timestampTz` date format that correctly handles the time zone or opt-in to save milliseconds if you want to.
+However, standard eloquent models do not work flawless with those extended formats until you change the `$dateFormat` of your models.
+But when you mix different date types in a table, you can run into different problems.
+Two new traits have been added to solve this:
+
+
+The new `AutomaticDateFormat` trait should be used when your table has `->timestampTz()` columns:
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Tpetry\PostgresqlEnhanced\Eloquent\Concerns\AutomaticDateFormat;
+
+class Example extends Model
+{
+    use AutomaticDateFormat;
+
+    // ...
+}
+```
+
+The new `AutomaticDateFormatWithMilliseconds` trait should be used when you also store milliseconds for some of the `->timestamp()` or `->timestampTz()` columns:
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use Tpetry\PostgresqlEnhanced\Eloquent\Concerns\AutomaticDateFormatWithMilliseconds;
+
+class Example extends Model
+{
+    use AutomaticDateFormatWithMilliseconds;
+
+    // ...
+}
+```
+
+> **Warning**  
+> When you mix columns with and without milliseconds in a table, the columns without milliseconds may behave unexpectedly to you:
+> Instead of truncating the milliseconds, they are rounded by PostgreSQL.
+> When the value is rounded up, your timestamp will be in the future.
 
 # Breaking Changes
 
