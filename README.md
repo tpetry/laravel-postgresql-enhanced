@@ -455,8 +455,8 @@ use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 
 Schema::table('users', function(Blueprint $table) {
-    $table->unique('(LOWER(email))', 'users_email_unique');
-    $table->index(['firstname ASC NULLS FIRST', 'lastname ASC NULLS FIRST'])
+    $table->uniqueIndex('(LOWER(email))', 'users_email_unique');
+    $table->index(['firstname ASC NULLS FIRST', 'lastname ASC NULLS FIRST']);
     $table->index('attributes jsonb_path_ops')->algorithm('gin');
 });
 ```
