@@ -1,6 +1,5 @@
-
-[![License][icon-license]][href-license]
-[![PHP][icon-php]][href-php]
+![License][icon-license]
+![PHP][icon-php]
 [![Latest Version on Packagist][icon-version]][href-version]
 [![Downloads on Packagist][icon-downloads]][href-downloads]
 [![GitHub PHPUnit Action Status][icon-tests]][href-tests]
@@ -1137,13 +1136,11 @@ If you discover any security related issues, please email github@tpetry.me inste
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-[href-license]: LICENSE.md
-[href-php]: https://packagist.org/packages/tpetry/laravel-postgresql-enhanced
 [href-phpstantest]: https://github.com/tpetry/laravel-postgresql-enhanced/actions/workflows/phpstan.yml
 [href-style]: https://github.com/tpetry/laravel-postgresql-enhanced/actions/workflows/php_cs_fixer.yml
 [href-tests]: https://github.com/tpetry/laravel-postgresql-enhanced/actions/workflows/phpunit.yml
 [href-version]: https://packagist.org/packages/tpetry/laravel-postgresql-enhanced
-[href-downloads]: [phpstan.neon.dist](https://packagist.org/packages/tpetry/laravel-postgresql-enhanced)
+[href-downloads]: https://packagist.org/packages/tpetry/laravel-postgresql-enhanced/stats
 [icon-codestyle]: https://img.shields.io/github/workflow/status/tpetry/laravel-postgresql-enhanced/PHP%20CS%20Fixer?label=Code%20Style
 [icon-license]: https://img.shields.io/github/license/tpetry/laravel-postgresql-enhanced?color=blue&label=License
 [icon-phpstantest]: https://img.shields.io/github/actions/workflow/status/tpetry/laravel-postgresql-enhanced/phpstan.yml?label=PHPStan
