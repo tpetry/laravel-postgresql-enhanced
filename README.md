@@ -516,8 +516,10 @@ Schema::create('products', function (Blueprint $table): void {
   $table->domain('item_price', 'price');
   $table->timestampsTz();
 });
-
 ```
+
+> **Note**
+> You can also utilize the domain type to use e.g. column types added by extensions or not yet supported by the package.
 
 #### Altering Domain Types
 
