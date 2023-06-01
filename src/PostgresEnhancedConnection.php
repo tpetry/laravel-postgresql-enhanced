@@ -116,7 +116,12 @@ class PostgresEnhancedConnection extends PostgresConnection
      */
     protected function getDefaultQueryGrammar(): QueryGrammar
     {
-        return new QueryGrammar();
+        $grammar = new QueryGrammar();
+        if (method_exists($grammar, 'setConnection')) {
+            $grammar->setConnection($this);
+        }
+
+        return $grammar;
     }
 
     /**
@@ -126,6 +131,9 @@ class PostgresEnhancedConnection extends PostgresConnection
     {
         $grammar = new SchemaGrammar();
         $grammar->setTablePrefix($this->tablePrefix);
+        if (method_exists($grammar, 'setConnection')) {
+            $grammar->setConnection($this);
+        }
 
         return $grammar;
     }
