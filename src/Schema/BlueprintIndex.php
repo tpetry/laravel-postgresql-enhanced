@@ -72,7 +72,7 @@ trait BlueprintIndex
     /**
      * Specify a unique index for the table.
      */
-    public function uniqueIndex($columns, string $name = null, string $algorithm = null): Fluent
+    public function uniqueIndex($columns, ?string $name = null, ?string $algorithm = null): Fluent
     {
         if (null === $name) {
             $name = str_replace('unique2', 'unique', $this->createIndexName('unique2', (array) $columns));

@@ -35,7 +35,7 @@ class TriggerDefinition extends Fluent
     /**
      * Specify that the trigger should be called for each statement.
      */
-    public function transitionTables(string $old = null, string $new = null): static
+    public function transitionTables(?string $old = null, ?string $new = null): static
     {
         $this['transitionTables'] = compact('old', 'new');
 

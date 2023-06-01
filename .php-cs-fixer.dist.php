@@ -17,6 +17,7 @@ $config
         '@Symfony' => true,
         'binary_operator_spaces' => ['operators' => ['|' => null]], // https://github.com/FriendsOfPHP/PHP-CS-Fixer/issues/5495
         'global_namespace_import' => false,
+        'nullable_type_declaration_for_default_null_value' => false,
         'ordered_class_elements' => [
             'order' => [
                 'use_trait',

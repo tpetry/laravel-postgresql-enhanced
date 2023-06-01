@@ -9,7 +9,7 @@ trait BuilderExtension
     /**
      * Create a new extension on the schema.
      */
-    public function createExtension(string $name, string $schema = null): void
+    public function createExtension(string $name, ?string $schema = null): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrap($name);
 
@@ -23,7 +23,7 @@ trait BuilderExtension
     /**
      * Create a new extension on the schema if it does not exist.
      */
-    public function createExtensionIfNotExists(string $name, string $schema = null): void
+    public function createExtensionIfNotExists(string $name, ?string $schema = null): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrap($name);
 

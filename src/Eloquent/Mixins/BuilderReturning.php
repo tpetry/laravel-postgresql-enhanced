@@ -105,7 +105,7 @@ class BuilderReturning
 
     public function upsertReturning(): Closure
     {
-        return function (array $values, array|string $uniqueBy, array $update = null, array $returning = ['*']): Collection {
+        return function (array $values, array|string $uniqueBy, ?array $update = null, array $returning = ['*']): Collection {
             /* @var \Illuminate\Database\Eloquent\Builder $this */
             if (0 === \count($values)) {
                 return new Collection();
