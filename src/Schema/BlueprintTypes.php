@@ -235,7 +235,7 @@ trait BlueprintTypes
     /**
      * Create a new varying bit column on the table.
      */
-    public function varbit(string $column, ?int $length = null): ColumnDefinition
+    public function varbit(string $column, int $length = null): ColumnDefinition
     {
         return $this->addColumn('varbit', $column, compact('length'));
     }

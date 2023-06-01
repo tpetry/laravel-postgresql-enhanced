@@ -37,7 +37,7 @@ trait BuilderFunction
      *
      * @param ?array<int, string> $arguments
      */
-    public function dropFunction(string $name, ?array $arguments = null): void
+    public function dropFunction(string $name, array $arguments = null): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrap($name);
         $argumentsStr = implode(',', Arr::wrap($arguments));
@@ -54,7 +54,7 @@ trait BuilderFunction
      *
      * @param ?array<int, string> $arguments
      */
-    public function dropFunctionIfExists(string $name, ?array $arguments = null): void
+    public function dropFunctionIfExists(string $name, array $arguments = null): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrap($name);
         $argumentsStr = implode(',', Arr::wrap($arguments));

@@ -219,7 +219,7 @@ trait BuilderReturning
      *
      * @return \Illuminate\Support\Collection<int, object>
      */
-    public function upsertReturning(array $values, array|string $uniqueBy, ?array $update = null, array $returning = ['*']): Collection
+    public function upsertReturning(array $values, array|string $uniqueBy, array $update = null, array $returning = ['*']): Collection
     {
         if (empty($values)) {
             return collect();
