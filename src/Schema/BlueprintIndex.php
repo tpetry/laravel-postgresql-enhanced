@@ -105,7 +105,7 @@ trait BlueprintIndex
             // as the full string is used and properly escaped. But for the improved index support a
             // special character like the space means index options are defined. To still support
             // these very uncommon column names the column can be escaped in double quotes.
-            // Strictly speaking this is breaking compatability with laravel, but such column names
+            // Strictly speaking this is breaking compatibility with laravel, but such column names
             // are very uncommon. So it's a good tradeoff for the big performance improvements.
             if (str_starts_with($column, '"')) {
                 return Str::beforeLast(Str::after($column, '"'), '"');
