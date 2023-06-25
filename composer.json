@@ -60,9 +60,6 @@
             ]
         }
     },
-    "archive": {
-        "exclude": ["/.art"]
-    },
     "minimum-stability": "dev",
     "prefer-stable": true
 }
