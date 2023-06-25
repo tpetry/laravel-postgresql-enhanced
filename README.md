@@ -1,5 +1,7 @@
-![License][icon-license]
-![PHP][icon-php]
+# Laravel PostgreSQL Enhanced
+
+[![License][icon-license]](LICENSE.md)
+[![PHP][icon-php]][href-php]
 [![Latest Version on Packagist][icon-version]][href-version]
 [![Downloads on Packagist][icon-downloads]][href-downloads]
 [![GitHub PHPUnit Action Status][icon-tests]][href-tests]
@@ -8,7 +10,7 @@
 
 Laravel supports many different databases and therefore has to limit itself to the lowest common denominator of all databases. PostgreSQL, however, offers a ton more functionality which is being added to Laravel by this extension.
 
-# Installation
+## Installation
 
 You can install the package via composer:
 
@@ -16,7 +18,7 @@ You can install the package via composer:
 composer require tpetry/laravel-postgresql-enhanced
 ```
 
-# Features
+## Features
 
 - [PHPStan](#phpstan)
 - [Migration](#migration)
@@ -63,7 +65,7 @@ composer require tpetry/laravel-postgresql-enhanced
     - [Refresh Data on Save](#refresh-data-on-save)
     - [Date Formats](#date-formats)
 
-## PHPStan
+### PHPStan
 
 This extension is adding a lot of missing PostgreSQL functionality to Laravel.
 If you are using [PHPStan](https://phpstan.org/) to statically analyze your code, you may get errors because PHPStan doesn't know of the functionality added to Laravel:
@@ -86,9 +88,9 @@ includes:
     - ./vendor/tpetry/laravel-postgresql-enhanced/phpstan-extension.neon
 ```
 
-## Migration
+### Migration
 
-### Zero-Downtime Migration
+#### Zero-Downtime Migration
 For applications with 24/7 requirements, migrations must never impact availability.
 PostgreSQL provides many functionalities to execute changes on the schema without downtime.
 However, sometimes a change to the schema is not tested sufficiently and locks the tables for a longer period of time in order to make the desired change.
@@ -131,9 +133,9 @@ The timeout for a maximum time limit of 1.0 second can be set separately for eac
 You can set `private float $timeout = 5.0` on the migration for a up/down timeout.
 Or you can set the specific timeouts `$timeoutUp` and `$timeoutDown` to differentiate between the methods.
 
-### Extensions
+#### Extensions
 
-#### Create Extensions
+##### Create Extensions
 
 The `Schema` facade supports the creation of extensions with the `createExtension` and `createExtensionIfNotExists` methods:
 ```php
@@ -143,7 +145,7 @@ Schema::createExtension('tablefunc');
 Schema::createExtensionIfNotExists('tablefunc');
 ```
 
-#### Dropping Extensions
+##### Dropping Extensions
 
 To remove extensions, you may use the `dropExtension` and `dropExtensionIfExists` methods provided by the `Schema` facade:
 
@@ -162,9 +164,9 @@ Schema::dropExtension('tablefunc', 'fuzzystrmatch');
 Schema::dropExtensionIfExists('tablefunc', 'fuzzystrmatch');
 ```
 
-### Functions
+#### Functions
 
-#### Create Functions
+##### Create Functions
 
 The `Schema` facade supports the creation of functions with the `createFunction` and `createFunctionOrReplace` methods. For the definition of your function you have to provide the name of the function, the parameters, the return type, the function's language and body:
 
@@ -216,7 +218,7 @@ Schema::createFunction('search_user', ['pattern' => 'text'], ['id' => 'int', 'em
 ");
 ```
 
-#### Drop Functions
+##### Drop Functions
 
 To remove functions, you may use the `dropFunction` and `dropFunctionIfExists` methods provided by the `Schema` facade:
 
@@ -227,9 +229,9 @@ Schema::dropFunction('sales_tax');
 Schema::dropFunctionIfExists('sales_tax');
 ```
 
-### Triggers
+#### Triggers
 
-#### Create Triggers
+##### Create Triggers
 
 On your `Blueprint` you can add triggers to a table.
 You need to pass in a unique name, call of a function you've created before and the action that will fire the trigger:
@@ -256,7 +258,7 @@ The following table contains all of the available trigger modifiers:
 > **Note**
 > PostgreSQL always updates rows even if nothing changed, which may affect your performance. You can add the `suppress_redundant_updates_trigger()` trigger with a `BEFORE UPDATE` action to all tables.
 
-#### Drop Triggers
+##### Drop Triggers
 
 To remove trigger, you may use the `dropTrigger` and `dropTriggerIfExists` methods provided by the table's `Blueprint` class:
 
@@ -270,9 +272,9 @@ Schema::table('projects', function (Blueprint $table): void {
 });
 ```
 
-### Views
+#### Views
 
-#### Create Views
+##### Create Views
 
 The `Schema` facade supports the creation of views with the `createView` and `createViewOrReplace` methods. The definition of your view can be a sql query string or a query builder instance:
 ```php
@@ -294,7 +296,7 @@ Schema::createRecursiveView('viewname', 'SELECT id, col1, col2 FROM ....', ['id'
 Schema::createRecursiveViewOrReplace('viewname', 'SELECT id, col1, col2 FROM ....', ['id', 'col1', 'col2']);
 ```
 
-#### Dropping Views
+##### Dropping Views
 
 To remove views, you may use the `dropView` and `dropViewIfExists` methods provided by the `Schema` facade. You don't have to distinguish normala and recursive views:
 
@@ -313,7 +315,7 @@ Schema::dropView('myview1', 'myview2');
 Schema::dropViewIfExists('myview1', 'myview2');
 ```
 
-#### Materialized Views
+##### Materialized Views
 
 With materialized views you can populate a view with the contents of a query's results at the time the query is executed.
 You can use them to cache expensive queries so they are not re-run all the time.
@@ -348,9 +350,10 @@ Schema::refreshMaterializedView('users_with_2fa', withData: false);
 Schema::refreshMaterializedView('users_with_2fa', withData: true);
 ```
 
-### Indexes
+#### Indexes
 
-#### Unique Indexes
+##### Unique Indexes
+
 Laravel provides uniqueness with the `$table->unique()` method but these are unique constraints instead of unique indexes.
 If you want to make values unique in the table they will behave identical.
 However, only for unique indexes advanced options like partial indexes, including further columns or column options are available.
@@ -365,12 +368,12 @@ Schema::table('users', function(Blueprint $table) {
 });
 ```
 
-#### Drop If Exists
+##### Drop If Exists
 
 In addition to the Laravel methods to drop indexes, methods to drop indexes if they exist have been added.
 The methods `dropFullTextIfExists`, `dropIndexIfExists`, `dropPrimaryIfExists`, `dropSpatialIndexIfExists` and `dropSpatialIndexIfExists` match the semantics of their laravel originals.
 
-#### Nulls Not Distinct
+##### Nulls Not Distinct
 
 NULL values in unique indexes are handled in a non-comprehensible way for most developers.
 When you e.g. save active subscriptions, you want to limit every user to have only one active subscription by e.g. creating a unique index on `(user_id, cancelled_at)`.
@@ -394,7 +397,7 @@ Schema::create('subscriptions', function(Blueprint $table) {
 > **Note**  
 > For this example you could also use a unique partial index on `user_id` with limiting thw rows to `cancelled_at IS NOT NULL`.
 
-#### Partial Indexes
+##### Partial Indexes
 
 A partial index is an index built over a subset of a table; the subset is defined by a condition. The index contains entries only for those table rows that satisfy the condition. Partial indexes are a specialized feature, but there are several situations in which they are useful.
 Take for example you want to make the email address column of your users table unique and you are using soft-deletes. This is not possible because by deleting a user and creating it again the email address is used twice. With partial indexes this can be done by limiting the index to only untrashed rows:
@@ -412,7 +415,7 @@ Schema::table('users', function(Blueprint $table) {
 
 Partial Indexes are created with the `where` method on an index created by `fullText()`, `index()`, `spatialIndex()` or `uniqueIndex()`.
 
-#### Include Columns
+##### Include Columns
 
 A really great feature of recent PostgreSQL versions is the ability to include columns in an index as non-key columns.
 A non-key column is not used for efficient lookups but PostgreSQL can use these columns to do index-only operations which won't need to load the specific columns from the table as they are already included in the index.
@@ -428,7 +431,7 @@ Schema::table('users', function(Blueprint $table) {
 ```
 Columns are included in an index with the `include` method on an index created by `index()`, `spatialIndex` or `uniqueIndex`.
 
-#### Storage Parameters (Index)
+##### Storage Parameters (Index)
 
 In some cases you want to specify the storage parameters of an index. If you are using gin indexes you should read the article [Debugging random slow writes in PostgreSQL](https://iamsafts.com/posts/postgres-gin-performance/) why storage parameters for a gin index are important:
 
@@ -442,7 +445,7 @@ Schema::table('bookmarks', function(Blueprint $table) {
 ```
 Storage parameters are defined with the `with` method on an index created by `fullText()`, `index()`, `spatialIndex` or `uniqueIndex`.
 
-#### Functional Indexes / Column Options
+##### Functional Indexes / Column Options
 
 Sometimes an index with only column specifications is not sufficient. For maximum performance, the extended index functionalities of PostgreSQL has to be used in some cases.
 
@@ -460,7 +463,7 @@ Schema::table('users', function(Blueprint $table) {
 });
 ```
 
-#### Fulltext Indexes
+##### Fulltext Indexes
 
 Fulltext-search in PostgreSQL is language-dependent: For better results all words are [stemmed](https://en.wikipedia.org/wiki/Stemming) to their root form.
 Laravel is using the `english` language by default, for your application you may have to use a different one.
@@ -482,7 +485,7 @@ Schema::table('book', function (Blueprint $table) {
 });
 ```
 
-### Domain Types
+#### Domain Types
 
 A relational database like PostgreSQL provides a lot of data types you can choose from.
 But they are only generic types that should match thousands of applications.
@@ -491,7 +494,7 @@ But with domain types, you can add application-specific types like a price colum
 An existing base type (`numeric(9,2)`) is aliased to a new type with an optional condition that all values have to match.
 You can use that to create repeatable price columns in your tables or create completely new types like a license plate type that has to match a specific format.
 
-#### Create A Domain Type
+##### Create A Domain Type
 
 The Schema facade supports the creation of domain types with the `createDomain` method by passing the name, the base type and an optional SQL condition to validate any value.
 
@@ -504,7 +507,7 @@ Schema::createDomain('price', 'numeric(9,2)', 'VALUE >= 0');
 Schema::createDomain('price', 'numeric(9,2)', fn (Builder $query) => $query->where('VALUE', '>=', 0));
 ```
 
-#### Use Domain Types
+##### Use Domain Types
 
 Your created domain types can be used in a migration like every other column by using the `domain` column type and using the column name and domain type name:
 
@@ -520,7 +523,7 @@ Schema::create('products', function (Blueprint $table): void {
 > **Note**
 > You can also utilize the domain type to use e.g. column types added by extensions or not yet supported by the package.
 
-#### Altering Domain Types
+##### Altering Domain Types
 
 The base type of a domain type can't be changed after it has been created.
 But you can change the condition to validate the values by removing it or replacing it with a new one:
@@ -536,7 +539,7 @@ Schema::changeDomainConstraint('price', 'VALUE > 0');
 Schema::changeDomainConstraint('price', fn (Builder $query) => $query->where('VALUE', '>', 0));
 ```
 
-#### Dropping Domain Types
+##### Dropping Domain Types
 
 To remove domain types, you have first to drop all column using them (or change their type) and then use `dropDomain` or `dropDomainIfExists` provided by the Schema facade:
 
@@ -556,9 +559,9 @@ Schema::dropDomain('price', 'license_plate');
 Schema::dropDomainIfExists('price', 'license_plate');
 ```
 
-### Table Options
+#### Table Options
 
-#### Unlogged
+##### Unlogged
 
 You can mark high-write load tables as unlogged if losing that data is not an issue and you want a big speed boost for write operations.
 Unlogged tables are written to disk by PostgreSQL but some durability requirements to be crash-safe are skipped.
@@ -578,7 +581,7 @@ Schema::table('sessions', function (Blueprint $table): void {
 });
 ```
 
-#### Storage Parameters (Table)
+##### Storage Parameters (Table)
 
 With storage parameters, you can fine-tune tables to your application requirements and it's specific workload.
 Storage parameters and options you may want to change:
@@ -602,10 +605,13 @@ Schema::table('sessions', function (Blueprint $table): void {
 });
 ```
 
-### Column Options
-#### Compression
+#### Column Options
+
+##### Compression
+
 PostgreSQL 14 introduced the possibility to specify the compression method for toast-able data types.
 You can choose between the default method `pglz`, the recently added `lz4` algorithm and the value `default` to use the server default setting.
+
 ```php
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
@@ -616,7 +622,7 @@ Schema::table('books', function (Blueprint $table): void {
 });
 ```
 
-#### Initial
+##### Initial
 
 Sometimes a new column needs to be added and all existing rows should get an initial value.
 With the `initial` modifier, you can assign a value to all present rows while all new ones will have no default value or a different one.
@@ -631,18 +637,22 @@ Schema::table('users', function (Blueprint $table): void {
 });
 ```
 
-### Column Types
+#### Column Types
 
-#### Bit Strings
+##### Bit Strings
+
 The bit string data types store strings of 0s and 1s. They can be used to e.g. store bitmaps.
+
 ```php
 // @see https://www.postgresql.org/docs/current/datatype-bit.html
 $table->bit(string $column, int $length = 1);
 $table->varbit(string $column, ?int $length = null);
 ```
 
-#### Case Insensitive Text
+##### Case Insensitive Text
+
 The case insensitive text type is used to store a text that will be compared case insensitive. It can be used to e.g. store and compare e-mail addresses.
+
 ```php
 // @see https://www.postgresql.org/docs/current/citext.html
 $table->caseInsensitiveText(string $column);
@@ -651,22 +661,28 @@ $table->caseInsensitiveText(string $column);
 > **Note**  
 > You need to enable the `citext` extension with  `Schema::createExtension('citext')` or `Schema::createExtensionIfNotExists('citext')` before.
 
-#### Full Text Search
+##### Full Text Search
+
 The tsvector type is used to store a processed dictionary for full text searching.
+
 ```php
 // @see https://www.postgresql.org/docs/10/datatype-textsearch.html
 $table->tsvector(string $column);
 ```
 
-#### IP Networks
+##### IP Networks
+
 The ip network datatype stores an ip network in cidr notation.
+
 ```php
 // @see https://www.postgresql.org/docs/current/datatype-net-types.html
 $table->ipNetwork(string $column);
 ```
 
-#### Hstore
+##### Hstore
+
 The hstore data type is used store key/value pairs within a single PostgreSQL value. The new json data type is better in all aspects, so hstore should only be used for compatibility with old applications.
+
 ```php
 // @see https://www.postgresql.org/docs/current/hstore.html
 $table->hstore(string $column);
@@ -675,16 +691,20 @@ $table->hstore(string $column);
 > **Note**  
 > You need to enable the `hstore` extension with `Schema::createExtensionIfNotExists('hstore')` or `Schema::createExtension('hstore')` before.
 
-#### Identity
+##### Identity
+
 The identity data type is the new PostgreSQL standard for automatic generated values. You can even specify whether the database should be the only one generating them (`always = true`) preventing accidental overwrites.
 They are used to define primary keys managed by the database or any other kind of automatically generated identification that needs to be unique.
+
 ```php
 $table->identity(always: true)->primary();
 $table->identity('uniqid');
 ```
 
-#### International Product Numbers
+##### International Product Numbers
+
 The international product number data types are used to store common product numbers types and validate them before saving.
+
 ```php
 // @see https://www.postgresql.org/docs/current/isn.html
 $table->europeanArticleNumber13(string $column);
@@ -700,8 +720,10 @@ $table->universalProductNumber(string $column);
 > **Note**
 > You need to enable the `isn` extension with `Schema::createExtensionIfNotExists('isn')` or `Schema::createExtension('isn')` before.
 
-#### Label Tree
+##### Label Tree
+
 The ltree data type stores a label as its position in a tree. This provides an easy way to manage a tree without performance and complexity disadvantages compared to alternative solutions.
+
 ```php
 // @see https://www.postgresql.org/docs/current/ltree.html
 $table->labelTree(string $column);
@@ -710,8 +732,10 @@ $table->labelTree(string $column);
 > **Note**  
 > You need to enable the `ltree` extension with `Schema::createExtensionIfNotExists('ltree')` or `Schema::createExtension('ltree')` before.
 
-#### Ranges
+##### Ranges
+
 The range data types store a range of values with optional start and end values. They can be used e.g. to describe the duration a meeting room is booked.
+
 ```php
 // @see https://www.postgresql.org/docs/current/rangetypes.html
 $table->bigIntegerRange(string $column);
@@ -728,17 +752,19 @@ $table->timestampTzRange(string $column);
 $table->timestampTzMultiRange(string $column);
 ```
 
-#### XML
+##### XML
+
 The xml data type can be used to store an xml document.
+
 ```php
 // @see https://www.postgresql.org/docs/current/datatype-xml.html
 $table->xml(string $column);
 ```
 
-## Query
+### Query
 
+#### Explain
 
-### Explain
 Laravel has the ability to get the database query plan for any query you are building. Just calling `explain()` on the query will get a collection with the query plan.
 
 This behaviour has been extended to be more PostgreSQL specific. There are multiple (optional) parameters for the [explain statement](https://www.postgresql.org/docs/current/sql-explain.html), different for every version. The enhanced PostgreSQL driver will automatically activate all options available for your PostgreSQL version.
@@ -779,7 +805,7 @@ DB::table('migrations')->where('batch', 1)->explain(analyze:true)->dd();
 //]
 ```
 
-### Fulltext Search
+#### Fulltext Search
 
 The PostgreSQL fulltext search implementation supports a lot of knobs to fine tune the search quality of your fulltext-search.
 In it's most basic form you are specifying the columns to search on and the search term to use:
@@ -791,15 +817,16 @@ Book::whereFullText(['title', 'description'], 'PostgreSQL')->get();
 But the implementation does provide a lot more functionality hidden in the third optional parameter.
 For more information on all the options for fulltext-search read this article: [Fine Tuning Full Text Search with PostgreSQL 12](https://rob.conery.io/2019/10/29/fine-tuning-full-text-search-with-postgresql-12/).
 
-#### Language
+##### Language
 
 By default the columns and the search term are [stemmed](https://en.wikipedia.org/wiki/Stemming) to it's root form in the `english` language to also find results for e.g. singular or plural words.
 If your application is using a different language you can change it to e.g. `spanish` or use the `simple` language which is not doing any stemming. 
+
 ```php
 Book::whereFullText(['title', 'description'], 'PostgreSQL', ['language' => 'spanish'])->get();
 ```
 
-#### Search Mode
+##### Search Mode
 
 You can choose from three different search modes for the fulltext-search which is defaulting to the `plainto` mode.
 Depending on your requirements a search term can be handled completely different giving you a large amount of freedom to tune fulltext search for your needs.
@@ -817,7 +844,7 @@ Depending on your requirements a search term can be handled completely different
     Book::whereFullText(['title', 'description'], '"PostgreSQL database" -MySQL', ['mode' => 'websearch'])->get();
     ```
 
-#### Weighting
+##### Weighting
 
 When you want to rank your fulltext-search results you need a way declare some columns more relevant than others.
 With the weight option you set a relevance for every search column starting with an `A` and ending with a `Z`.
@@ -827,12 +854,13 @@ If you want to you can use the same relative weight multiple times to make some 
 Book::whereFullText(['title', 'description'], '"PostgreSQL', ['weight' => ['A', 'B']])->get();
 ```
 
-### Lateral Subquery Joins
+#### Lateral Subquery Joins
 
 PostgreSQL does support the advanced lateral subquery joins.
 The simplest explanation is that you can access tables and their columns previously selected from, making it a dependent subquery. You will now be able to do joins equivalent to a foreach-loop in php which will offer a whole new set of possibilities.
 
 This is a very advanced construct, you can read more about them in these articles:
+
 - [PostgreSQL's Powerful New Join Type: LATERAL (heap.io)](https://heap.io/blog/postgresqls-powerful-new-join-type-lateral)
 - [UNDERSTANDING LATERAL JOINS IN POSTGRESQL(cybertec-postgresql.com)](https://www.cybertec-postgresql.com/en/understanding-lateral-joins-in-postgresql/)
 - [Iterators in PostgreSQL with Lateral Joins (crunchydata.com)](https://blog.crunchydata.com/blog/iterators-in-postgresql-with-lateral-joins)
@@ -840,6 +868,7 @@ This is a very advanced construct, you can read more about them in these article
 They are used exactly like their Laravel counterparts but you are now using `crossJoinSubLateral` instead of `crossJoinSub`, `joinSubLateral` instead of `joinSub` and `leftJoinSubLateral` instead of `leftJoinSubLateral`.
 
 A very common is case to use lateral subqueries in a for-each loop concept to e.g. get only the 3 orders with the highest price for every user: 
+
 ```php
 User::select('users.email', 'orders.*')
     ->leftJoinSubLateral(
@@ -850,7 +879,7 @@ User::select('users.email', 'orders.*')
     );
 ```
 
-### Returning Data From Modified Rows
+#### Returning Data From Modified Rows
 
 Sometimes it is more useful to get the affected rows data of a `INSERT`, `UPDATE`, or `DELETE` query instead of just the number of affected rows.
 The PostgreSQL [RETURNING](https://www.postgresql.org/docs/current/dml-returning.html) feature changes the behaviour of data manipulation statements to `SELECT` the row's data after the manipulation.
@@ -858,6 +887,7 @@ The PostgreSQL [RETURNING](https://www.postgresql.org/docs/current/dml-returning
 You can use `RETURNING` when you e.g. want to get a list of users you need to update.
 Instead of selecting all the users into memory, iterating over them and manipulating each one you can run the manipulation statement directly and get all the affected rows data.
 A typical example is reporting which old users have been deleted:
+
 ```php
 use Illuminate\Support\Facades\DB;
 
@@ -888,7 +918,7 @@ The following modification queries have been added (analog to their Laravel impl
 * `updateReturning`
 * `upsertReturning`
 
-### Common Table Expressions (CTE)
+#### Common Table Expressions (CTE)
 
 You can use Common Table Expressions or CTEs for all select, insert, update and delete methods to write auxiliary statements for use in a larger query.
 The `withExpression` method needs to be passed an alias for the CTE, a query string or object and an optional array of options for more control on the CTE.
@@ -917,7 +947,7 @@ In addition to the basic form of a Common Table Expression these optional settin
 > **Note**  
 > When you are using recursive CTEs **always** use the `cycle` option to prevent infinite running queries because of loops in the data.
 
-### Lazy By Cursor
+#### Lazy By Cursor
 
 If you need to iterate over a large amount rows your memory may most probably not big enough.
 For these operations Laravel provides the `lazy()` method which is repeatedly using offset pagination which is getting slower and slower with increasing offsets.
@@ -946,9 +976,9 @@ DB::transaction(function() {
 });
 ```
 
-### Where Clauses
+#### Where Clauses
 
-#### Any/All
+##### Any/All
 
 PostgreSQL provides very nifty filtering functions to check a column against multiple values without writing many `AND` or `OR` conditions.
 You can say that at least one of the values needs to match the operator with the' ANY' keyword.
@@ -975,7 +1005,7 @@ $query->orWhereAny($column, string $operator, iterable $values);
 $query->orWhereNotAny($column, string $operator, iterable $values)
 ```
 
-#### Boolean
+##### Boolean
 
 As Laravel always casts boolean values to integers you will get a PostgreSQL errors like `operator does not exist: boolean = integer` sometimes.
 In most cases PostgreSQL is intelligent enough to cast the value but when e.g. creating partial indexes you will get the error.
@@ -988,7 +1018,7 @@ $query->orWhereBoolean($column, bool $value);
 $query->orWhereNotBoolean($column, bool $value);
 ```
 
-#### Like
+##### Like
 
 With the `whereLike` scope you can compare a column to a (case-insensitive) value. 
 
@@ -997,12 +1027,13 @@ $query->whereLike($column, $value, $caseInsensitive = false);
 $query->orWhereLike($column, $value, $caseInsensitive = false);
 ```
 
-#### Between Symmetric
+##### Between Symmetric
 
 Laravel already provides a `whereBetween` clause, but you have to provide the values in sorted order that the smaller value is the first and the bigger one the second array item (`[4, 80]`).
 With PostgreSQL's `BETWEEN SYMMETRIC` keyword you don't have to do this anymore, it will automatically reorder the values.
 
 You can now use e.g. min/max values with the following code without having to reorder these values if the meaning has been swapped by the user when entering them:
+
 ```php
 $min = $request->integer('min');
 $min = $request->integer('max');
@@ -1021,9 +1052,9 @@ $query->orWhereBetweenSymmetric($column, iterable $values);
 $query->orWhereNotBetweenSymmetric($column, iterable $values);
 ```
 
-## Eloquent
+### Eloquent
 
-### Refresh Data on Save
+#### Refresh Data on Save
 
 When you are using Laravel's `storedAs($expression)` feature in migrations to have dynamically computed columns in your database or triggers to update these columns, eloquent's behaviour is not doing exactly what you are expecting.
 After you saved the model these computed properties are not available in your model, you need to refresh it because Laravel is only updating the primary key.
@@ -1071,14 +1102,13 @@ $example->fill(['text' => 'test2'])->save();
 dump($example); // ['id' => 1, 'text' => 'test2', 'text_uppercase' => 'TES2T']
 ```
 
-### Date Formats
+#### Date Formats
 
 Laravel migrations support more dates than the standard `Y-m-d H:i:s` format:
 You can use the improved `timestampTz` date format that correctly handles the time zone or opt-in to save milliseconds if you want to.
 However, standard eloquent models do not work flawless with those extended formats until you change the `$dateFormat` of your models.
 But when you mix different date types in a table, you can run into different problems.
 Two new traits have been added to solve this:
-
 
 The new `AutomaticDateFormat` trait should be used when your table has `->timestampTz()` columns:
 
@@ -1113,26 +1143,26 @@ class Example extends Model
 > Instead of truncating the milliseconds, they are rounded by PostgreSQL.
 > When the value is rounded up, your timestamp will be in the future.
 
-# Breaking Changes
+## Breaking Changes
 
 * 0.10.0 -> 0.11.0
   * The `ZeroDowntimeMigration` concern namespace moved from `Tpetry\PostgresqlEnhanced\Concerns` to `Tpetry\PostgresqlEnhanced\Schema\Concerns`.
 * 0.12.0 -> 0.12.1
   * The return type of all returning statements was changed from `array` to `Collection` to replicate the `Query\Builder::get()` method signature.
 
-# Contribution
+## Contribution
 
 If you want to contribute code to this package, please open an issue first. To avoid unnecessary effort for you it is very beneficial to first discuss the idea, the functionality and its API.
 
-# Changelog
+## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
-# Security Vulnerabilities
+## Security Vulnerabilities
 
 If you discover any security related issues, please email github@tpetry.me instead of using the issue tracker.
 
-# License
+## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
@@ -1141,6 +1171,7 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [href-tests]: https://github.com/tpetry/laravel-postgresql-enhanced/actions/workflows/phpunit.yml
 [href-version]: https://packagist.org/packages/tpetry/laravel-postgresql-enhanced
 [href-downloads]: https://packagist.org/packages/tpetry/laravel-postgresql-enhanced/stats
+[href-php]: https://php.net
 [icon-codestyle]: https://img.shields.io/github/workflow/status/tpetry/laravel-postgresql-enhanced/PHP%20CS%20Fixer?label=Code%20Style
 [icon-license]: https://img.shields.io/github/license/tpetry/laravel-postgresql-enhanced?color=blue&label=License
 [icon-phpstantest]: https://img.shields.io/github/actions/workflow/status/tpetry/laravel-postgresql-enhanced/phpstan.yml?label=PHPStan
