@@ -583,7 +583,7 @@ Schema::table('sessions', function (Blueprint $table): void {
 With storage parameters, you can fine-tune tables to your application requirements and it's specific workload.
 Storage parameters and options you may want to change:
 
-* `fillfactor` for faster UPDATEEs: [HOT updates for better performance](https://www.cybertec-postgresql.com/en/hot-updates-in-postgresql-for-better-performance/)
+* `fillfactor` for faster UPDATE-s: [HOT updates for better performance](https://www.cybertec-postgresql.com/en/hot-updates-in-postgresql-for-better-performance/)
 * `autovacuum_analyze_scale_factor` for tables with millions of rows: [Explained configuration value](https://postgresqlco.nf/doc/en/param/autovacuum_analyze_scale_factor/), [Table Maintenance after Bulk Modifications](https://sqlfordevs.com/table-maintenance-bulk-modification)
 
 You can find more suggestions for specific workloads in [tuning autovacuum](https://www.cybertec-postgresql.com/en/tuning-autovacuum-postgresql/) guide.
