@@ -1149,4 +1149,3 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [icon-tests]: https://img.shields.io/github/actions/workflow/status/tpetry/laravel-postgresql-enhanced/phpunit.yml?label=Tests
 [icon-version]: https://img.shields.io/packagist/v/tpetry/laravel-postgresql-enhanced.svg?label=Packagist
 [icon-downloads]: https://img.shields.io/packagist/dt/tpetry/laravel-postgresql-enhanced.svg?color=orange&label=Downloads
-[logo]: .art/teaser.png
