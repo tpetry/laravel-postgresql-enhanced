@@ -355,7 +355,7 @@ Laravel provides uniqueness with the `$table->unique()` method but these are uni
 If you want to make values unique in the table they will behave identical.
 However, only for unique indexes advanced options like partial indexes, including further columns or column options are available.
 
-To use these great features and not break compatability with Laravel the method `uniqueIndex` has been added which can be used identical to `unique`:
+To use these great features and not break compatibility with Laravel the method `uniqueIndex` has been added which can be used identical to `unique`:
 ```php
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
@@ -392,7 +392,7 @@ Schema::create('subscriptions', function(Blueprint $table) {
 ```
 
 > **Note**  
-> For this example you could also use a unique partial index on `user_id` with limiting thw rows to `cancelled_at IS NOT NULL`.
+> For this example you could also use a unique partial index on `user_id` with limiting the rows to `cancelled_at IS NOT NULL`.
 
 #### Partial Indexes
 
@@ -583,7 +583,7 @@ Schema::table('sessions', function (Blueprint $table): void {
 With storage parameters, you can fine-tune tables to your application requirements and it's specific workload.
 Storage parameters and options you may want to change:
 
-* `fillfactor` for faster UPDATEs: [HOT updates for better performance](https://www.cybertec-postgresql.com/en/hot-updates-in-postgresql-for-better-performance/)
+* `fillfactor` for faster UPDATE-s: [HOT updates for better performance](https://www.cybertec-postgresql.com/en/hot-updates-in-postgresql-for-better-performance/)
 * `autovacuum_analyze_scale_factor` for tables with millions of rows: [Explained configuration value](https://postgresqlco.nf/doc/en/param/autovacuum_analyze_scale_factor/), [Table Maintenance after Bulk Modifications](https://sqlfordevs.com/table-maintenance-bulk-modification)
 
 You can find more suggestions for specific workloads in [tuning autovacuum](https://www.cybertec-postgresql.com/en/tuning-autovacuum-postgresql/) guide.

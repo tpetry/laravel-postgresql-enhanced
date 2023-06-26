@@ -55,7 +55,7 @@ class FulltextSearchTest extends TestCase
         $this->assertEquals([['test']], array_column($queries, 'bindings'));
     }
 
-    public function testLangugage(): void
+    public function testLanguage(): void
     {
         $queries = $this->withQueryLog(function (): void {
             $this->getConnection()

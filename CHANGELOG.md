@@ -31,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.26.0] - 2023-02-02
 ### Added
-* Laravel 10.x compatability
+* Laravel 10.x compatibility
 
 ## [0.25.1] - 2023-01-13
 ### Fixed
@@ -152,7 +152,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.10.0] - 2022-01-27
 ### Added
-* Laravel 9 compatability
+* Laravel 9 compatibility
 
 ## [0.9.0] - 2022-01-20
 ### Added
