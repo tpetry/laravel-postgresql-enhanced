@@ -15,6 +15,21 @@ class Grammar extends PostgresGrammar
     use GrammarWhere;
 
     /**
+     * All of the available clause operators.
+     *
+     * @note Backported to support some operators for old Laravel versions.
+     *
+     * @var string[]
+     */
+    protected $operators = [
+        '=', '<', '>', '<=', '>=', '<>', '!=',
+        'like', 'not like', 'between', 'ilike', 'not ilike',
+        '~', '&', '|', '#', '<<', '>>', '<<=', '>>=',
+        '&&', '@>', '<@', '?', '?|', '?&', '||', '-', '@?', '@@', '#-',
+        'is distinct from', 'is not distinct from',
+    ];
+
+    /**
      * Compile a delete statement into SQL.
      *
      * @param \Tpetry\PostgresqlEnhanced\Query\Builder $query

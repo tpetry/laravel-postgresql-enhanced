@@ -77,6 +77,19 @@ class WhereTest extends TestCase
         );
     }
 
+    public function testOrWhereIntegerArrayMatches(): void
+    {
+        $this->getConnection()->unprepared('CREATE EXTENSION IF NOT EXISTS intarray');
+        $this->getConnection()->unprepared('CREATE TABLE example (val integer[])');
+        $this->getConnection()->unprepared('CREATE INDEX example_val ON example USING GIN (val gin__int_ops)');
+
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->orWhereIntegerArrayMatches('val', '3&4&(5|6)')->orWhereIntegerArrayMatches('val', '!7&8')->get();
+        });
+        $this->assertEquals(['select * from "example" where "val" @@ ? or "val" @@ ?'], array_column($queries, 'query'));
+        $this->assertEquals([['3&4&(5|6)', '!7&8']], array_column($queries, 'bindings'));
+    }
+
     public function testOrWhereLike(): void
     {
         $this->getConnection()->unprepared('CREATE TABLE example (str text)');
@@ -221,6 +234,19 @@ class WhereTest extends TestCase
             ['select * from "example" where "val" = true and "val" = false'],
             array_column($queries, 'query'),
         );
+    }
+
+    public function testWhereIntegerArrayMatches(): void
+    {
+        $this->getConnection()->unprepared('CREATE EXTENSION IF NOT EXISTS intarray');
+        $this->getConnection()->unprepared('CREATE TABLE example (val integer[])');
+        $this->getConnection()->unprepared('CREATE INDEX example_val ON example USING GIN (val gin__int_ops)');
+
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->whereIntegerArrayMatches('val', '3&4&(5|6)')->get();
+        });
+        $this->assertEquals(['select * from "example" where "val" @@ ?'], array_column($queries, 'query'));
+        $this->assertEquals([['3&4&(5|6)']], array_column($queries, 'bindings'));
     }
 
     public function testWhereLike(): void

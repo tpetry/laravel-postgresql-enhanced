@@ -49,6 +49,16 @@ trait BuilderWhere
     }
 
     /**
+     * Add an or where integer array matches statement to the query.
+     *
+     * @param \Illuminate\Database\Query\Expression|string $column
+     */
+    public function orWhereIntegerArrayMatches($column, string $query): static
+    {
+        return $this->orWhere($column, '@@', $query);
+    }
+
+    /**
      * Add an "or where like" statement to the query.
      *
      * @param \Illuminate\Database\Query\Expression|string $column
@@ -154,6 +164,16 @@ trait BuilderWhere
     public function whereBoolean($column, bool $value): static
     {
         return $this->where($column, new Expression(var_export($value, true)));
+    }
+
+    /**
+     * Add a where integer array matches statement to the query.
+     *
+     * @param \Illuminate\Database\Query\Expression|string $column
+     */
+    public function whereIntegerArrayMatches($column, string $query): static
+    {
+        return $this->where($column, '@@', $query);
     }
 
     /**

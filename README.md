@@ -50,6 +50,7 @@ composer require tpetry/laravel-postgresql-enhanced
         - [International Product Numbers](#international-product-numbers)
         - [Label Tree](#label-tree)
         - [Ranges](#ranges)
+        - [Arrays](#arrays)
         - [XML](#xml)
 - [Query](#query)
     - [Explain](#explain)
@@ -60,6 +61,7 @@ composer require tpetry/laravel-postgresql-enhanced
     - [Lazy By Cursor](#lazy-by-cursor)
     - [Where Clauses](#where-clauses)
 - [Eloquent](#eloquent)
+    - [Casts](#casts)
     - [Refresh Data on Save](#refresh-data-on-save)
     - [Date Formats](#date-formats)
 
@@ -728,6 +730,18 @@ $table->timestampTzRange(string $column);
 $table->timestampTzMultiRange(string $column);
 ```
 
+#### Arrays
+The array data types store multiple values in one single column. They can be used e.g. to store multiple tag ids of categories a product belongs to.
+```php
+// @see https://www.postgresql.org/docs/current/arrays.html
+$table->integerArray(string $column);
+```
+
+> **Note**  
+> While PostgreSQL array types are powerful, only the integer array is supported.
+> It is the sole array type with additional PostgreSQL enhancements for manipulation and querying compared to JSON columns.
+> The [intarray](https://www.postgresql.org/docs/current/intarray.html) extensions provides extensive features that can be used to e.g. [store and query tags](https://tapoueh.org/blog/2013/10/denormalizing-tags/) with advanced boolean logic.
+
 #### XML
 The xml data type can be used to store an xml document.
 ```php
@@ -1021,7 +1035,31 @@ $query->orWhereBetweenSymmetric($column, iterable $values);
 $query->orWhereNotBetweenSymmetric($column, iterable $values);
 ```
 
+#### Integer Array Matches
+
+With [arrays](#arrays), you can store a collection of integers like with JSON columns.
+But in contrast to JSON columns, those collections can be queried with the [intarray extension](https://www.postgresql.org/docs/current/intarray.html) by complex rules including the operators `&` (AND), `|` (OR), and `!` (NOT).
+Parentheses can be used as needed.
+For example, the query `1&(2|3)` matches integer arrays that contain 1 and also include either 2 or 3.
+
+```php
+$query->whereIntegerArrayMatches($column, string $query);
+$query->orWhereIntegerArrayMatches($column, string $query);
+
+// The tags column should have values 3, 4, 5 or 6 and not 7.
+$query->whereIntegerArrayMatches('tags', '3&4&(5|6)&!7');
+```
+
 ## Eloquent
+
+### Casts
+
+Some of the PostgreSQL types are represented in a string format that a Laravel application can't use natively.
+To make those types usable, these casts can be used with your eloquent models:
+
+| Type           | Cast                                                        |
+|----------------|-------------------------------------------------------------|
+| `integerArray` | `Tpetry\PostgresqlEnhanced\Eloquent\Casts\IntegerArrayCast` |
 
 ### Refresh Data on Save
 

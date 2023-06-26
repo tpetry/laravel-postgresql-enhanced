@@ -15,7 +15,7 @@ abstract class BaseType extends Type
     public function getMappedDatabaseTypes(AbstractPlatform $platform)
     {
         return match ($platform->getName()) {
-            'pgsql', 'postgres', 'postgresql' => [$this->getName()],
+            'pgsql', 'postgres', 'postgresql' => [$this->getSQLDeclaration([], $platform)],
             default => [],
         };
     }

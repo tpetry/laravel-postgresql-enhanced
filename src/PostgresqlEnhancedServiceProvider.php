@@ -22,6 +22,7 @@ use Tpetry\PostgresqlEnhanced\Types\DatemultirangeType;
 use Tpetry\PostgresqlEnhanced\Types\DaterangeType;
 use Tpetry\PostgresqlEnhanced\Types\Ean13Type;
 use Tpetry\PostgresqlEnhanced\Types\HstoreType;
+use Tpetry\PostgresqlEnhanced\Types\Int4arrayType;
 use Tpetry\PostgresqlEnhanced\Types\Int4multirangeType;
 use Tpetry\PostgresqlEnhanced\Types\Int4rangeType;
 use Tpetry\PostgresqlEnhanced\Types\Int8multirangeType;
@@ -54,6 +55,7 @@ class PostgresqlEnhancedServiceProvider extends ServiceProvider
         DaterangeType::class,
         Ean13Type::class,
         HstoreType::class,
+        Int4arrayType::class,
         Int4multirangeType::class,
         Int4rangeType::class,
         Int8multirangeType::class,

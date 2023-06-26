@@ -105,6 +105,14 @@ trait GrammarTypes
     }
 
     /**
+     * Create the column definition for an integer array type.
+     */
+    protected function typeInt4array(Fluent $column): string
+    {
+        return 'integer[]';
+    }
+
+    /**
      * Create the column definition for an integer multi-range type.
      */
     protected function typeInt4multirange(Fluent $column): string

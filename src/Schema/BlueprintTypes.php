@@ -105,6 +105,14 @@ trait BlueprintTypes
     }
 
     /**
+     * Create a new integer array column on the table.
+     */
+    public function integerArray(string $column): ColumnDefinition
+    {
+        return $this->addColumn('int4array', $column);
+    }
+
+    /**
      * Create a new integer multi-range column on the table.
      */
     public function integerMultiRange(string $column): ColumnDefinition

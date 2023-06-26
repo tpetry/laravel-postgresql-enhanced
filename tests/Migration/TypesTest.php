@@ -143,6 +143,16 @@ class TypesTest extends TestCase
         ]);
     }
 
+    public function testIntegerArrayTypeIsSupported(): void
+    {
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->integerArray('col'),
+            fnChange: fn (Blueprint $table) => $table->integerArray('col')->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" integer[] not null)', $queries[0]['query'] ?? null);
+    }
+
     public function testIntegerMultiRangeTypeIsSupported(): void
     {
         $queries = $this->runMigrations(
