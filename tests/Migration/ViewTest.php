@@ -58,6 +58,22 @@ class ViewTest extends TestCase
         $this->assertEquals(['create or replace view "test_623631" as select random() as column_449988'], array_column($queries, 'query'));
     }
 
+    public function testCreateViewOrReplaceWithColumns(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createViewOrReplace('test_623632', DB::query()->selectRaw('random()'), ['column_449989']);
+        });
+        $this->assertEquals(['create or replace view "test_623632" ("column_449989") as select random()'], array_column($queries, 'query'));
+    }
+
+    public function testCreateViewWithColumns(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createView('test_787483', DB::query()->selectRaw('random()'), ['column_275665']);
+        });
+        $this->assertEquals(['create view "test_787483" ("column_275665") as select random()'], array_column($queries, 'query'));
+    }
+
     public function testDropView(): void
     {
         DB::statement('CREATE VIEW test_125382 AS SELECT random() as column_298864');

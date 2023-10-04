@@ -285,6 +285,14 @@ Schema::createView('users_with_2fa', 'SELECT * FROM users WHERE two_factor_secre
 Schema::createViewOrReplace('users_without_2fa', DB::table('users')->whereNull('two_factor_secret'));
 ```
 
+You can specify the column names of the view by passing an array as third parameter:
+```php
+use Illuminate\Support\Facades\DB;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::createView('users_with_2fa', DB::table('users')->select('id')->whereNull('two_factor_secret'), ['user_id']);
+```
+
 If you need to create recursive views the `createRecursiveView` and `createRecursiveViewOrReplace` methods can be used like in the former examples but you need to provide the available columns as last parameter:
 
 ```php

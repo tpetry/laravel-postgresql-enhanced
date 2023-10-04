@@ -45,9 +45,13 @@ trait BuilderView
     /**
      * Create a view on the schema.
      */
-    public function createView(string $name, QueryBuilder|string $query): void
+    public function createView(string $name, QueryBuilder|string $query, array $columns = null): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
+        if (null !== $columns) {
+            $columns = $this->getConnection()->getSchemaGrammar()->columnize($columns);
+            $name = "{$name} ({$columns})";
+        }
         $query = Query::toSql($query);
         $this->getConnection()->statement("create view {$name} as {$query}");
     }
@@ -55,9 +59,13 @@ trait BuilderView
     /**
      * Create or replace a view on the schema.
      */
-    public function createViewOrReplace(string $name, QueryBuilder|string $query): void
+    public function createViewOrReplace(string $name, QueryBuilder|string $query, array $columns = null): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
+        if (null !== $columns) {
+            $columns = $this->getConnection()->getSchemaGrammar()->columnize($columns);
+            $name = "{$name} ({$columns})";
+        }
         $query = Query::toSql($query);
         $this->getConnection()->statement("create or replace view {$name} as {$query}");
     }
