@@ -338,6 +338,7 @@ use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 
 Schema::createMaterializedView('users_with_2fa', 'SELECT * FROM users WHERE two_factor_secret IS NOT NULL');
 Schema::createMaterializedView('users_with_2fa', DB::table('users')->whereNull('two_factor_secret'));
+Schema::createMaterializedView('users_with_2fa', DB::table('users')->select('id')->whereNull('two_factor_secret'), columns: ['user_id']);
 
 Schema::createMaterializedView('very_slow_query_materialized', 'SELECT ...', withData: false);
 

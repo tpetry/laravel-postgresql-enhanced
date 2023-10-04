@@ -10,6 +10,14 @@ use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class ViewTest extends TestCase
 {
+    public function testCreateMaterializedViewWithColumns(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createMaterializedView('test_553410', DB::query()->selectRaw('random()'), columns: ['column_221818']);
+        });
+        $this->assertEquals(['create materialized view "test_553410" ("column_221818") as select random() with data'], array_column($queries, 'query'));
+    }
+
     public function testCreateMaterializedViewWithData(): void
     {
         $queries = $this->withQueryLog(function (): void {

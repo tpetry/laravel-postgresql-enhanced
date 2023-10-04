@@ -12,9 +12,13 @@ trait BuilderView
     /**
      * Create a materialized view on the schema.
      */
-    public function createMaterializedView(string $name, QueryBuilder|string $query, bool $withData = true): void
+    public function createMaterializedView(string $name, QueryBuilder|string $query, bool $withData = true, array $columns = null): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
+        if (null !== $columns) {
+            $columns = $this->getConnection()->getSchemaGrammar()->columnize($columns);
+            $name = "{$name} ({$columns})";
+        }
         $query = Query::toSql($query);
         $withData = $withData ? 'with data' : 'with no data';
         $this->getConnection()->statement("create materialized view {$name} as {$query} {$withData}");

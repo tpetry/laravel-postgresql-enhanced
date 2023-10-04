@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Schema as BaseSchema;
  * @method static void createFunctionOrReplace(string $name, array $parameters, array|string $return, string $language, string $body, array $options = [])
  * @method static void createRecursiveView(string $name, Builder|string $query, array $columns)
  * @method static void createRecursiveViewOrReplace(string $name, Builder|string $query, array $columns)
- * @method static void createMaterializedView(string $name, Builder|string $query, bool $withData = true)
+ * @method static void createMaterializedView(string $name, Builder|string $query, bool $withData = true, array $columns = null)
  * @method static void createView(string $name, Builder|string $query, array $columns = null)
  * @method static void createViewOrReplace(string $name, Builder|string $query, array $columns = null)
  * @method static void dropExtension(string ...$name)
