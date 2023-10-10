@@ -12,10 +12,10 @@ trait BuilderView
     /**
      * Create a materialized view on the schema.
      */
-    public function createMaterializedView(string $name, QueryBuilder|string $query, bool $withData = true, array $columns = null): void
+    public function createMaterializedView(string $name, QueryBuilder|string $query, bool $withData = true, array $columns = []): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
-        if (null !== $columns) {
+        if (filled($columns)) {
             $columns = $this->getConnection()->getSchemaGrammar()->columnize($columns);
             $name = "{$name} ({$columns})";
         }
@@ -49,10 +49,10 @@ trait BuilderView
     /**
      * Create a view on the schema.
      */
-    public function createView(string $name, QueryBuilder|string $query, array $columns = null): void
+    public function createView(string $name, QueryBuilder|string $query, array $columns = []): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
-        if (null !== $columns) {
+        if (filled($columns)) {
             $columns = $this->getConnection()->getSchemaGrammar()->columnize($columns);
             $name = "{$name} ({$columns})";
         }
@@ -63,10 +63,10 @@ trait BuilderView
     /**
      * Create or replace a view on the schema.
      */
-    public function createViewOrReplace(string $name, QueryBuilder|string $query, array $columns = null): void
+    public function createViewOrReplace(string $name, QueryBuilder|string $query, array $columns = []): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
-        if (null !== $columns) {
+        if (filled($columns)) {
             $columns = $this->getConnection()->getSchemaGrammar()->columnize($columns);
             $name = "{$name} ({$columns})";
         }
