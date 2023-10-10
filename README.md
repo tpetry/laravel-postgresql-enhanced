@@ -285,6 +285,14 @@ Schema::createView('users_with_2fa', 'SELECT * FROM users WHERE two_factor_secre
 Schema::createViewOrReplace('users_without_2fa', DB::table('users')->whereNull('two_factor_secret'));
 ```
 
+You can specify alternative names for the view's columns by passing an array as the last parameter:
+```php
+use Illuminate\Support\Facades\DB;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::createView('users_with_2fa', DB::table('users')->select('id')->whereNull('two_factor_secret'), ['user_id']);
+```
+
 If you need to create recursive views the `createRecursiveView` and `createRecursiveViewOrReplace` methods can be used like in the former examples but you need to provide the available columns as last parameter:
 
 ```php
@@ -330,6 +338,7 @@ use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 
 Schema::createMaterializedView('users_with_2fa', 'SELECT * FROM users WHERE two_factor_secret IS NOT NULL');
 Schema::createMaterializedView('users_with_2fa', DB::table('users')->whereNull('two_factor_secret'));
+Schema::createMaterializedView('users_with_2fa', DB::table('users')->select('id')->whereNull('two_factor_secret'), columns: ['user_id']);
 
 Schema::createMaterializedView('very_slow_query_materialized', 'SELECT ...', withData: false);
 

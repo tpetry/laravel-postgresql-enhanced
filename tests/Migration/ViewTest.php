@@ -10,6 +10,14 @@ use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class ViewTest extends TestCase
 {
+    public function testCreateMaterializedViewWithColumns(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createMaterializedView('test_553410', DB::query()->selectRaw('random()'), columns: ['column_221818']);
+        });
+        $this->assertEquals(['create materialized view "test_553410" ("column_221818") as select random() with data'], array_column($queries, 'query'));
+    }
+
     public function testCreateMaterializedViewWithData(): void
     {
         $queries = $this->withQueryLog(function (): void {
@@ -56,6 +64,22 @@ class ViewTest extends TestCase
             Schema::createViewOrReplace('test_623631', DB::query()->selectRaw('random() as column_449988'));
         });
         $this->assertEquals(['create or replace view "test_623631" as select random() as column_449988'], array_column($queries, 'query'));
+    }
+
+    public function testCreateViewOrReplaceWithColumns(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createViewOrReplace('test_623632', DB::query()->selectRaw('random()'), ['column_449989']);
+        });
+        $this->assertEquals(['create or replace view "test_623632" ("column_449989") as select random()'], array_column($queries, 'query'));
+    }
+
+    public function testCreateViewWithColumns(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createView('test_787483', DB::query()->selectRaw('random()'), ['column_275665']);
+        });
+        $this->assertEquals(['create view "test_787483" ("column_275665") as select random()'], array_column($queries, 'query'));
     }
 
     public function testDropView(): void

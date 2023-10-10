@@ -12,9 +12,13 @@ trait BuilderView
     /**
      * Create a materialized view on the schema.
      */
-    public function createMaterializedView(string $name, QueryBuilder|string $query, bool $withData = true): void
+    public function createMaterializedView(string $name, QueryBuilder|string $query, bool $withData = true, array $columns = []): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
+        if (filled($columns)) {
+            $columns = $this->getConnection()->getSchemaGrammar()->columnize($columns);
+            $name = "{$name} ({$columns})";
+        }
         $query = Query::toSql($query);
         $withData = $withData ? 'with data' : 'with no data';
         $this->getConnection()->statement("create materialized view {$name} as {$query} {$withData}");
@@ -45,9 +49,13 @@ trait BuilderView
     /**
      * Create a view on the schema.
      */
-    public function createView(string $name, QueryBuilder|string $query): void
+    public function createView(string $name, QueryBuilder|string $query, array $columns = []): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
+        if (filled($columns)) {
+            $columns = $this->getConnection()->getSchemaGrammar()->columnize($columns);
+            $name = "{$name} ({$columns})";
+        }
         $query = Query::toSql($query);
         $this->getConnection()->statement("create view {$name} as {$query}");
     }
@@ -55,9 +63,13 @@ trait BuilderView
     /**
      * Create or replace a view on the schema.
      */
-    public function createViewOrReplace(string $name, QueryBuilder|string $query): void
+    public function createViewOrReplace(string $name, QueryBuilder|string $query, array $columns = []): void
     {
         $name = $this->getConnection()->getSchemaGrammar()->wrapTable($name);
+        if (filled($columns)) {
+            $columns = $this->getConnection()->getSchemaGrammar()->columnize($columns);
+            $name = "{$name} ({$columns})";
+        }
         $query = Query::toSql($query);
         $this->getConnection()->statement("create or replace view {$name} as {$query}");
     }
