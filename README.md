@@ -285,7 +285,7 @@ Schema::createView('users_with_2fa', 'SELECT * FROM users WHERE two_factor_secre
 Schema::createViewOrReplace('users_without_2fa', DB::table('users')->whereNull('two_factor_secret'));
 ```
 
-You can specify the column names of the view by passing an array as third parameter:
+You can specify alternative names for the view's columns by passing an array as the last parameter:
 ```php
 use Illuminate\Support\Facades\DB;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
