@@ -249,6 +249,14 @@ trait BlueprintTypes
     }
 
     /**
+     * Create a new vector column on the table.
+     */
+    public function vector(string $column, int $dimensions = 1536): ColumnDefinition
+    {
+        return $this->addColumn('vector', $column, compact('dimensions'));
+    }
+
+    /**
      * Create a new xml column on the table.
      */
     public function xml(string $column): ColumnDefinition

@@ -27,6 +27,7 @@ class Grammar extends PostgresGrammar
         '~', '&', '|', '#', '<<', '>>', '<<=', '>>=',
         '&&', '@>', '<@', '?', '?|', '?&', '||', '-', '@?', '@@', '#-',
         'is distinct from', 'is not distinct from',
+        '<->', '<=>', '<#>',
     ];
 
     /**

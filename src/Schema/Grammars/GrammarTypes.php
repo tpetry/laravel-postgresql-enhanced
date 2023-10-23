@@ -276,6 +276,14 @@ trait GrammarTypes
     }
 
     /**
+     * Create the column definition for a vector type.
+     */
+    protected function typeVector(Fluent $column): string
+    {
+        return "vector({$column['dimensions']})";
+    }
+
+    /**
      * Create the column definition for a xml type.
      */
     protected function typeXml(Fluent $column): string

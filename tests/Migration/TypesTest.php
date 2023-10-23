@@ -332,6 +332,21 @@ class TypesTest extends TestCase
         $this->assertEquals('ALTER TABLE test ALTER col TYPE varbit(9)', $queries[1]['query'] ?? null);
     }
 
+    public function testVectorTypeIsSupported(): void
+    {
+        if (!$this->getConnection()->table('pg_available_extensions')->where('name', 'vector')->exists()) {
+            $this->markTestSkipped('pg_vector is not available for this PostgreSQL server.');
+        }
+
+        $this->getConnection()->statement('CREATE EXTENSION IF NOT EXISTS vector');
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->vector('col'),
+            fnChange: fn (Blueprint $table) => $table->vector('col')->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" vector(1536) not null)', $queries[0]['query'] ?? null);
+    }
+
     public function testXmlTypeIsSupported(): void
     {
         $queries = $this->runMigrations(

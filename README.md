@@ -41,6 +41,8 @@ composer require tpetry/laravel-postgresql-enhanced
         - [Compression](#compression)
         - [Initial](#initial)
     - [Column Types](#column-types)
+        - [Arrays](#arrays)
+        - [Ranges](#ranges)
         - [Bit Strings](#bit-strings)
         - [Case Insensitive Text](#case-insensitive-text)
         - [Full Text Search](#full-text-search)
@@ -49,8 +51,7 @@ composer require tpetry/laravel-postgresql-enhanced
         - [IP Networks](#ip-networks)
         - [International Product Numbers](#international-product-numbers)
         - [Label Tree](#label-tree)
-        - [Ranges](#ranges)
-        - [Arrays](#arrays)
+        - [Vector](#vector)
         - [XML](#xml)
 - [Query](#query)
     - [Explain](#explain)
@@ -60,6 +61,7 @@ composer require tpetry/laravel-postgresql-enhanced
     - [Common Table Expressions (CTE)](#common-table-expressions-cte)
     - [Lazy By Cursor](#lazy-by-cursor)
     - [Where Clauses](#where-clauses)
+    - [Order By](#order-by)
 - [Eloquent](#eloquent)
     - [Casts](#casts)
     - [Refresh Data on Save](#refresh-data-on-save)
@@ -644,6 +646,36 @@ Schema::table('users', function (Blueprint $table): void {
 
 ### Column Types
 
+#### Arrays
+The array data types store multiple values in one single column. They can be used e.g. to store multiple tag ids of categories a product belongs to.
+```php
+// @see https://www.postgresql.org/docs/current/arrays.html
+$table->integerArray(string $column);
+```
+
+> **Note**  
+> While PostgreSQL array types are powerful, only the integer array is supported.
+> It is the sole array type with additional PostgreSQL enhancements for manipulation and querying compared to JSON columns.
+> The [intarray](https://www.postgresql.org/docs/current/intarray.html) extensions provides extensive features that can be used to e.g. [store and query tags](https://tapoueh.org/blog/2013/10/denormalizing-tags/) with advanced boolean logic.
+
+#### Ranges
+The range data types store a range of values with optional start and end values. They can be used e.g. to describe the duration a meeting room is booked.
+```php
+// @see https://www.postgresql.org/docs/current/rangetypes.html
+$table->bigIntegerRange(string $column);
+$table->bigIntegerMultiRange(string $column);
+$table->dateRange(string $column);
+$table->dateMultiRange(string $column);
+$table->decimalRange(string $column);
+$table->decimalMultiRange(string $column);
+$table->integerRange(string $column);
+$table->integerMultiRange(string $column);
+$table->timestampRange(string $column);
+$table->timestampMultiRange(string $column);
+$table->timestampTzRange(string $column);
+$table->timestampTzMultiRange(string $column);
+```
+
 #### Bit Strings
 The bit string data types store strings of 0s and 1s. They can be used to e.g. store bitmaps.
 ```php
@@ -721,35 +753,19 @@ $table->labelTree(string $column);
 > **Note**  
 > You need to enable the `ltree` extension with `Schema::createExtensionIfNotExists('ltree')` or `Schema::createExtension('ltree')` before.
 
-#### Ranges
-The range data types store a range of values with optional start and end values. They can be used e.g. to describe the duration a meeting room is booked.
+#### Vector
+The vector type can be used to store and search for embeddings created by AI providers like OpenAI.
 ```php
-// @see https://www.postgresql.org/docs/current/rangetypes.html
-$table->bigIntegerRange(string $column);
-$table->bigIntegerMultiRange(string $column);
-$table->dateRange(string $column);
-$table->dateMultiRange(string $column);
-$table->decimalRange(string $column);
-$table->decimalMultiRange(string $column);
-$table->integerRange(string $column);
-$table->integerMultiRange(string $column);
-$table->timestampRange(string $column);
-$table->timestampMultiRange(string $column);
-$table->timestampTzRange(string $column);
-$table->timestampTzMultiRange(string $column);
+// @see https://github.com/pgvector/pgvector
+$table->xml(string $column, int $dimensions = 1536);
 ```
 
-#### Arrays
-The array data types store multiple values in one single column. They can be used e.g. to store multiple tag ids of categories a product belongs to.
-```php
-// @see https://www.postgresql.org/docs/current/arrays.html
-$table->integerArray(string $column);
-```
+> **Note**
+> You need to enable the `vector` extension with `Schema::createExtensionIfNotExists('vector')` or `Schema::createExtension('vector')` before.
 
-> **Note**  
-> While PostgreSQL array types are powerful, only the integer array is supported.
-> It is the sole array type with additional PostgreSQL enhancements for manipulation and querying compared to JSON columns.
-> The [intarray](https://www.postgresql.org/docs/current/intarray.html) extensions provides extensive features that can be used to e.g. [store and query tags](https://tapoueh.org/blog/2013/10/denormalizing-tags/) with advanced boolean logic.
+> **Note**
+> The `vector` extension is not a standard PostgreSQL extension but available with most PostgreSQL cloud services.
+> You can check for support with the following query: `SELECT * FROM pg_available_extensions WHERE name = 'vector'`
 
 #### XML
 The xml data type can be used to store an xml document.
@@ -1059,6 +1075,19 @@ $query->orWhereIntegerArrayMatches($column, string $query);
 $query->whereIntegerArrayMatches('tags', '3&4&(5|6)&!7');
 ```
 
+### Order By
+
+#### Vector Similarity
+
+With the `orderByVectorSimilarity` method you can compare a column storing embeddings to other embeddings.
+
+```php
+$query->orderByVectorSimilarity($column, $vector, string $distance = 'cosine'|'l2');
+
+// The five rows with the highest similarity to the provided embeddings.
+$query->orderByVectorSimilarity('embeddings', [0.9569, 0.1113, 0.0107])->limit(5);
+```
+
 ## Eloquent
 
 ### Casts
@@ -1069,6 +1098,7 @@ To make those types usable, these casts can be used with your eloquent models:
 | Type           | Cast                                                        |
 |----------------|-------------------------------------------------------------|
 | `integerArray` | `Tpetry\PostgresqlEnhanced\Eloquent\Casts\IntegerArrayCast` |
+| `vector`       | `Tpetry\PostgresqlEnhanced\Eloquent\Casts\VectorArray`      |
 
 ### Refresh Data on Save
 

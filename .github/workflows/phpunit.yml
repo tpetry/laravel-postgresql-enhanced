@@ -49,7 +49,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres
+        image: ankane/pgvector
         env:
           POSTGRES_PASSWORD: postgres
         ports:

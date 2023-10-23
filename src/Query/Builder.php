@@ -17,6 +17,7 @@ class Builder extends BaseBuilder
     use BuilderExplain;
     use BuilderLateralJoin;
     use BuilderLazyByCursor;
+    use BuilderOrder;
     use BuilderReturning;
     use BuilderWhere;
 

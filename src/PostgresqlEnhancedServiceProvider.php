@@ -43,6 +43,7 @@ use Tpetry\PostgresqlEnhanced\Types\TstzrangeType;
 use Tpetry\PostgresqlEnhanced\Types\TsvectorType;
 use Tpetry\PostgresqlEnhanced\Types\UpcType;
 use Tpetry\PostgresqlEnhanced\Types\VarbitType;
+use Tpetry\PostgresqlEnhanced\Types\VectorType;
 use Tpetry\PostgresqlEnhanced\Types\XmlType;
 
 class PostgresqlEnhancedServiceProvider extends ServiceProvider
@@ -76,6 +77,7 @@ class PostgresqlEnhancedServiceProvider extends ServiceProvider
         TsvectorType::class,
         UpcType::class,
         VarbitType::class,
+        VectorType::class,
         XmlType::class,
     ];
 
