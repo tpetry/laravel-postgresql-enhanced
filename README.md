@@ -757,7 +757,7 @@ $table->labelTree(string $column);
 The vector type can be used to store and search for embeddings created by AI providers like OpenAI.
 ```php
 // @see https://github.com/pgvector/pgvector
-$table->xml(string $column, int $dimensions = 1536);
+$table->vector(string $column, int $dimensions = 1536);
 ```
 
 > **Note**
