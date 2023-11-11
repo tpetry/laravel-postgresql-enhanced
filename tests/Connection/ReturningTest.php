@@ -28,7 +28,12 @@ class ReturningTest extends TestCase
                 $this->assertEquals([], $this->getConnection()->returningStatement('update example set str = ? where str = ? returning str', ['IS7PD2jn', '8lnreu2H']));
             });
 
-            $this->assertEquals(['update example set str = ? where str = ? returning str'], array_column($queries, 'query'));
+            // The pretend mode has been changed in Laravel 10.30.0 to include the bindings in the query string
+            if (version_compare($this->app->version(), '10.30.0', '>=')) {
+                $this->assertEquals(["update example set str = 'IS7PD2jn' where str = '8lnreu2H' returning str"], array_column($queries, 'query'));
+            } else {
+                $this->assertEquals(['update example set str = ? where str = ? returning str'], array_column($queries, 'query'));
+            }
         });
 
         $this->assertEquals(1, $this->getConnection()->selectOne('SELECT COUNT(*) AS count FROM example WHERE str = ?', ['8lnreu2H'])->count);
