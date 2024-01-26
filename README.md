@@ -40,6 +40,7 @@ composer require tpetry/laravel-postgresql-enhanced
     - [Column Options](#column-options)
         - [Compression](#compression)
         - [Initial](#initial)
+        - [Using](#using)
     - [Column Types](#column-types)
         - [Arrays](#arrays)
         - [Ranges](#ranges)
@@ -641,6 +642,24 @@ use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 Schema::table('users', function (Blueprint $table): void {
     $table->boolean('acl_admin')->initial(false);
     $table->boolean('acl_read')->initial(false)->default(true);
+});
+```
+
+#### Using
+
+PostgreSQL forbids some data type changes in migrations when they violate the type system.
+You can't, e.g., change a `varchar` column storing one email address into a `jsonb` array storing multiple email addresses, as PostgreSQL doesn't know how to convert between these types automatically.
+You would get this error:
+
+```
+SQLSTATE[42804]: Datatype mismatch: 7 ERROR:  column "email" cannot be cast automatically to type jsonb
+```
+
+You can specify an expression how the current value has to be transformed to the new type with the `using()` modifier:
+
+```php
+Schema::table('users', function (Blueprint $table): void {
+    $table->jsonb('email')->using('jsonb_build_array(email)')->change();
 });
 ```
 

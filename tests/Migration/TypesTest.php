@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tpetry\PostgresqlEnhanced\Tests\Migration;
 
 use Closure;
+use Illuminate\Database\Query\Expression;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 use Tpetry\PostgresqlEnhanced\Tests\TestCase;
@@ -62,6 +63,28 @@ class TypesTest extends TestCase
 
         $this->assertEquals('create table "test" ("col" varchar(255) compression pglz not null)', $queries[0]['query'] ?? null);
         $this->assertEquals('ALTER TABLE "test" ALTER "col" SET COMPRESSION "lz4"', $queries[1]['query'] ?? null);
+    }
+
+    public function testColumnModifierUsingIsSupported(): void
+    {
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->string('col'),
+            fnChange: fn (Blueprint $table) => $table->json('col')->using('json_build_array(col)')->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" varchar(255) not null)', $queries[0]['query'] ?? null);
+        $this->assertEquals('ALTER TABLE test ALTER col TYPE JSON USING json_build_array(col)', $queries[1]['query'] ?? null);
+    }
+
+    public function testColumnModifierWithExpressionUsingIsSupported(): void
+    {
+        $queries = $this->runMigrations(
+            fnCreate: fn (Blueprint $table) => $table->string('col'),
+            fnChange: fn (Blueprint $table) => $table->json('col')->using(new Expression('json_build_array(col)'))->change(),
+        );
+
+        $this->assertEquals('create table "test" ("col" varchar(255) not null)', $queries[0]['query'] ?? null);
+        $this->assertEquals('ALTER TABLE test ALTER col TYPE JSON USING json_build_array(col)', $queries[1]['query'] ?? null);
     }
 
     public function testDateMultiRangeTypeIsSupported(): void

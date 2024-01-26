@@ -7,14 +7,40 @@ namespace Tpetry\PostgresqlEnhanced\Schema\Grammars;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint as BaseBlueprint;
 use Illuminate\Support\Fluent;
+use Illuminate\Support\Str;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 
 trait GrammarTypes
 {
-    public function compileChange(BaseBlueprint $blueprint, Fluent $command, Connection $connection)
+    /**
+     * Compile a change column command into a series of SQL statements.
+     */
+    public function compileChange(BaseBlueprint $blueprint, Fluent $command, Connection $connection): array
     {
-        $queries = parent::compileChange($blueprint, $command, $connection);
+        $queries = [];
+
+        // The table prefix is accessed differently based on Laravel version. In old version the $prefix was public,
+        // while with new ones the $blueprint->prefix() method should be used. The issue is solved by invading the
+        // object and getting the property directly.
+        $prefix = (fn () => $this->prefix)->call($blueprint);
+
         foreach ($blueprint->getChangedColumns() as $changedColumn) {
+            $blueprintColumn = new BaseBlueprint($blueprint->getTable(), null, $prefix);
+            $blueprintColumn->addColumn($changedColumn['type'], $changedColumn['name'], $changedColumn->toArray());
+
+            foreach (parent::compileChange($blueprintColumn, $command, $connection) as $sql) {
+                if (filled($changedColumn['using']) && Str::is('ALTER TABLE * ALTER * TYPE *', $sql)) {
+                    $using = match ($connection->getSchemaGrammar()->isExpression($changedColumn['using'])) {
+                        true => $connection->getSchemaGrammar()->getValue($changedColumn['using']),
+                        false => $changedColumn['using'],
+                    };
+
+                    $queries[] = "{$sql} USING {$using}";
+                } else {
+                    $queries[] = $sql;
+                }
+            }
+
             if (filled($changedColumn['compression'])) {
                 $queries[] = sprintf(
                     'ALTER TABLE %s ALTER %s SET COMPRESSION %s',

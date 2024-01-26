@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Support\Phpstan;
 
+use Illuminate\Contracts\Database\Query\Expression as ExpressionContract;
 use Illuminate\Database\Schema\ColumnDefinition;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\FunctionVariant;
@@ -19,13 +20,14 @@ use Tpetry\PostgresqlEnhanced\Support\Phpstan\Values\ReflectedParameter;
 class SchemaColumnDefinitionExtension implements MethodsClassReflectionExtension
 {
     /**
-     * @param 'initial'|'compression' $methodName
+     * @param 'compression'|'initial'|'using' $methodName
      */
     public function getMethod(ClassReflection $classReflection, string $methodName): MethodReflection
     {
         return match ($methodName) {
             'initial' => $this->getInitialMethod($classReflection),
             'compression' => $this->getCompressionMethod($classReflection),
+            'using' => $this->getUsingMethod($classReflection),
         };
     }
 
@@ -35,7 +37,7 @@ class SchemaColumnDefinitionExtension implements MethodsClassReflectionExtension
             return false;
         }
 
-        return \in_array($methodName, ['compression', 'initial']);
+        return \in_array($methodName, ['compression', 'initial', 'using']);
     }
 
     private function getCompressionMethod(ClassReflection $classReflection): MethodReflection
@@ -62,6 +64,22 @@ class SchemaColumnDefinitionExtension implements MethodsClassReflectionExtension
             name: 'initial',
             variants: [
                 new FunctionVariant(TemplateTypeMap::createEmpty(), null, $parameters, false, $returnType),
+            ],
+        );
+    }
+
+    private function getUsingMethod(ClassReflection $classReflection): MethodReflection
+    {
+        $parametersExpression = [new ReflectedParameter('expression', new ObjectType(ExpressionContract::class))];
+        $parametersString = [new ReflectedParameter('expression', new StringType())];
+        $returnType = new ObjectType(ColumnDefinition::class);
+
+        return new ReflectedMethod(
+            classReflection: $classReflection,
+            name: 'using',
+            variants: [
+                new FunctionVariant(TemplateTypeMap::createEmpty(), null, $parametersExpression, false, $returnType),
+                new FunctionVariant(TemplateTypeMap::createEmpty(), null, $parametersString, false, $returnType),
             ],
         );
     }
