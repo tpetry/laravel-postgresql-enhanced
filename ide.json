@@ -13,6 +13,10 @@
             {
                 "classFqn": "Illuminate\\Database\\Schema\\Blueprint",
                 "mixinFqn": "Tpetry\\PostgresqlEnhanced\\Schema\\Blueprint"
+            },
+            {
+                "classFqn": "Illuminate\\Database\\Schema\\ColumnDefinition",
+                "mixinFqn": "Tpetry\\PostgresqlEnhanced\\Schema\\ColumnDefinition"
             }
         ]
     }
