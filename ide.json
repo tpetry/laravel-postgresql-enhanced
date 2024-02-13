@@ -1,0 +1,15 @@
+{
+    "$schema": "https://laravel-ide.com/schema/laravel-ide-v2.json",
+    "helperCode": {
+        "classMixins": [
+            {
+                "classFqn": "Illuminate\\Database\\Query\\Builder",
+                "mixinFqn": "Tpetry\\PostgresqlEnhanced\\Query\\Builder"
+            },
+            {
+                "classFqn": "Illuminate\\Database\\Schema\\Blueprint",
+                "mixinFqn": "Tpetry\\PostgresqlEnhanced\\Schema\\Blueprint"
+            }
+        ]
+    }
+}
