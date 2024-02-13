@@ -3,6 +3,10 @@
     "helperCode": {
         "classMixins": [
             {
+                "classFqn": "Illuminate\\Contracts\\Database\\Query\\Builder",
+                "mixinFqn": "Tpetry\\PostgresqlEnhanced\\Query\\Builder"
+            },
+            {
                 "classFqn": "Illuminate\\Database\\Query\\Builder",
                 "mixinFqn": "Tpetry\\PostgresqlEnhanced\\Query\\Builder"
             },
