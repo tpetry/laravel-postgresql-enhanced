@@ -15,7 +15,7 @@ class ColumnDefinition extends BaseColumnDefinition
     /**
      * Specify the compression method for TOASTed values (PostgreSQL).
      */
-    public function compression(string $algorithm): static
+    public function compression(string $algorithm): self
     {
         return $this;
     }
@@ -23,7 +23,7 @@ class ColumnDefinition extends BaseColumnDefinition
     /**
      * Sets an initial value to the column (PostgreSQL).
      */
-    public function initial(mixed $value): static
+    public function initial(mixed $value): self
     {
         return $this;
     }
@@ -31,7 +31,7 @@ class ColumnDefinition extends BaseColumnDefinition
     /**
      * Specify casting expression when changing the column type (PostgreSQL).
      */
-    public function using(string|Expression $expression): static
+    public function using(string|Expression $expression): self
     {
         return $this;
     }

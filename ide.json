@@ -17,6 +17,14 @@
             {
                 "classFqn": "Illuminate\\Database\\Schema\\ColumnDefinition",
                 "mixinFqn": "Tpetry\\PostgresqlEnhanced\\Schema\\ColumnDefinition"
+            },
+            {
+                "classFqn": "Illuminate\\Database\\Schema\\IndexDefinition",
+                "mixinFqn": "Tpetry\\PostgresqlEnhanced\\Schema\\IndexDefinition"
+            },
+            {
+                "classFqn": "Illuminate\\Support\\Facades\\Schema",
+                "mixinFqn": "Tpetry\\PostgresqlEnhanced\\Support\\Facades\\Schema"
             }
         ]
     }
