@@ -1063,7 +1063,7 @@ With PostgreSQL's `BETWEEN SYMMETRIC` keyword you don't have to do this anymore,
 You can now use e.g. min/max values with the following code without having to reorder these values if the meaning has been swapped by the user when entering them:
 ```php
 $min = $request->integer('min');
-$min = $request->integer('max');
+$max = $request->integer('max');
 
 // before:
 $query->whereBetween('price', [min($min, $max), max($min, $max)]);
