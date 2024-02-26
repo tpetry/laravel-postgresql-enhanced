@@ -117,6 +117,7 @@ class PostgresEnhancedConnection extends PostgresConnection
     protected function getDefaultQueryGrammar(): QueryGrammar
     {
         $grammar = new QueryGrammar();
+        $grammar->setTablePrefix($this->tablePrefix);
         if (method_exists($grammar, 'setConnection')) {
             $grammar->setConnection($this);
         }
