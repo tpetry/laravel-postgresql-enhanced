@@ -13,7 +13,7 @@ trait BuilderOrder
     /**
      * Add a vector-similarity "order by" clause to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param Expression|string $column
      * @param array<int, float>|\Illuminate\Support\Collection<int, float> $vector
      */
     public function orderByVectorSimilarity($column, $vector, string $distance = 'cosine'): static

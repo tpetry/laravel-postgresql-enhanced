@@ -11,7 +11,7 @@ trait BuilderWhere
     /**
      * Add an or where all statement to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param Expression|string $column
      */
     public function orWhereAll($column, string $operator, iterable $values): static
     {
@@ -21,7 +21,7 @@ trait BuilderWhere
     /**
      * Add an or where any statement to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param Expression|string $column
      */
     public function orWhereAny($column, string $operator, iterable $values): static
     {
@@ -31,7 +31,7 @@ trait BuilderWhere
     /**
      * Add an or where between symmetric statement to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param Expression|string $column
      */
     public function orWhereBetweenSymmetric($column, iterable $values): static
     {
@@ -41,7 +41,7 @@ trait BuilderWhere
     /**
      * Add an or where boolean statement to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param Expression|string $column
      */
     public function orWhereBoolean($column, bool $value): static
     {
@@ -51,7 +51,7 @@ trait BuilderWhere
     /**
      * Add an or where integer array matches statement to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param Expression|string $column
      */
     public function orWhereIntegerArrayMatches($column, string $query): static
     {
@@ -61,8 +61,8 @@ trait BuilderWhere
     /**
      * Add an "or where like" statement to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
-     * @param \Illuminate\Database\Query\Expression|string $value
+     * @param Expression|string $column
+     * @param Expression|string $value
      */
     public function orWhereLike($column, $value, bool $caseInsensitive = false): static
     {
@@ -72,7 +72,7 @@ trait BuilderWhere
     /**
      * Add an or where not all statement to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param Expression|string $column
      */
     public function orWhereNotAll($column, string $operator, iterable $values): static
     {
@@ -82,7 +82,7 @@ trait BuilderWhere
     /**
      * Add an or where not any statement to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param Expression|string $column
      */
     public function orWhereNotAny($column, string $operator, iterable $values): static
     {
@@ -92,7 +92,7 @@ trait BuilderWhere
     /**
      * Add an or where not between symmetric statement to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param Expression|string $column
      */
     public function orWhereNotBetweenSymmetric($column, iterable $values): static
     {
@@ -102,7 +102,7 @@ trait BuilderWhere
     /**
      * Add an or where not boolean statement to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param Expression|string $column
      */
     public function orWhereNotBoolean($column, bool $value): static
     {
@@ -112,7 +112,7 @@ trait BuilderWhere
     /**
      * Add a where all statement to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param Expression|string $column
      * @param 'and'|'or' $boolean
      */
     public function whereAll($column, string $operator, iterable $values, string $boolean = 'and', bool $not = false): static
@@ -128,7 +128,7 @@ trait BuilderWhere
     /**
      * Add a where any statement to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param Expression|string $column
      * @param 'and'|'or' $boolean
      */
     public function whereAny($column, string $operator, iterable $values, string $boolean = 'and', bool $not = false): static
@@ -144,7 +144,7 @@ trait BuilderWhere
     /**
      * Add a where between symmetric statement to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param Expression|string $column
      * @param 'and'|'or' $boolean
      */
     public function whereBetweenSymmetric($column, iterable $values, $boolean = 'and', bool $not = false): static
@@ -159,7 +159,7 @@ trait BuilderWhere
     /**
      * Add a where boolean statement to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param Expression|string $column
      */
     public function whereBoolean($column, bool $value): static
     {
@@ -169,7 +169,7 @@ trait BuilderWhere
     /**
      * Add a where integer array matches statement to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param Expression|string $column
      */
     public function whereIntegerArrayMatches($column, string $query): static
     {
@@ -179,8 +179,8 @@ trait BuilderWhere
     /**
      * Add a "where month" statement to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
-     * @param \Illuminate\Database\Query\Expression|string $value
+     * @param Expression|string $column
+     * @param Expression|string $value
      * @param string $boolean
      */
     public function whereLike($column, $value, bool $caseInsensitive = false, $boolean = 'and'): static
@@ -196,7 +196,7 @@ trait BuilderWhere
     /**
      * Add a where not all statement to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param Expression|string $column
      */
     public function whereNotAll($column, string $operator, iterable $values): static
     {
@@ -206,7 +206,7 @@ trait BuilderWhere
     /**
      * Add a where not any statement to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param Expression|string $column
      */
     public function whereNotAny($column, string $operator, iterable $values): static
     {
@@ -216,7 +216,7 @@ trait BuilderWhere
     /**
      * Add a where not between symmetric statement to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param Expression|string $column
      */
     public function whereNotBetweenSymmetric($column, iterable $values): static
     {
@@ -226,7 +226,7 @@ trait BuilderWhere
     /**
      * Add a where not boolean statement to the query.
      *
-     * @param \Illuminate\Database\Query\Expression|string $column
+     * @param Expression|string $column
      */
     public function whereNotBoolean($column, bool $value): static
     {
