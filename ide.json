@@ -1,0 +1,31 @@
+{
+    "$schema": "https://laravel-ide.com/schema/laravel-ide-v2.json",
+    "helperCode": {
+        "classMixins": [
+            {
+                "classFqn": "Illuminate\\Contracts\\Database\\Query\\Builder",
+                "mixinFqn": "Tpetry\\PostgresqlEnhanced\\Query\\Builder"
+            },
+            {
+                "classFqn": "Illuminate\\Database\\Query\\Builder",
+                "mixinFqn": "Tpetry\\PostgresqlEnhanced\\Query\\Builder"
+            },
+            {
+                "classFqn": "Illuminate\\Database\\Schema\\Blueprint",
+                "mixinFqn": "Tpetry\\PostgresqlEnhanced\\Schema\\Blueprint"
+            },
+            {
+                "classFqn": "Illuminate\\Database\\Schema\\ColumnDefinition",
+                "mixinFqn": "Tpetry\\PostgresqlEnhanced\\Schema\\ColumnDefinition"
+            },
+            {
+                "classFqn": "Illuminate\\Database\\Schema\\IndexDefinition",
+                "mixinFqn": "Tpetry\\PostgresqlEnhanced\\Schema\\IndexDefinition"
+            },
+            {
+                "classFqn": "Illuminate\\Support\\Facades\\Schema",
+                "mixinFqn": "Tpetry\\PostgresqlEnhanced\\Support\\Facades\\Schema"
+            }
+        ]
+    }
+}
