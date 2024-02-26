@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.35.0] - 2024-02-26
+### Added
+* IDE autocomplete support for PhpStorm with Laravel Idea plugin
+
+### Fixed
+* Table prefixes had been ignored by query grammar
+
 ## [0.34.0] - 2024-01-26
 ### Added
 * USING clause for column type migrations
