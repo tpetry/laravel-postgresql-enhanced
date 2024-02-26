@@ -18,6 +18,7 @@ composer require tpetry/laravel-postgresql-enhanced
 
 # Features
 
+- [IDE Autocomplete](#ide-autocomplete)
 - [PHPStan](#phpstan)
 - [Migration](#migration)
     - [Zero Downtime Migration](#zero-downtime-migration)
@@ -67,6 +68,14 @@ composer require tpetry/laravel-postgresql-enhanced
     - [Casts](#casts)
     - [Refresh Data on Save](#refresh-data-on-save)
     - [Date Formats](#date-formats)
+
+## IDE Autocomplete
+
+Laravel provides many extension capabilities, making it hard for IDEs to do proper autocomplete.
+Currently, there is no generic way to tell IDEs about the added functionality of this enhanced driver.
+However, this package is integrated with specific IDE combinations:
+
+* **PhpStorm with Laravel Idea**: The [IDE Helper for Laravel](https://github.com/barryvdh/laravel-ide-helper) can detect all PostgreSQL features by running the `Generate Helper Code (Eloquent, Maco, Facades, etc.)` action from the `Laravel` -> `Code Generation` toolbar menu.
 
 ## PHPStan
 
