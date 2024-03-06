@@ -267,7 +267,7 @@ The following table contains all of the available trigger modifiers:
 | `->when('NEW.type = 4')`<br>`->when(fn ($query) => $query->where('NEW.type', 4))` | The trigger should only be called when the condition matches *(only with forEachRow)*.                                                                             |
 | `->replace(true)`                                                                 | The trigger will replace an existing one defined with the same name.                                                                                               |
 
-> **Note**
+> [!NOTE] 
 > PostgreSQL always updates rows even if nothing changed, which may affect your performance. You can add the `suppress_redundant_updates_trigger()` trigger with a `BEFORE UPDATE` action to all tables.
 
 #### Drop Triggers
@@ -414,7 +414,7 @@ Schema::create('subscriptions', function(Blueprint $table) {
 });
 ```
 
-> **Note**  
+> [!NOTE] 
 > For this example you could also use a unique partial index on `user_id` with limiting the rows to `cancelled_at IS NOT NULL`.
 
 #### Partial Indexes
@@ -540,7 +540,7 @@ Schema::create('products', function (Blueprint $table): void {
 });
 ```
 
-> **Note**
+> [!NOTE]
 > You can also utilize the domain type to use e.g. column types added by extensions or not yet supported by the package.
 
 #### Altering Domain Types
@@ -681,7 +681,7 @@ The array data types store multiple values in one single column. They can be use
 $table->integerArray(string $column);
 ```
 
-> **Note**  
+> [!NOTE]
 > While PostgreSQL array types are powerful, only the integer array is supported.
 > It is the sole array type with additional PostgreSQL enhancements for manipulation and querying compared to JSON columns.
 > The [intarray](https://www.postgresql.org/docs/current/intarray.html) extensions provides extensive features that can be used to e.g. [store and query tags](https://tapoueh.org/blog/2013/10/denormalizing-tags/) with advanced boolean logic.
@@ -719,7 +719,7 @@ The case insensitive text type is used to store a text that will be compared cas
 $table->caseInsensitiveText(string $column);
 ```
 
-> **Note**  
+> [!NOTE]
 > You need to enable the `citext` extension with  `Schema::createExtension('citext')` or `Schema::createExtensionIfNotExists('citext')` before.
 
 #### Full Text Search
@@ -743,7 +743,7 @@ The hstore data type is used store key/value pairs within a single PostgreSQL va
 $table->hstore(string $column);
 ```
 
-> **Note**  
+> [!NOTE]
 > You need to enable the `hstore` extension with `Schema::createExtensionIfNotExists('hstore')` or `Schema::createExtension('hstore')` before.
 
 #### Identity
@@ -768,7 +768,7 @@ $table->internationalStandardSerialNumber13(string $column);
 $table->universalProductNumber(string $column);
 ```
 
-> **Note**
+> [!NOTE]
 > You need to enable the `isn` extension with `Schema::createExtensionIfNotExists('isn')` or `Schema::createExtension('isn')` before.
 
 #### Label Tree
@@ -778,7 +778,7 @@ The ltree data type stores a label as its position in a tree. This provides an e
 $table->labelTree(string $column);
 ```
 
-> **Note**  
+> [!NOTE]
 > You need to enable the `ltree` extension with `Schema::createExtensionIfNotExists('ltree')` or `Schema::createExtension('ltree')` before.
 
 #### Vector
@@ -788,10 +788,10 @@ The vector type can be used to store and search for embeddings created by AI pro
 $table->vector(string $column, int $dimensions = 1536);
 ```
 
-> **Note**
+> [!NOTE]
 > You need to enable the `vector` extension with `Schema::createExtensionIfNotExists('vector')` or `Schema::createExtension('vector')` before.
 
-> **Note**
+> [!NOTE]
 > The `vector` extension is not a standard PostgreSQL extension but available with most PostgreSQL cloud services.
 > You can check for support with the following query: `SELECT * FROM pg_available_extensions WHERE name = 'vector'`
 
@@ -981,7 +981,7 @@ In addition to the basic form of a Common Table Expression these optional settin
 | cycle        | `string` | Specify the automatic cycle detection settings for recursive queries. [(Documentation)](https://www.postgresql.org/docs/current/queries-with.html#QUERIES-WITH-CYCLE)                                    |
 | search       | `string` | Specify the tree search mode setting for recursive queries. [(Documentation)](https://www.postgresql.org/docs/current/queries-with.html#QUERIES-WITH-SEARCH)                                             |
 
-> **Note**  
+> [!NOTE]
 > When you are using recursive CTEs **always** use the `cycle` option to prevent infinite running queries because of loops in the data.
 
 ### Lazy By Cursor
@@ -1216,7 +1216,7 @@ class Example extends Model
 }
 ```
 
-> **Warning**  
+> [!CAUTION]
 > When you mix columns with and without milliseconds in a table, the columns without milliseconds may behave unexpectedly to you:
 > Instead of truncating the milliseconds, they are rounded by PostgreSQL.
 > When the value is rounded up, your timestamp will be in the future.
