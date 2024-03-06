@@ -13,9 +13,9 @@ trait BuilderWhere
      *
      * @param Expression|string $column
      */
-    public function orWhereAll($column, string $operator, iterable $values): static
+    public function orWhereAllValues($column, string $operator, iterable $values): static
     {
-        return $this->whereAll($column, $operator, $values, boolean: 'or');
+        return $this->whereAllValues($column, $operator, $values, boolean: 'or');
     }
 
     /**
@@ -23,9 +23,9 @@ trait BuilderWhere
      *
      * @param Expression|string $column
      */
-    public function orWhereAny($column, string $operator, iterable $values): static
+    public function orWhereAnyValue($column, string $operator, iterable $values): static
     {
-        return $this->whereAny($column, $operator, $values, boolean: 'or');
+        return $this->whereAnyValue($column, $operator, $values, boolean: 'or');
     }
 
     /**
@@ -74,9 +74,9 @@ trait BuilderWhere
      *
      * @param Expression|string $column
      */
-    public function orWhereNotAll($column, string $operator, iterable $values): static
+    public function orWhereNotAllValues($column, string $operator, iterable $values): static
     {
-        return $this->whereAll($column, $operator, $values, boolean: 'or', not: true);
+        return $this->whereAllValues($column, $operator, $values, boolean: 'or', not: true);
     }
 
     /**
@@ -84,9 +84,9 @@ trait BuilderWhere
      *
      * @param Expression|string $column
      */
-    public function orWhereNotAny($column, string $operator, iterable $values): static
+    public function orWhereNotAnyValue($column, string $operator, iterable $values): static
     {
-        return $this->whereAny($column, $operator, $values, boolean: 'or', not: true);
+        return $this->whereAnyValue($column, $operator, $values, boolean: 'or', not: true);
     }
 
     /**
@@ -115,7 +115,7 @@ trait BuilderWhere
      * @param Expression|string $column
      * @param 'and'|'or' $boolean
      */
-    public function whereAll($column, string $operator, iterable $values, string $boolean = 'and', bool $not = false): static
+    public function whereAllValues($column, string $operator, iterable $values, string $boolean = 'and', bool $not = false): static
     {
         $type = 'all';
 
@@ -131,7 +131,7 @@ trait BuilderWhere
      * @param Expression|string $column
      * @param 'and'|'or' $boolean
      */
-    public function whereAny($column, string $operator, iterable $values, string $boolean = 'and', bool $not = false): static
+    public function whereAnyValue($column, string $operator, iterable $values, string $boolean = 'and', bool $not = false): static
     {
         $type = 'any';
 
@@ -198,9 +198,9 @@ trait BuilderWhere
      *
      * @param Expression|string $column
      */
-    public function whereNotAll($column, string $operator, iterable $values): static
+    public function whereNotAllValues($column, string $operator, iterable $values): static
     {
-        return $this->whereAll($column, $operator, $values, not: true);
+        return $this->whereAllValues($column, $operator, $values, not: true);
     }
 
     /**
@@ -208,9 +208,9 @@ trait BuilderWhere
      *
      * @param Expression|string $column
      */
-    public function whereNotAny($column, string $operator, iterable $values): static
+    public function whereNotAnyValue($column, string $operator, iterable $values): static
     {
-        return $this->whereAny($column, $operator, $values, not: true);
+        return $this->whereAnyValue($column, $operator, $values, not: true);
     }
 
     /**

@@ -1027,20 +1027,23 @@ $query->where('invoice', 'like', 'RV-%')->orWhere('invoice', 'like', 'RZ-%');
 $query->where('json', '??', 'key1')->where('json', '??', 'key2');
 
 // you can do:
-$query->whereAny('invoice', 'like', ['RV-%', 'RZ-%']);
-$query->whereAll('json', '??', ['key1', 'key2']);
+$query->whereAnyValue('invoice', 'like', ['RV-%', 'RZ-%']);
+$query->whereAllValues('json', '??', ['key1', 'key2']);
 ```
 
 ```php
-$query->whereAll($column, string $operator, iterable $values);
-$query->whereNotAll($column, string $operator, iterable $values);
-$query->orWhereAll($column, string $operator, iterable $values);
-$query->orWhereNotAll($column, string $operator, iterable $values)
-$query->whereAny($column, string $operator, iterable $values);
-$query->whereNotAny($column, string $operator, iterable $values);
-$query->orWhereAny($column, string $operator, iterable $values);
-$query->orWhereNotAny($column, string $operator, iterable $values)
+$query->whereAllValues($column, string $operator, iterable $values);
+$query->whereNotAllValues($column, string $operator, iterable $values);
+$query->orWhereAllValues($column, string $operator, iterable $values);
+$query->orWhereNotAllValues($column, string $operator, iterable $values)
+$query->whereAnyValue($column, string $operator, iterable $values);
+$query->whereNotAnyValue($column, string $operator, iterable $values);
+$query->orWhereAnyValue($column, string $operator, iterable $values);
+$query->orWhereNotAnyValue($column, string $operator, iterable $values)
 ```
+
+> [!CAUTION]
+> The suffixes `Value` and `Values` had to be added to the method names since release 0.36.0 because the Laravel query builder also started to use these method names.
 
 #### Boolean
 
@@ -1220,6 +1223,16 @@ class Example extends Model
 
 # Breaking Changes
 
+* 0.35.0 -> 0.36.0
+    * Some query builder methods had to be changed because they've now overlapped with new ones added by Laravel 10.47:
+      * `whereAll` -> `whereAllValues`
+      * `whereNotAll` -> `whereNotAllValues`
+      * `orWhereAll` -> `orWhereAllValues`
+      * `orWhereNotAll` -> `orWhereNotAllValues`
+      * `whereAny` -> `whereAnyValue`
+      * `whereNotAny` -> `whereNotAnyValue`
+      * `orWhereAny` -> `orWhereAnyValue`
+      * `orWhereNotAny` -> `orWhereNotAnyValue`
 * 0.10.0 -> 0.11.0
   * The `ZeroDowntimeMigration` concern namespace moved from `Tpetry\PostgresqlEnhanced\Concerns` to `Tpetry\PostgresqlEnhanced\Schema\Concerns`.
 * 0.12.0 -> 0.12.1

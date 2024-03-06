@@ -13,12 +13,12 @@ class WhereTest extends TestCase
         parent::setUp();
     }
 
-    public function testOrWhereAll(): void
+    public function testOrWhereAllValues(): void
     {
         $this->getConnection()->unprepared('CREATE TABLE example (val text)');
 
         $queries = $this->withQueryLog(function (): void {
-            $this->getConnection()->table('example')->orWhereAll('val', 'ilike', ['%test686120%', '%test787542%'])->orWhereAll('val', 'ilike', ['%test470781%', '%test236697%'])->get();
+            $this->getConnection()->table('example')->orWhereAllValues('val', 'ilike', ['%test686120%', '%test787542%'])->orWhereAllValues('val', 'ilike', ['%test470781%', '%test236697%'])->get();
         });
         $this->assertEquals(
             ['select * from "example" where "val" ilike all(array[?, ?]) or "val" ilike all(array[?, ?])'],
@@ -30,12 +30,12 @@ class WhereTest extends TestCase
         );
     }
 
-    public function testOrWhereAny(): void
+    public function testOrWhereAnyValue(): void
     {
         $this->getConnection()->unprepared('CREATE TABLE example (val text)');
 
         $queries = $this->withQueryLog(function (): void {
-            $this->getConnection()->table('example')->orWhereAny('val', 'ilike', ['%test702465%', '%test825059%'])->orWhereAny('val', 'ilike', ['%test237377%', '%test592812%'])->get();
+            $this->getConnection()->table('example')->orWhereAnyValue('val', 'ilike', ['%test702465%', '%test825059%'])->orWhereAnyValue('val', 'ilike', ['%test237377%', '%test592812%'])->get();
         });
         $this->assertEquals(
             ['select * from "example" where "val" ilike any(array[?, ?]) or "val" ilike any(array[?, ?])'],
@@ -108,12 +108,12 @@ class WhereTest extends TestCase
         );
     }
 
-    public function testOrWhereNotAll(): void
+    public function testOrWhereNotAllValues(): void
     {
         $this->getConnection()->unprepared('CREATE TABLE example (val text)');
 
         $queries = $this->withQueryLog(function (): void {
-            $this->getConnection()->table('example')->orWhereNotAll('val', 'ilike', ['leading793297%', '%trailing477609'])->orWhereNotAll('val', 'ilike', ['leading737659%', '%trailing474646'])->get();
+            $this->getConnection()->table('example')->orWhereNotAllValues('val', 'ilike', ['leading793297%', '%trailing477609'])->orWhereNotAllValues('val', 'ilike', ['leading737659%', '%trailing474646'])->get();
         });
         $this->assertEquals(
             ['select * from "example" where not "val" ilike all(array[?, ?]) or not "val" ilike all(array[?, ?])'],
@@ -125,12 +125,12 @@ class WhereTest extends TestCase
         );
     }
 
-    public function testOrWhereNotAny(): void
+    public function testOrWhereNotAnyValue(): void
     {
         $this->getConnection()->unprepared('CREATE TABLE example (val text)');
 
         $queries = $this->withQueryLog(function (): void {
-            $this->getConnection()->table('example')->orWhereNotAny('val', 'ilike', ['%test475277%', '%test764076%'])->orWhereNotAny('val', 'ilike', ['%test936561%', '%test250628%'])->get();
+            $this->getConnection()->table('example')->orWhereNotAnyValue('val', 'ilike', ['%test475277%', '%test764076%'])->orWhereNotAnyValue('val', 'ilike', ['%test936561%', '%test250628%'])->get();
         });
         $this->assertEquals(
             ['select * from "example" where not "val" ilike any(array[?, ?]) or not "val" ilike any(array[?, ?])'],
@@ -172,12 +172,12 @@ class WhereTest extends TestCase
         );
     }
 
-    public function testWhereAll(): void
+    public function testWhereAllValues(): void
     {
         $this->getConnection()->unprepared('CREATE TABLE example (val text)');
 
         $queries = $this->withQueryLog(function (): void {
-            $this->getConnection()->table('example')->whereAll('val', 'ilike', ['leading594111%', '%trailing359990'])->get();
+            $this->getConnection()->table('example')->whereAllValues('val', 'ilike', ['leading594111%', '%trailing359990'])->get();
         });
         $this->assertEquals(
             ['select * from "example" where "val" ilike all(array[?, ?])'],
@@ -189,12 +189,12 @@ class WhereTest extends TestCase
         );
     }
 
-    public function testWhereAny(): void
+    public function testWhereAnyValue(): void
     {
         $this->getConnection()->unprepared('CREATE TABLE example (val text)');
 
         $queries = $this->withQueryLog(function (): void {
-            $this->getConnection()->table('example')->whereAny('val', 'ilike', ['%test157552%', '%test419109%'])->get();
+            $this->getConnection()->table('example')->whereAnyValue('val', 'ilike', ['%test157552%', '%test419109%'])->get();
         });
         $this->assertEquals(
             ['select * from "example" where "val" ilike any(array[?, ?])'],
@@ -267,12 +267,12 @@ class WhereTest extends TestCase
         );
     }
 
-    public function testWhereNotAll(): void
+    public function testWhereNotAllValues(): void
     {
         $this->getConnection()->unprepared('CREATE TABLE example (val text)');
 
         $queries = $this->withQueryLog(function (): void {
-            $this->getConnection()->table('example')->whereNotAll('val', 'ilike', ['%test421400%', '%test763682%'])->get();
+            $this->getConnection()->table('example')->whereNotAllValues('val', 'ilike', ['%test421400%', '%test763682%'])->get();
         });
         $this->assertEquals(
             ['select * from "example" where not "val" ilike all(array[?, ?])'],
@@ -284,12 +284,12 @@ class WhereTest extends TestCase
         );
     }
 
-    public function testWhereNotAny(): void
+    public function testWhereNotAnyValue(): void
     {
         $this->getConnection()->unprepared('CREATE TABLE example (val text)');
 
         $queries = $this->withQueryLog(function (): void {
-            $this->getConnection()->table('example')->whereNotAny('val', 'ilike', ['%test299285%', '%test449782%'])->get();
+            $this->getConnection()->table('example')->whereNotAnyValue('val', 'ilike', ['%test299285%', '%test449782%'])->get();
         });
         $this->assertEquals(
             ['select * from "example" where not "val" ilike any(array[?, ?])'],
