@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.36.0] - 2024-03-06
+### Fixed
+* Incompatability with Laravel 10.47.0
+
+### Breaking Changes
+* Some query builder methods had to be changed because they've now overlapped with new ones added by Laravel 10.47:
+  - `whereAll` -> `whereAllValues`
+  - `whereNotAll` -> `whereNotAllValues`
+  - `orWhereAll` -> `orWhereAllValues`
+  - `orWhereNotAll` -> `orWhereNotAllValues`
+  - `whereAny` -> `whereAnyValue`
+  - `whereNotAny` -> `whereNotAnyValue`
+  - `orWhereAny` -> `orWhereAnyValue`
+  - `orWhereNotAny` -> `orWhereNotAnyValue`
+
 ## [0.35.0] - 2024-02-26
 ### Added
 * IDE autocomplete support for PhpStorm with Laravel Idea plugin
