@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests\Query;
 
+use Composer\Semver\Comparator;
 use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class FulltextSearchTest extends TestCase
@@ -12,7 +13,7 @@ class FulltextSearchTest extends TestCase
     {
         parent::setUp();
 
-        if (version_compare($this->app->version(), '8.79.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.79.0')) {
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 

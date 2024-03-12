@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests\Query;
 
+use Composer\Semver\Comparator;
 use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class CteTest extends TestCase
@@ -204,7 +205,7 @@ class CteTest extends TestCase
 
     public function testQueryUpdateFrom(): void
     {
-        if (version_compare($this->app->version(), '8.65.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.65.0')) {
             $this->markTestSkipped('UpdateFrom() has been added in a later Laravel version.');
         }
 
@@ -225,7 +226,7 @@ class CteTest extends TestCase
 
     public function testQueryUpdateFromReturning(): void
     {
-        if (version_compare($this->app->version(), '8.65.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.65.0')) {
             $this->markTestSkipped('UpdateFrom() has been added in a later Laravel version.');
         }
 
@@ -262,7 +263,7 @@ class CteTest extends TestCase
 
     public function testQueryUpsert(): void
     {
-        if (version_compare($this->app->version(), '8.10.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.10.0')) {
             $this->markTestSkipped('Upsert() has been added in a later Laravel version.');
         }
 
@@ -282,7 +283,7 @@ class CteTest extends TestCase
 
     public function testQueryUpsertReturning(): void
     {
-        if (version_compare($this->app->version(), '8.10.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.10.0')) {
             $this->markTestSkipped('Upsert() has been added in a later Laravel version.');
         }
 

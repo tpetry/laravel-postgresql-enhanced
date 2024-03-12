@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests\Connection;
 
+use Composer\Semver\Comparator;
 use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class ReturningTest extends TestCase
@@ -29,7 +30,7 @@ class ReturningTest extends TestCase
             });
 
             // The pretend mode has been changed in Laravel 10.30.0 to include the bindings in the query string
-            if (version_compare($this->app->version(), '10.30.0', '>=')) {
+            if (Comparator::greaterThanOrEqualTo($this->app->version(), '10.30.0')) {
                 $this->assertEquals(["update example set str = 'IS7PD2jn' where str = '8lnreu2H' returning str"], array_column($queries, 'query'));
             } else {
                 $this->assertEquals(['update example set str = ? where str = ? returning str'], array_column($queries, 'query'));

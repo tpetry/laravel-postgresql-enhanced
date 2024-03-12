@@ -6,9 +6,9 @@ namespace Tpetry\PostgresqlEnhanced\Schema\Grammars;
 
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint as BaseBlueprint;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Fluent;
-use Illuminate\Support\Str;
-use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Spatie\Regex\Regex;
 
 trait GrammarTypes
 {
@@ -26,16 +26,25 @@ trait GrammarTypes
 
         foreach ($blueprint->getChangedColumns() as $changedColumn) {
             $blueprintColumn = new BaseBlueprint($blueprint->getTable(), null, $prefix);
-            $blueprintColumn->addColumn($changedColumn['type'], $changedColumn['name'], $changedColumn->toArray());
+            $blueprintColumn->addColumn(
+                $changedColumn['type'],
+                $changedColumn['name'],
+                Arr::except($changedColumn->toArray(), ['compression']),
+            );
 
-            foreach (parent::compileChange($blueprintColumn, $command, $connection) as $sql) {
-                if (filled($changedColumn['using']) && Str::is('ALTER TABLE * ALTER * TYPE *', $sql)) {
+            foreach (Arr::wrap(parent::compileChange($blueprintColumn, $command, $connection)) as $sql) {
+                $regex = Regex::match('/^ALTER table (?P<table>.*?) alter (column )?(?P<column>.*?) type (?P<type>\w+)(?P<modifiers>,.*)?/i', $sql);
+
+                if (filled($changedColumn['using']) && $regex->hasMatch()) {
                     $using = match ($connection->getSchemaGrammar()->isExpression($changedColumn['using'])) {
                         true => $connection->getSchemaGrammar()->getValue($changedColumn['using']),
                         false => $changedColumn['using'],
                     };
 
-                    $queries[] = "{$sql} USING {$using}";
+                    $queries[] = match (filled($modifiers = $regex->groupOr('modifiers', ''))) {
+                        true => "alter table {$regex->group('table')} alter column {$regex->group('column')} type {$regex->group('type')} using {$using}{$modifiers}",
+                        false => "alter table {$regex->group('table')} alter column {$regex->group('column')} type {$regex->group('type')} using {$using}",
+                    };
                 } else {
                     $queries[] = $sql;
                 }
@@ -43,7 +52,7 @@ trait GrammarTypes
 
             if (filled($changedColumn['compression'])) {
                 $queries[] = sprintf(
-                    'ALTER TABLE %s ALTER %s SET COMPRESSION %s',
+                    'alter table %s alter %s set compression %s',
                     $this->wrapTable($blueprint->getTable()),
                     $this->wrap($changedColumn['name']),
                     $this->wrap($changedColumn['compression']),
@@ -57,7 +66,7 @@ trait GrammarTypes
     /**
      * Get the SQL for a default column modifier.
      */
-    protected function modifyCompression(Blueprint $blueprint, Fluent $column): ?string
+    protected function modifyCompression(BaseBlueprint $blueprint, Fluent $column): ?string
     {
         if (filled($column['compression'])) {
             return " compression {$column['compression']}";

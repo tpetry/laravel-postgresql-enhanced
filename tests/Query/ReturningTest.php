@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests\Query;
 
+use Composer\Semver\Comparator;
 use Illuminate\Support\Collection;
 use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
@@ -206,7 +207,7 @@ class ReturningTest extends TestCase
 
     public function testUpdateFromReturningEmpty(): void
     {
-        if (version_compare($this->app->version(), '8.65.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.65.0')) {
             $this->markTestSkipped('UpdateFrom() has been added in a later Laravel version.');
         }
 
@@ -225,7 +226,7 @@ class ReturningTest extends TestCase
 
     public function testUpdateFromReturningSelection(): void
     {
-        if (version_compare($this->app->version(), '8.65.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.65.0')) {
             $this->markTestSkipped('UpdateFrom() has been added in a later Laravel version.');
         }
 
@@ -355,7 +356,7 @@ class ReturningTest extends TestCase
 
     public function testUpsertReturningInsertAll(): void
     {
-        if (version_compare($this->app->version(), '8.10.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.10.0')) {
             $this->markTestSkipped('Upsert() has been added in a later Laravel version.');
         }
 
@@ -377,7 +378,7 @@ class ReturningTest extends TestCase
 
     public function testUpsertReturningInsertSelection(): void
     {
-        if (version_compare($this->app->version(), '8.10.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.10.0')) {
             $this->markTestSkipped('Upsert() has been added in a later Laravel version.');
         }
 
@@ -399,7 +400,7 @@ class ReturningTest extends TestCase
 
     public function testUpsertReturningUpsertAll(): void
     {
-        if (version_compare($this->app->version(), '8.10.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.10.0')) {
             $this->markTestSkipped('Upsert() has been added in a later Laravel version.');
         }
 
@@ -421,7 +422,7 @@ class ReturningTest extends TestCase
 
     public function testUpsertReturningUpsertSelection(): void
     {
-        if (version_compare($this->app->version(), '8.10.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.10.0')) {
             $this->markTestSkipped('Upsert() has been added in a later Laravel version.');
         }
 
