@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests\Migration;
 
+use Composer\Semver\Comparator;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 use Tpetry\PostgresqlEnhanced\Tests\TestCase;
@@ -12,7 +13,7 @@ class IndexDropTest extends TestCase
 {
     public function testDropFullTextIfExistsByColumn(): void
     {
-        if (version_compare($this->app->version(), '8.74.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.74.0')) {
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
@@ -29,7 +30,7 @@ class IndexDropTest extends TestCase
 
     public function testDropFullTextIfExistsByName(): void
     {
-        if (version_compare($this->app->version(), '8.74.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.74.0')) {
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 

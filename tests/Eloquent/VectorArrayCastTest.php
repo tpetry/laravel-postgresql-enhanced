@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests\Eloquent;
 
+use Composer\Semver\Comparator;
 use Illuminate\Database\Eloquent\Model;
 use Tpetry\PostgresqlEnhanced\Eloquent\Casts\VectorArray;
 use Tpetry\PostgresqlEnhanced\Tests\TestCase;
@@ -12,7 +13,7 @@ class VectorArrayCastTest extends TestCase
 {
     public function testParseFromDatabaseValue(): void
     {
-        if (version_compare($this->app->version(), '8.0.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.0.0')) {
             $this->markTestSkipped('Cast classes have been added with Laravel 8.');
         }
 
@@ -26,7 +27,7 @@ class VectorArrayCastTest extends TestCase
 
     public function testTransformToDatabaseValue(): void
     {
-        if (version_compare($this->app->version(), '8.0.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.0.0')) {
             $this->markTestSkipped('Cast classes have been added with Laravel 8.');
         }
 

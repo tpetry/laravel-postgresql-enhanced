@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests\Migration;
 
+use Composer\Semver\Comparator;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
@@ -49,7 +50,7 @@ class FunctionTest extends TestCase
 
     public function testCreateFunctionLanguageSql(): void
     {
-        if (version_compare($this->getConnection()->serverVersion(), '14') < 0) {
+        if (Comparator::lessThan($this->getConnection()->serverVersion(), '14')) {
             $this->markTestSkipped('SQL function bodies are first supported with PostgreSQL 14.');
         }
 
@@ -61,7 +62,7 @@ class FunctionTest extends TestCase
 
     public function testCreateFunctionLanguageSqlExpression(): void
     {
-        if (version_compare($this->getConnection()->serverVersion(), '14') < 0) {
+        if (Comparator::lessThan($this->getConnection()->serverVersion(), '14')) {
             $this->markTestSkipped('SQL function bodies are first supported with PostgreSQL 14.');
         }
 
@@ -73,7 +74,7 @@ class FunctionTest extends TestCase
 
     public function testCreateFunctionLanguageSqlExpressionPg13(): void
     {
-        if (version_compare($this->getConnection()->serverVersion(), '14') >= 0) {
+        if (Comparator::greaterThanOrEqualTo($this->getConnection()->serverVersion(), '14')) {
             $this->markTestSkipped('SQL function bodies are supported with PostgreSQL 14 and will be preferred.');
         }
 
@@ -85,7 +86,7 @@ class FunctionTest extends TestCase
 
     public function testCreateFunctionLanguageSqlPg13(): void
     {
-        if (version_compare($this->getConnection()->serverVersion(), '14') >= 0) {
+        if (Comparator::greaterThanOrEqualTo($this->getConnection()->serverVersion(), '14')) {
             $this->markTestSkipped('SQL function bodies are supported with PostgreSQL 14 and will be preferred.');
         }
 
@@ -160,7 +161,7 @@ class FunctionTest extends TestCase
 
     public function testCreateFunctionOrReplaceLanguageSql(): void
     {
-        if (version_compare($this->getConnection()->serverVersion(), '14') < 0) {
+        if (Comparator::lessThan($this->getConnection()->serverVersion(), '14')) {
             $this->markTestSkipped('SQL function bodies are first supported with PostgreSQL 14.');
         }
 
@@ -172,7 +173,7 @@ class FunctionTest extends TestCase
 
     public function testCreateFunctionOrReplaceLanguageSqlExpression(): void
     {
-        if (version_compare($this->getConnection()->serverVersion(), '14') < 0) {
+        if (Comparator::lessThan($this->getConnection()->serverVersion(), '14')) {
             $this->markTestSkipped('SQL function bodies are first supported with PostgreSQL 14.');
         }
 
@@ -184,7 +185,7 @@ class FunctionTest extends TestCase
 
     public function testCreateFunctionOrReplaceLanguageSqlExpressionPg13(): void
     {
-        if (version_compare($this->getConnection()->serverVersion(), '14') >= 0) {
+        if (Comparator::greaterThanOrEqualTo($this->getConnection()->serverVersion(), '14')) {
             $this->markTestSkipped('SQL function bodies are supported with PostgreSQL 14 and will be preferred.');
         }
 
@@ -196,7 +197,7 @@ class FunctionTest extends TestCase
 
     public function testCreateFunctionOrReplaceLanguageSqlPg13(): void
     {
-        if (version_compare($this->getConnection()->serverVersion(), '14') >= 0) {
+        if (Comparator::greaterThanOrEqualTo($this->getConnection()->serverVersion(), '14')) {
             $this->markTestSkipped('SQL function bodies are supported with PostgreSQL 14 and will be preferred.');
         }
 

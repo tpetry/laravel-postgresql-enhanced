@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests\Migration;
 
+use Composer\Semver\Comparator;
 use Illuminate\Database\Query\Builder;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
@@ -13,7 +14,7 @@ class IndexOptionsTest extends TestCase
 {
     public function testFulltextLanguageByColumn(): void
     {
-        if (version_compare($this->app->version(), '8.74.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.74.0')) {
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
@@ -30,7 +31,7 @@ class IndexOptionsTest extends TestCase
 
     public function testFulltextLanguageByName(): void
     {
-        if (version_compare($this->app->version(), '8.74.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.74.0')) {
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
@@ -47,7 +48,7 @@ class IndexOptionsTest extends TestCase
 
     public function testFulltextPartialByColumn(): void
     {
-        if (version_compare($this->app->version(), '8.74.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.74.0')) {
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
@@ -65,7 +66,7 @@ class IndexOptionsTest extends TestCase
 
     public function testFulltextPartialByName(): void
     {
-        if (version_compare($this->app->version(), '8.74.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.74.0')) {
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
@@ -83,7 +84,7 @@ class IndexOptionsTest extends TestCase
 
     public function testFulltextWeightByColumn(): void
     {
-        if (version_compare($this->app->version(), '8.74.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.74.0')) {
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
@@ -101,7 +102,7 @@ class IndexOptionsTest extends TestCase
 
     public function testFulltextWeightByName(): void
     {
-        if (version_compare($this->app->version(), '8.74.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.74.0')) {
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
@@ -119,7 +120,7 @@ class IndexOptionsTest extends TestCase
 
     public function testFulltextWithByColumn(): void
     {
-        if (version_compare($this->app->version(), '8.74.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.74.0')) {
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
@@ -136,7 +137,7 @@ class IndexOptionsTest extends TestCase
 
     public function testFulltextWithByName(): void
     {
-        if (version_compare($this->app->version(), '8.74.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.74.0')) {
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
@@ -235,7 +236,7 @@ class IndexOptionsTest extends TestCase
 
     public function testRawIndexInclude(): void
     {
-        if (version_compare($this->app->version(), '7.7.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '7.7.0')) {
             $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
         }
 
@@ -253,11 +254,11 @@ class IndexOptionsTest extends TestCase
 
     public function testRawIndexNullsNotDistinct(): void
     {
-        if (version_compare($this->app->version(), '7.7.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '7.7.0')) {
             $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
         }
 
-        if (version_compare($this->getConnection()->serverVersion(), '15') < 0) {
+        if (Comparator::lessThan($this->getConnection()->serverVersion(), '15')) {
             $this->markTestSkipped('Null distinct handling is first supported with PostgreSQL 15.');
         }
 
@@ -274,7 +275,7 @@ class IndexOptionsTest extends TestCase
 
     public function testRawIndexPartial(): void
     {
-        if (version_compare($this->app->version(), '7.7.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '7.7.0')) {
             $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
         }
 
@@ -292,7 +293,7 @@ class IndexOptionsTest extends TestCase
 
     public function testRawIndexWith(): void
     {
-        if (version_compare($this->app->version(), '7.7.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '7.7.0')) {
             $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
         }
 
@@ -419,7 +420,7 @@ class IndexOptionsTest extends TestCase
 
     public function testUniqueIndexNullsNotDistinctByColumn(): void
     {
-        if (version_compare($this->getConnection()->serverVersion(), '15') < 0) {
+        if (Comparator::lessThan($this->getConnection()->serverVersion(), '15')) {
             $this->markTestSkipped('Null distinct handling is first supported with PostgreSQL 15.');
         }
 
@@ -436,7 +437,7 @@ class IndexOptionsTest extends TestCase
 
     public function testUniqueIndexNullsNotDistinctByName(): void
     {
-        if (version_compare($this->getConnection()->serverVersion(), '15') < 0) {
+        if (Comparator::lessThan($this->getConnection()->serverVersion(), '15')) {
             $this->markTestSkipped('Null distinct handling is first supported with PostgreSQL 15.');
         }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests\Migration;
 
+use Composer\Semver\Comparator;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 use Tpetry\PostgresqlEnhanced\Tests\TestCase;
@@ -64,7 +65,7 @@ class IndexColumnsTest extends TestCase
 
     public function testRawIndexEscapedColumn(): void
     {
-        if (version_compare($this->app->version(), '7.7.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '7.7.0')) {
             $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
         }
 
@@ -81,7 +82,7 @@ class IndexColumnsTest extends TestCase
 
     public function testRawIndexFunctionalExpression(): void
     {
-        if (version_compare($this->app->version(), '7.7.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '7.7.0')) {
             $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
         }
 
@@ -98,7 +99,7 @@ class IndexColumnsTest extends TestCase
 
     public function testRawIndexParametrized(): void
     {
-        if (version_compare($this->app->version(), '7.7.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '7.7.0')) {
             $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
         }
 
@@ -115,7 +116,7 @@ class IndexColumnsTest extends TestCase
 
     public function testRawIndexUnescapedColumn(): void
     {
-        if (version_compare($this->app->version(), '7.7.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '7.7.0')) {
             $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
         }
 

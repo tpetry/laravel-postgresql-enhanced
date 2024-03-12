@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests\Eloquent;
 
+use Composer\Semver\Comparator;
 use Illuminate\Database\Eloquent\Model;
 use Tpetry\PostgresqlEnhanced\Eloquent\Casts\IntegerArrayCast;
 use Tpetry\PostgresqlEnhanced\Tests\TestCase;
@@ -12,7 +13,7 @@ class IntegerArrayCastTest extends TestCase
 {
     public function testParseFromDatabaseValue(): void
     {
-        if (version_compare($this->app->version(), '8.0.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.0.0')) {
             $this->markTestSkipped('Cast classes have been added with Laravel 8.');
         }
 
@@ -27,7 +28,7 @@ class IntegerArrayCastTest extends TestCase
 
     public function testTransformToDatabaseValue(): void
     {
-        if (version_compare($this->app->version(), '8.0.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.0.0')) {
             $this->markTestSkipped('Cast classes have been added with Laravel 8.');
         }
 

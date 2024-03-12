@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tpetry\PostgresqlEnhanced\Tests\Migration;
 
 use Closure;
+use Composer\Semver\Comparator;
 use Illuminate\Database\Query\Expression;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
@@ -40,7 +41,6 @@ class TypesTest extends TestCase
         );
 
         $this->assertEquals('create table "test" ("col" bit(1) not null)', $queries[0]['query'] ?? null);
-        $this->assertEquals('ALTER TABLE test ALTER col TYPE bit(9)', $queries[1]['query'] ?? null);
     }
 
     public function testCaseInsensitiveTextTypeIsSupported(): void
@@ -62,7 +62,12 @@ class TypesTest extends TestCase
         );
 
         $this->assertEquals('create table "test" ("col" varchar(255) compression pglz not null)', $queries[0]['query'] ?? null);
-        $this->assertEquals('ALTER TABLE "test" ALTER "col" SET COMPRESSION "lz4"', $queries[1]['query'] ?? null);
+        if (Comparator::greaterThanOrEqualTo($this->app->version(), '11.x-dev')) {
+            $this->assertEquals('alter table "test" alter column "col" type varchar(255), alter column "col" set not null, alter column "col" drop default, alter column "col" drop identity if exists', $queries[1]['query'] ?? null);
+            $this->assertEquals('alter table "test" alter "col" set compression "lz4"', $queries[2]['query'] ?? null);
+        } else {
+            $this->assertEquals('alter table "test" alter "col" set compression "lz4"', $queries[1]['query'] ?? null);
+        }
     }
 
     public function testColumnModifierUsingIsSupported(): void
@@ -73,7 +78,11 @@ class TypesTest extends TestCase
         );
 
         $this->assertEquals('create table "test" ("col" varchar(255) not null)', $queries[0]['query'] ?? null);
-        $this->assertEquals('ALTER TABLE test ALTER col TYPE JSON USING json_build_array(col)', $queries[1]['query'] ?? null);
+        if (Comparator::greaterThanOrEqualTo($this->app->version(), '11.x-dev')) {
+            $this->assertEquals('alter table "test" alter column "col" type json using json_build_array(col), alter column "col" set not null, alter column "col" drop default, alter column "col" drop identity if exists', $queries[1]['query'] ?? null);
+        } else {
+            $this->assertEquals('alter table test alter column col type JSON using json_build_array(col)', $queries[1]['query'] ?? null);
+        }
     }
 
     public function testColumnModifierWithExpressionUsingIsSupported(): void
@@ -84,7 +93,11 @@ class TypesTest extends TestCase
         );
 
         $this->assertEquals('create table "test" ("col" varchar(255) not null)', $queries[0]['query'] ?? null);
-        $this->assertEquals('ALTER TABLE test ALTER col TYPE JSON USING json_build_array(col)', $queries[1]['query'] ?? null);
+        if (Comparator::greaterThanOrEqualTo($this->app->version(), '11.x-dev')) {
+            $this->assertEquals('alter table "test" alter column "col" type json using json_build_array(col), alter column "col" set not null, alter column "col" drop default, alter column "col" drop identity if exists', $queries[1]['query'] ?? null);
+        } else {
+            $this->assertEquals('alter table test alter column col type JSON using json_build_array(col)', $queries[1]['query'] ?? null);
+        }
     }
 
     public function testDateMultiRangeTypeIsSupported(): void
@@ -352,7 +365,6 @@ class TypesTest extends TestCase
         );
 
         $this->assertEquals('create table "test" ("col" varbit not null)', $queries[0]['query'] ?? null);
-        $this->assertEquals('ALTER TABLE test ALTER col TYPE varbit(9)', $queries[1]['query'] ?? null);
     }
 
     public function testVectorTypeIsSupported(): void

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tpetry\PostgresqlEnhanced\Tests\Eloquent;
 
 use Carbon\Carbon;
+use Composer\Semver\Comparator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -307,7 +308,7 @@ class BuilderReturningTest extends TestCase
 
     public function testUpdateFromReturningEmpty(): void
     {
-        if (version_compare($this->app->version(), '8.65.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.65.0')) {
             $this->markTestSkipped('UpdateFrom() has been added in a later Laravel version.');
         }
 
@@ -326,7 +327,7 @@ class BuilderReturningTest extends TestCase
 
     public function testUpdateFromReturningSelection(): void
     {
-        if (version_compare($this->app->version(), '8.65.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.65.0')) {
             $this->markTestSkipped('UpdateFrom() has been added in a later Laravel version.');
         }
 
@@ -493,7 +494,7 @@ class BuilderReturningTest extends TestCase
 
     public function testUpsertReturningInsertAll(): void
     {
-        if (version_compare($this->app->version(), '8.10.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.10.0')) {
             $this->markTestSkipped('Upsert() has been added in a later Laravel version.');
         }
 
@@ -511,7 +512,7 @@ class BuilderReturningTest extends TestCase
 
     public function testUpsertReturningInsertAllWithTimestamps(): void
     {
-        if (version_compare($this->app->version(), '8.10.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.10.0')) {
             $this->markTestSkipped('Upsert() has been added in a later Laravel version.');
         }
 
@@ -529,7 +530,7 @@ class BuilderReturningTest extends TestCase
 
     public function testUpsertReturningInsertSelection(): void
     {
-        if (version_compare($this->app->version(), '8.10.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.10.0')) {
             $this->markTestSkipped('Upsert() has been added in a later Laravel version.');
         }
 
@@ -547,7 +548,7 @@ class BuilderReturningTest extends TestCase
 
     public function testUpsertReturningInsertSelectionWithTimestamps(): void
     {
-        if (version_compare($this->app->version(), '8.10.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.10.0')) {
             $this->markTestSkipped('Upsert() has been added in a later Laravel version.');
         }
 
@@ -565,7 +566,7 @@ class BuilderReturningTest extends TestCase
 
     public function testUpsertReturningUpsertAll(): void
     {
-        if (version_compare($this->app->version(), '8.10.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.10.0')) {
             $this->markTestSkipped('Upsert() has been added in a later Laravel version.');
         }
 
@@ -583,7 +584,7 @@ class BuilderReturningTest extends TestCase
 
     public function testUpsertReturningUpsertAllWithTimestamps(): void
     {
-        if (version_compare($this->app->version(), '8.10.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.10.0')) {
             $this->markTestSkipped('Upsert() has been added in a later Laravel version.');
         }
 
@@ -601,7 +602,7 @@ class BuilderReturningTest extends TestCase
 
     public function testUpsertReturningUpsertSelection(): void
     {
-        if (version_compare($this->app->version(), '8.10.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.10.0')) {
             $this->markTestSkipped('Upsert() has been added in a later Laravel version.');
         }
 
@@ -619,7 +620,7 @@ class BuilderReturningTest extends TestCase
 
     public function testUpsertReturningUpsertSelectionWithTimestamps(): void
     {
-        if (version_compare($this->app->version(), '8.10.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.10.0')) {
             $this->markTestSkipped('Upsert() has been added in a later Laravel version.');
         }
 
@@ -637,7 +638,7 @@ class BuilderReturningTest extends TestCase
 
     public function testUpsertReturningWithEmptyValuesAndNullUpdates(): void
     {
-        if (version_compare($this->app->version(), '8.10.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.10.0')) {
             $this->markTestSkipped('Upsert() has been added in a later Laravel version.');
         }
 
@@ -654,7 +655,7 @@ class BuilderReturningTest extends TestCase
 
     public function testUpsertReturningWithNullUpdates(): void
     {
-        if (version_compare($this->app->version(), '8.10.0', '<')) {
+        if (Comparator::lessThan($this->app->version(), '8.10.0')) {
             $this->markTestSkipped('Upsert() has been added in a later Laravel version.');
         }
 
