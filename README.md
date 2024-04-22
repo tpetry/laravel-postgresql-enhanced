@@ -68,6 +68,7 @@ composer require tpetry/laravel-postgresql-enhanced
     - [Casts](#casts)
     - [Refresh Data on Save](#refresh-data-on-save)
     - [Date Formats](#date-formats)
+- [Expressions](#expressions)
 
 ## IDE Autocomplete
 
@@ -1220,6 +1221,42 @@ class Example extends Model
 > When you mix columns with and without milliseconds in a table, the columns without milliseconds may behave unexpectedly to you:
 > Instead of truncating the milliseconds, they are rounded by PostgreSQL.
 > When the value is rounded up, your timestamp will be in the future.
+
+# Expressions
+
+Laravel 10 added the functionality to use pre-made expressions with the query builder like this that generate vendor-specific SQL for complex operations:
+
+```php
+BlogVisit::select([
+    'url',
+    new TimestampBin('created_at', DateInterval::createFromDateString('5 minutes')),
+    new Count('*'),
+])->groupBy(
+    'url',
+    new TimestampBin('created_at', DateInterval::createFromDateString('5 minutes'))
+);
+```
+
+I've already released a lot of expressions with my package [tpetry/laravel-query-expressions](https://github.com/tpetry/laravel-query-expressions) that are usable on all databases supported by Laravel.
+But some functionality just can't be built for all database.
+So here are some PostgreSQL specific ones:
+
+## Uuid7
+
+You can now generate time-sorted UUIDv7 IDs directly in the database.
+The drawback of using `Str::orderedUuid()` is that inserting new rows can only be done from Laravel:
+You loose the ability to insert new rows manually with a GUI, simple `INSERT` queries or efficient approaches like `INSERT INTO ... SELECT`.
+But all of these are still possible with IDs generated at the database.
+
+```php
+use Tpetry\PostgresqlEnhanced\Expressions\Uuid7;
+
+Schema::create('comments', function (Blueprint $table) {
+    $table->id();
+    $table->uuid()->default(new Uuid7())->unique();
+    $table->text('text');
+});        
+```
 
 # Breaking Changes
 
