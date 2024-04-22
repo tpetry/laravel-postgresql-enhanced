@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.38.0] - 2024-04-22
+### Added
+* UUIDv7 expression
+
 ## [0.37.0] - 2024-03-12
 ### Added
 * Laravel 11 compatibility
