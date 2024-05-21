@@ -12,6 +12,135 @@ use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class IndexOptionsTest extends TestCase
 {
+    public function testIfNotExistsFulltextByColumn(): void
+    {
+        if (Comparator::lessThan($this->app->version(), '8.74.0')) {
+            $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
+        }
+
+        Schema::create('test_806712', function (Blueprint $table): void {
+            $table->string('col_274742');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_806712', function (Blueprint $table): void {
+                $table->fullText(['col_274742'])->ifNotExists();
+            });
+        });
+        $this->assertEquals(['create index if not exists "test_806712_col_274742_fulltext" on "test_806712" using gin ((to_tsvector(\'english\', "col_274742")))'], array_column($queries, 'query'));
+    }
+
+    public function testIfNotExistsFulltextByName(): void
+    {
+        if (Comparator::lessThan($this->app->version(), '8.74.0')) {
+            $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
+        }
+
+        Schema::create('test_940928', function (Blueprint $table): void {
+            $table->string('col_563370');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_940928', function (Blueprint $table): void {
+                $table->fullText(['col_563370'], 'index_726055')->ifNotExists();
+            });
+        });
+        $this->assertEquals(['create index if not exists "index_726055" on "test_940928" using gin ((to_tsvector(\'english\', "col_563370")))'], array_column($queries, 'query'));
+    }
+
+    public function testIfNotExistsIndexByColumn(): void
+    {
+        Schema::create('test_233704', function (Blueprint $table): void {
+            $table->string('col_484213');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_233704', function (Blueprint $table): void {
+                $table->index(['col_484213'])->ifNotExists();
+            });
+        });
+        $this->assertEquals(['create index if not exists "test_233704_col_484213_index" on "test_233704" ("col_484213")'], array_column($queries, 'query'));
+    }
+
+    public function testIfNotExistsIndexByName(): void
+    {
+        Schema::create('test_101004', function (Blueprint $table): void {
+            $table->string('col_749919');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_101004', function (Blueprint $table): void {
+                $table->index(['col_749919'], 'index_605253')->ifNotExists();
+            });
+        });
+        $this->assertEquals(['create index if not exists "index_605253" on "test_101004" ("col_749919")'], array_column($queries, 'query'));
+    }
+
+    public function testIfNotExistsRawIndex(): void
+    {
+        if (Comparator::lessThan($this->app->version(), '7.7.0')) {
+            $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
+        }
+
+        Schema::create('test_302103', function (Blueprint $table): void {
+            $table->string('col_650398');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_302103', function (Blueprint $table): void {
+                $table->rawIndex('col_650398', 'idx_728687')->ifNotExists();
+            });
+        });
+        $this->assertEquals(['create index if not exists "idx_728687" on "test_302103" (col_650398)'], array_column($queries, 'query'));
+    }
+
+    public function testIfNotExistsSpatialIndexByColumn(): void
+    {
+        Schema::create('test_508190', function (Blueprint $table): void {
+            $table->integerRange('col_402778');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_508190', function (Blueprint $table): void {
+                $table->spatialIndex(['col_402778'])->ifNotExists();
+            });
+        });
+        $this->assertEquals(['create index if not exists "test_508190_col_402778_spatialindex" on "test_508190" using gist ("col_402778")'], array_column($queries, 'query'));
+    }
+
+    public function testIfNotExistsSpatialIndexByName(): void
+    {
+        Schema::create('test_521621', function (Blueprint $table): void {
+            $table->integerRange('col_990392');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_521621', function (Blueprint $table): void {
+                $table->spatialIndex(['col_990392'], 'index_124848')->ifNotExists();
+            });
+        });
+        $this->assertEquals(['create index if not exists "index_124848" on "test_521621" using gist ("col_990392")'], array_column($queries, 'query'));
+    }
+
+    public function testIfNotExistsUniqueIndexByColumn(): void
+    {
+        Schema::create('test_868599', function (Blueprint $table): void {
+            $table->string('col_571721');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_868599', function (Blueprint $table): void {
+                $table->uniqueIndex(['col_571721'])->ifNotExists();
+            });
+        });
+        $this->assertEquals(['create unique index if not exists "test_868599_col_571721_unique" on "test_868599" ("col_571721")'], array_column($queries, 'query'));
+    }
+
+    public function testIfNotExistsUniqueIndexByName(): void
+    {
+        Schema::create('test_324400', function (Blueprint $table): void {
+            $table->string('col_208151');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_324400', function (Blueprint $table): void {
+                $table->uniqueIndex(['col_208151'], 'index_810276')->ifNotExists();
+            });
+        });
+        $this->assertEquals(['create unique index if not exists "index_810276" on "test_324400" ("col_208151")'], array_column($queries, 'query'));
+    }
+
     public function testIncludeIndexByColumn(): void
     {
         Schema::create('test_130163', function (Blueprint $table): void {

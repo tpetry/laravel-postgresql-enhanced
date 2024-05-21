@@ -12,6 +12,14 @@ use Illuminate\Database\Schema\IndexDefinition as BaseIndexDefinition;
 class IndexDefinition extends BaseIndexDefinition
 {
     /**
+     * Only create index if it does not exist yet (PostgreSQL).
+     */
+    public function ifNotExists(): self
+    {
+        return $this;
+    }
+
+    /**
      * Include non-key columns in the index (PostgreSQL).
      *
      * @param string|array<int, string> $columns

@@ -31,6 +31,7 @@ composer require tpetry/laravel-postgresql-enhanced
         - [Nulls Not Distinct](#nulls-not-distinct)
         - [Partial Indexes](#partial-indexes)
         - [Include Columns](#include-columns)
+        - [If Not Exists](#if-not-exists)
         - [Storage Parameters](#storage-parameters-index)
         - [Functional Indexes / Column Options](#functional-indexes--column-options)
         - [Fulltext Indexes](#fulltext-indexes)
@@ -451,6 +452,27 @@ Schema::table('users', function(Blueprint $table) {
 });
 ```
 Columns are included in an index with the `include` method on an index created by `index()`, `spatialIndex` or `uniqueIndex`.
+
+#### If Not Exists
+
+Sometimes, you fix performance issues by testing new indexes on the production database rather than pushing a new migration each time.
+But when you find the perfect one, you should also make a migration for it.
+Dropping the existing index to recreate it by the migration is silly.
+Right?
+You can now skip the index creation from the migration when the exact index already exists.
+
+```php
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::table('invoices', function(Blueprint $table) {
+    $table->index(['target', 'division', 'date'])->ifNotExists();
+});
+```
+
+> [!TIP]
+> Indexes are determined to be identical by their (automatically-generated) name.
+> Either create the index statement to run in production by temporary migrations from your development machine or use specific index names.
 
 #### Storage Parameters (Index)
 
