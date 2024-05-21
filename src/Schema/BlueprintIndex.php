@@ -8,9 +8,6 @@ use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
 use RuntimeException;
 
-/**
- * @method \Illuminate\Database\Schema\IndexDefinition uniqueIndex(string|string[] $columns, ?string $name = null, ?string $algorithm = null)
- */
 trait BlueprintIndex
 {
     /**
@@ -70,7 +67,9 @@ trait BlueprintIndex
     }
 
     /**
-     * Specify a unique index for the table.
+     * @param string|string[] $columns
+     *
+     * @return IndexDefinition
      */
     public function uniqueIndex($columns, ?string $name = null, ?string $algorithm = null): Fluent
     {
@@ -78,6 +77,7 @@ trait BlueprintIndex
             $name = str_replace('unique2', 'unique', $this->createIndexName('unique2', (array) $columns));
         }
 
+        // @phpstan-ignore return.type
         return $this->indexCommand('unique2', $columns, $name, $algorithm);
     }
 
