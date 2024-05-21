@@ -12,6 +12,135 @@ use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class IndexOptionsTest extends TestCase
 {
+    public function testConcurrentlyFulltextByColumn(): void
+    {
+        if (Comparator::lessThan($this->app->version(), '8.74.0')) {
+            $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
+        }
+
+        Schema::create('test_260745', function (Blueprint $table): void {
+            $table->string('col_818827');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_260745', function (Blueprint $table): void {
+                $table->fullText(['col_818827'])->concurrently();
+            });
+        }, pretend: true);
+        $this->assertEquals(['create index concurrently "test_260745_col_818827_fulltext" on "test_260745" using gin ((to_tsvector(\'english\', "col_818827")))'], array_column($queries, 'query'));
+    }
+
+    public function testConcurrentlyFulltextByName(): void
+    {
+        if (Comparator::lessThan($this->app->version(), '8.74.0')) {
+            $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
+        }
+
+        Schema::create('test_406163', function (Blueprint $table): void {
+            $table->string('col_833985');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_406163', function (Blueprint $table): void {
+                $table->fullText(['col_833985'], 'index_495761')->concurrently();
+            });
+        }, pretend: true);
+        $this->assertEquals(['create index concurrently "index_495761" on "test_406163" using gin ((to_tsvector(\'english\', "col_833985")))'], array_column($queries, 'query'));
+    }
+
+    public function testConcurrentlyIndexByColumn(): void
+    {
+        Schema::create('test_684553', function (Blueprint $table): void {
+            $table->string('col_930758');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_684553', function (Blueprint $table): void {
+                $table->index(['col_930758'])->concurrently();
+            });
+        }, pretend: true);
+        $this->assertEquals(['create index concurrently "test_684553_col_930758_index" on "test_684553" ("col_930758")'], array_column($queries, 'query'));
+    }
+
+    public function testConcurrentlyIndexByName(): void
+    {
+        Schema::create('test_323396', function (Blueprint $table): void {
+            $table->string('col_677415');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_323396', function (Blueprint $table): void {
+                $table->index(['col_677415'], 'index_336745')->concurrently();
+            });
+        }, pretend: true);
+        $this->assertEquals(['create index concurrently "index_336745" on "test_323396" ("col_677415")'], array_column($queries, 'query'));
+    }
+
+    public function testConcurrentlyRawIndex(): void
+    {
+        if (Comparator::lessThan($this->app->version(), '7.7.0')) {
+            $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
+        }
+
+        Schema::create('test_142731', function (Blueprint $table): void {
+            $table->string('col_247155');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_142731', function (Blueprint $table): void {
+                $table->rawIndex('col_247155', 'idx_585783')->concurrently();
+            });
+        }, pretend: true);
+        $this->assertEquals(['create index concurrently "idx_585783" on "test_142731" (col_247155)'], array_column($queries, 'query'));
+    }
+
+    public function testConcurrentlySpatialIndexByColumn(): void
+    {
+        Schema::create('test_734987', function (Blueprint $table): void {
+            $table->integerRange('col_617117');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_734987', function (Blueprint $table): void {
+                $table->spatialIndex(['col_617117'])->concurrently();
+            });
+        }, pretend: true);
+        $this->assertEquals(['create index concurrently "test_734987_col_617117_spatialindex" on "test_734987" using gist ("col_617117")'], array_column($queries, 'query'));
+    }
+
+    public function testConcurrentlySpatialIndexByName(): void
+    {
+        Schema::create('test_469394', function (Blueprint $table): void {
+            $table->integerRange('col_562801');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_469394', function (Blueprint $table): void {
+                $table->spatialIndex(['col_562801'], 'index_623983')->concurrently();
+            });
+        }, pretend: true);
+        $this->assertEquals(['create index concurrently "index_623983" on "test_469394" using gist ("col_562801")'], array_column($queries, 'query'));
+    }
+
+    public function testConcurrentlyUniqueIndexByColumn(): void
+    {
+        Schema::create('test_144373', function (Blueprint $table): void {
+            $table->string('col_988745');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_144373', function (Blueprint $table): void {
+                $table->uniqueIndex(['col_988745'])->concurrently();
+            });
+        }, pretend: true);
+        $this->assertEquals(['create unique index concurrently "test_144373_col_988745_unique" on "test_144373" ("col_988745")'], array_column($queries, 'query'));
+    }
+
+    public function testConcurrentlyUniqueIndexByName(): void
+    {
+        Schema::create('test_583449', function (Blueprint $table): void {
+            $table->string('col_134696');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_583449', function (Blueprint $table): void {
+                $table->uniqueIndex(['col_134696'], 'index_304869')->concurrently();
+            });
+        }, pretend: true);
+        $this->assertEquals(['create unique index concurrently "index_304869" on "test_583449" ("col_134696")'], array_column($queries, 'query'));
+    }
+
     public function testIfNotExistsFulltextByColumn(): void
     {
         if (Comparator::lessThan($this->app->version(), '8.74.0')) {
@@ -25,7 +154,7 @@ class IndexOptionsTest extends TestCase
             Schema::table('test_806712', function (Blueprint $table): void {
                 $table->fullText(['col_274742'])->ifNotExists();
             });
-        });
+        }, pretend: true);
         $this->assertEquals(['create index if not exists "test_806712_col_274742_fulltext" on "test_806712" using gin ((to_tsvector(\'english\', "col_274742")))'], array_column($queries, 'query'));
     }
 

@@ -12,6 +12,14 @@ use Illuminate\Database\Schema\IndexDefinition as BaseIndexDefinition;
 class IndexDefinition extends BaseIndexDefinition
 {
     /**
+     * Create index concurrently to current migration (PostgreSQL).
+     */
+    public function concurrently(): self
+    {
+        return $this;
+    }
+
+    /**
      * Only create index if it does not exist yet (PostgreSQL).
      */
     public function ifNotExists(): self

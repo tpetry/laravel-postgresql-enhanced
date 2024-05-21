@@ -28,6 +28,7 @@ composer require tpetry/laravel-postgresql-enhanced
     - [Views](#views)
         - [Materialized Views](#materialized-views)
     - [Indexes](#indexes)
+        - [Concurrently](#concurrently)
         - [Nulls Not Distinct](#nulls-not-distinct)
         - [Partial Indexes](#partial-indexes)
         - [Include Columns](#include-columns)
@@ -394,6 +395,34 @@ Schema::table('users', function(Blueprint $table) {
 
 In addition to the Laravel methods to drop indexes, methods to drop indexes if they exist have been added.
 The methods `dropFullTextIfExists`, `dropIndexIfExists`, `dropPrimaryIfExists`, `dropSpatialIndexIfExists` and `dropSpatialIndexIfExists` match the semantics of their laravel originals.
+
+#### Concurrently
+
+With PostgreSQL, you can say goodbye to half-executed migrations on errors and the tedious effort to restore the database to a stable state.
+This is all thanks to its transactional approach: either all changes of a migration to your database will succeed or will be rolled back.
+Yay!
+Because of that, creating an index on a big table will take a long time and block all SQL queries during that time.
+You can now instruct PostgreSQL to create the index in the background without blocking any SQL query, but you must opt out of running those changes in a transaction.
+
+```php
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public $withinTransaction = false;
+
+    public function up(): void
+    {
+        Schema::table('blog_visits', function (Blueprint $table) {
+            $table->index(['url', 'ip_address'])->concurrently();
+        });
+    }
+};
+```
 
 #### Nulls Not Distinct
 

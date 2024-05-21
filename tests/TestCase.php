@@ -42,11 +42,15 @@ class TestCase extends Orchestra
         ];
     }
 
-    protected function withQueryLog(Closure $fn): array
+    protected function withQueryLog(Closure $fn, bool $pretend = false): array
     {
         $this->getConnection()->flushQueryLog();
         $this->getConnection()->enableQueryLog();
-        $fn();
+
+        match ($pretend) {
+            true => $this->getConnection()->pretend($fn),
+            false => $fn(),
+        };
 
         return $this->getConnection()->getQueryLog();
     }

@@ -167,6 +167,7 @@ trait GrammarIndex
 
         $index = [
             $unique ? 'create unique index' : 'create index',
+            $command['concurrently'] ? 'concurrently' : '',
             $command['ifNotExists'] ? 'if not exists' : '',
             $this->wrap($command['index']),
             'on',
