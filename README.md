@@ -83,19 +83,10 @@ However, this package is integrated with specific IDE combinations:
 ## PHPStan
 
 This extension is adding a lot of missing PostgreSQL functionality to Laravel.
-If you are using [PHPStan](https://phpstan.org/) to statically analyze your code, you may get errors because PHPStan doesn't know of the functionality added to Laravel:
+A custom set of [PHPStan](https://phpstan.org/) extensions have been developed to get full static analysis support!
 
-```
- ------ ----------------------------------------------------------------------------------- 
-  Line   Console/Commands/DeleteOldUsers.php                                                           
- ------ ----------------------------------------------------------------------------------- 
-  36     Call to an undefined method Illuminate\Database\Query\Builder::deleteReturning().  
- ------ ----------------------------------------------------------------------------------- 
-```
-
-To solve this problem a custom set of PHPStan extensions have been developed to get full static analysis support for Laravel 9!
-You should first install [Larastan](https://github.com/nunomaduro/larastan) to get PHPStan support for Laravel and then activate the PostgreSQL PHPStan extension.
-Just add the following path to your `includes` list in `phpstan.neon`, your config should now look like this:
+All features provided this extension are automatically recognized by the [phpstan/extension-installer](https://github.com/phpstan/extension-installer).
+Otherwise, you have to manually add the following path to your `includes` list in `phpstan.neon`, your config should now look like this:
 
 ```
 includes:
