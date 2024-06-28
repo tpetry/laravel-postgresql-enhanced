@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace Tpetry\PostgresqlEnhanced\Types;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Types\StringType;
 
-class VectorType extends StringType
+class VectorType extends StringType implements LaravelType
 {
     /**
      * Gets an array of database types that map to this Doctrine type.
      */
-    public function getMappedDatabaseTypes(AbstractPlatform $platform)
+    public function getMappedDatabaseTypes(AbstractPlatform $platform): array
     {
-        return match ($platform->getName()) {
-            'pgsql', 'postgres', 'postgresql' => [$this->getName()],
+        return match (true) {
+            $platform instanceof PostgreSQLPlatform => [$this->getName()],
             default => [],
         };
     }
@@ -23,7 +24,7 @@ class VectorType extends StringType
     /**
      * Gets the name of this type.
      */
-    public function getName()
+    public function getName(): string
     {
         return 'vector';
     }
@@ -31,7 +32,7 @@ class VectorType extends StringType
     /**
      * Gets the SQL declaration snippet for a column of this type.
      */
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         return match (isset($column['dimensions'])) {
             true => "vector({$column['dimensions']})",

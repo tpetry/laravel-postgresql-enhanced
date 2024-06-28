@@ -28,7 +28,7 @@ jobs:
             doctrine: ^3.5
             testbench: 8.*
           - laravel: 11.*
-            doctrine: ^3.5
+            doctrine: ^4.0
             testbench: 9.*
         exclude:
           - php: 8.0

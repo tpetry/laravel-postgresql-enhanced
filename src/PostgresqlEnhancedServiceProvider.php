@@ -33,6 +33,7 @@ use Tpetry\PostgresqlEnhanced\Types\Ismn13Type;
 use Tpetry\PostgresqlEnhanced\Types\IsmnType;
 use Tpetry\PostgresqlEnhanced\Types\Issn13Type;
 use Tpetry\PostgresqlEnhanced\Types\IssnType;
+use Tpetry\PostgresqlEnhanced\Types\LaravelType;
 use Tpetry\PostgresqlEnhanced\Types\LtreeType;
 use Tpetry\PostgresqlEnhanced\Types\NummultirangeType;
 use Tpetry\PostgresqlEnhanced\Types\NumrangeType;
@@ -105,7 +106,7 @@ class PostgresqlEnhancedServiceProvider extends ServiceProvider
     protected function registerDoctrineTypes(): void
     {
         foreach ($this->doctrineTypes as $type) {
-            /** @var Type $typeInstance */
+            /** @var Type&LaravelType $typeInstance */
             $typeInstance = new $type();
 
             if (!Type::hasType($typeInstance->getName())) {

@@ -9,7 +9,7 @@ class TstzmultirangeType extends BaseType
     /**
      * Gets the name of this type.
      */
-    public function getName()
+    public function getName(): string
     {
         return 'tstzmultirange';
     }

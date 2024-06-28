@@ -11,7 +11,7 @@ class Int4arrayType extends BaseType
     /**
      * Gets the name of this type.
      */
-    public function getName()
+    public function getName(): string
     {
         return 'int4array';
     }
@@ -19,7 +19,7 @@ class Int4arrayType extends BaseType
     /**
      * Gets the SQL declaration snippet for a column of this type.
      */
-    public function getSQLDeclaration(array $column, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         return '_int4';
     }
