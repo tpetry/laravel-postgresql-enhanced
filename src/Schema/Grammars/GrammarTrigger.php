@@ -37,7 +37,7 @@ trait GrammarTrigger
             $new = transform($command['transitionTables']['new'], fn (string $table) => "new table as {$this->wrap($table)}");
             $old = transform($command['transitionTables']['old'], fn (string $table) => "old table as {$this->wrap($table)}");
             if (filled($new) || filled($old)) {
-                $referencing = implode(' ', array_filter(['referencing', $new, $old], fn ($part) => $part));
+                $referencing = implode(' ', array_filter(['referencing', $new, $old], fn (?string $part) => filled($part)));
             }
         }
 
@@ -68,7 +68,7 @@ trait GrammarTrigger
             $when ?? null,
             "execute function {$command['action']}",
         ];
-        $sql = implode(' ', array_filter($index, fn ($part) => $part));
+        $sql = implode(' ', array_filter($index, fn (?string $part) => filled($part)));
 
         return $sql;
     }

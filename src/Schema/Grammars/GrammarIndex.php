@@ -167,19 +167,19 @@ trait GrammarIndex
 
         $index = [
             $unique ? 'create unique index' : 'create index',
-            $command['concurrently'] ? 'concurrently' : '',
-            $command['ifNotExists'] ? 'if not exists' : '',
+            $command['concurrently'] ? 'concurrently' : null,
+            $command['ifNotExists'] ? 'if not exists' : null,
             $this->wrap($command['index']),
             'on',
             $this->wrapTable($blueprint),
-            $command['algorithm'] ? "using {$command['algorithm']}" : '',
+            $command['algorithm'] ? "using {$command['algorithm']}" : null,
             '('.implode(', ', $columns).')',
-            $command['include'] ? 'include ('.implode(',', $this->wrapArray(Arr::wrap($command['include']))).')' : '',
-            $command['nullsNotDistinct'] ? 'nulls not distinct' : '',
-            $command['with'] ? "with ({$command['with']})" : '',
-            $command['where'] ? "where {$command['where']}" : '',
+            $command['include'] ? 'include ('.implode(',', $this->wrapArray(Arr::wrap($command['include']))).')' : null,
+            $command['nullsNotDistinct'] ? 'nulls not distinct' : null,
+            $command['with'] ? "with ({$command['with']})" : null,
+            $command['where'] ? "where {$command['where']}" : null,
         ];
-        $sql = implode(' ', array_filter($index, fn ($part) => $part));
+        $sql = implode(' ', array_filter($index, fn (?string $part) => filled($part)));
 
         return $sql;
     }
