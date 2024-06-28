@@ -1302,6 +1302,8 @@ Schema::create('comments', function (Blueprint $table) {
 
 # Breaking Changes
 
+* 0.39.0 -> 0.40.0
+  * The Enhanced PostgreSQL Driver PHPStan extension is now automatically registered with the PHPStan Extension Installer. The manual registration of the extension needs to be removed when PHPStan crashed because the extension is registered twice.
 * 0.35.0 -> 0.36.0
     * Some query builder methods had to be changed because they've now overlapped with new ones added by Laravel 10.47:
       * `whereAll` -> `whereAllValues`
