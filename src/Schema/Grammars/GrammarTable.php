@@ -45,6 +45,11 @@ trait GrammarTable
             implode(', ', $this->prefixArray('add column', $this->getColumns($blueprint)))
         );
 
+        $sql[] = sprintf('alter table %s add column %s',
+            $this->wrapTable($blueprint),
+            $this->getColumn($blueprint, $command->column)
+        );
+
         return array_reverse($sql);
     }
 
