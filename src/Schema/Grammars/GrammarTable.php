@@ -40,10 +40,7 @@ trait GrammarTable
                 $column['default'] = $column['initial'];
             }
 
-            $sql[] = sprintf('alter table %s add column %s',
-                $this->wrapTable($blueprint),
-                $this->getColumn($blueprint, $command->column)
-            );
+            $sql[] = parent::compileAdd($blueprint, $command);
 
             return array_reverse($sql);
         }
