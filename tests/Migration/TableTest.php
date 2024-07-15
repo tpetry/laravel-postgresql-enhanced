@@ -54,11 +54,19 @@ class TableTest extends TestCase
             });
         });
 
-        $this->assertEquals([
-            'alter table "test" add column "col_123" text not null default \'val_098\'',
-            'alter table "test" alter column "col_123" drop default',
-            'alter table "test" add column "col_456" text not null default \'val_765\'',
-            'alter table "test" alter column "col_456" set default \'val_432\'',
-        ], array_column($queries, 'query'));
+        if (Comparator::greaterThanOrEqualTo($this->app->version(), '11.15')) {
+            $this->assertEquals([
+                'alter table "test" add column "col_123" text not null default \'val_098\'',
+                'alter table "test" alter column "col_123" drop default',
+                'alter table "test" add column "col_456" text not null default \'val_765\'',
+                'alter table "test" alter column "col_456" set default \'val_432\'',
+            ], array_column($queries, 'query'));
+        } else {
+            $this->assertEquals([
+                'alter table "test" add column "col_123" text not null default \'val_098\', add column "col_456" text not null default \'val_765\'',
+                'alter table "test" alter column "col_123" drop default',
+                'alter table "test" alter column "col_456" set default \'val_432\'',
+            ], array_column($queries, 'query'));
+        }
     }
 }
