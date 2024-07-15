@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tpetry\PostgresqlEnhanced\Schema\Grammars;
 
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Fluent;
 
 trait GrammarTable
@@ -16,6 +17,37 @@ trait GrammarTable
      */
     public function compileAdd(Blueprint $blueprint, Fluent $command): array
     {
+        if (version_compare(App::version(), '11.15.0', '>=')) {
+            $sql = [];
+
+            $column = $command->column;
+            $attributes = $column->getAttributes();
+
+            if (\array_key_exists('initial', $attributes)) {
+                if (\array_key_exists('default', $attributes)) {
+                    $sql[] = sprintf('alter table %s alter column %s set default %s',
+                        $this->wrapTable($blueprint),
+                        $this->wrap($column),
+                        $this->getDefaultValue($column['default'])
+                    );
+                } else {
+                    $sql[] = sprintf('alter table %s alter column %s drop default',
+                        $this->wrapTable($blueprint),
+                        $this->wrap($column),
+                    );
+                }
+
+                $column['default'] = $column['initial'];
+            }
+
+            $sql[] = sprintf('alter table %s add column %s',
+                $this->wrapTable($blueprint),
+                $this->getColumn($blueprint, $command->column)
+            );
+
+            return array_reverse($sql);
+        }
+
         $sql = [];
 
         foreach (array_reverse($blueprint->getAddedColumns()) as $column) {

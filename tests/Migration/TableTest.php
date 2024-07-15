@@ -44,4 +44,21 @@ class TableTest extends TestCase
             'alter table "test" alter column "col_437065" set default \'val_121964\'',
         ], array_column($queries, 'query'));
     }
+
+    public function testAddColumnsInitialWithDefault(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test', function (Blueprint $table): void {
+                $table->text('col_123')->initial('val_098');
+                $table->text('col_456')->initial('val_765')->default('val_432');
+            });
+        });
+
+        $this->assertEquals([
+            'alter table "test" add column "col_123" text not null default \'val_098\'',
+            'alter table "test" alter column "col_123" drop default',
+            'alter table "test" add column "col_456" text not null default \'val_765\'',
+            'alter table "test" alter column "col_456" set default \'val_432\'',
+        ], array_column($queries, 'query'));
+    }
 }
