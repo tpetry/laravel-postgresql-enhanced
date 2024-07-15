@@ -7,6 +7,7 @@ namespace Tpetry\PostgresqlEnhanced\Schema\Grammars;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint as BaseBlueprint;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Fluent;
 use Spatie\Regex\Regex;
 
@@ -17,6 +18,42 @@ trait GrammarTypes
      */
     public function compileChange(BaseBlueprint $blueprint, Fluent $command, Connection $connection): array
     {
+        if (version_compare(App::version(), '11.15.0', '>=')) {
+            $queries = [];
+
+            $changedColumn = $command->column;
+
+            if (filled($changedColumn['compression'])) {
+                $queries[] = sprintf(
+                    'alter table %s alter %s set compression %s',
+                    $this->wrapTable($blueprint->getTable()),
+                    $this->wrap($changedColumn['name']),
+                    $this->wrap($changedColumn['compression']),
+                );
+            }
+
+            $changedColumn->offsetUnset('compression');
+
+            $sql = parent::compileChange($blueprint, $command, $connection);
+            $regex = Regex::match('/^ALTER table (?P<table>.*?) alter (column )?(?P<column>.*?) type (?P<type>\w+)(?P<modifiers>,.*)?/i', $sql);
+
+            if (filled($changedColumn['using']) && $regex->hasMatch()) {
+                $using = match ($connection->getSchemaGrammar()->isExpression($changedColumn['using'])) {
+                    true => $connection->getSchemaGrammar()->getValue($changedColumn['using']),
+                    false => $changedColumn['using'],
+                };
+
+                $queries[] = match (filled($modifiers = $regex->groupOr('modifiers', ''))) {
+                    true => "alter table {$regex->group('table')} alter column {$regex->group('column')} type {$regex->group('type')} using {$using}{$modifiers}",
+                    false => "alter table {$regex->group('table')} alter column {$regex->group('column')} type {$regex->group('type')} using {$using}",
+                };
+            } else {
+                $queries[] = $sql;
+            }
+
+            return array_reverse($queries);
+        }
+
         $queries = [];
 
         // The table prefix is accessed differently based on Laravel version. In old version the $prefix was public,
@@ -32,13 +69,7 @@ trait GrammarTypes
                 Arr::except($changedColumn->toArray(), ['compression']),
             );
 
-            // Remove Compression modifier because Laravel 11 won't work correctly with it (migrator builts incorrectly SQL).
-            $_modifiers = $this->modifiers;
-            $this->modifiers = array_filter($this->modifiers, fn ($str) => !\in_array($str, ['Compression']));
-            $changes = Arr::wrap(parent::compileChange($blueprintColumn, $command, $connection));
-            $this->modifiers = $_modifiers;
-
-            foreach ($changes as $sql) {
+            foreach (Arr::wrap(parent::compileChange($blueprintColumn, $command, $connection)) as $sql) {
                 $regex = Regex::match('/^ALTER table (?P<table>.*?) alter (column )?(?P<column>.*?) type (?P<type>\w+)(?P<modifiers>,.*)?/i', $sql);
 
                 if (filled($changedColumn['using']) && $regex->hasMatch()) {
