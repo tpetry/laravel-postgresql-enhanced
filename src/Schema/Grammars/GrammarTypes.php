@@ -23,15 +23,7 @@ trait GrammarTypes
 
             $changedColumn = $command->column;
 
-            if (filled($changedColumn['compression'])) {
-                $queries[] = sprintf(
-                    'alter table %s alter %s set compression %s',
-                    $this->wrapTable($blueprint->getTable()),
-                    $this->wrap($changedColumn['name']),
-                    $this->wrap($changedColumn['compression']),
-                );
-            }
-
+            $compression = $changedColumn['compression'];
             $changedColumn->offsetUnset('compression');
 
             $sql = parent::compileChange($blueprint, $command, $connection);
@@ -51,7 +43,16 @@ trait GrammarTypes
                 $queries[] = $sql;
             }
 
-            return array_reverse($queries);
+            if (filled($compression)) {
+                $queries[] = sprintf(
+                    'alter table %s alter %s set compression %s',
+                    $this->wrapTable($blueprint->getTable()),
+                    $this->wrap($changedColumn['name']),
+                    $this->wrap($compression),
+                );
+            }
+
+            return $queries;
         }
 
         $queries = [];
