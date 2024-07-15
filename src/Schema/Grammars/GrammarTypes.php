@@ -32,7 +32,13 @@ trait GrammarTypes
                 Arr::except($changedColumn->toArray(), ['compression']),
             );
 
-            foreach (Arr::wrap(parent::compileChange($blueprintColumn, $command, $connection)) as $sql) {
+            // Remove Compression modifier because Laravel 11 won't work correctly with it (migrator builts incorrectly SQL).
+            $_modifiers = $this->modifiers;
+            $this->modifiers = array_filter($this->modifiers, fn ($str) => !\in_array($str, ['Compression']));
+            $changes = Arr::wrap(parent::compileChange($blueprintColumn, $command, $connection));
+            $this->modifiers = $_modifiers;
+
+            foreach ($changes as $sql) {
                 $regex = Regex::match('/^ALTER table (?P<table>.*?) alter (column )?(?P<column>.*?) type (?P<type>\w+)(?P<modifiers>,.*)?/i', $sql);
 
                 if (filled($changedColumn['using']) && $regex->hasMatch()) {
