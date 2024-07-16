@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Schema\Grammars;
 
+use Arr;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Fluent;
 
@@ -16,36 +17,32 @@ trait GrammarTable
      */
     public function compileAdd(Blueprint $blueprint, Fluent $command): array
     {
-        $sql = [];
+        // In Laravel 11.15.0 the logic was changed that compileAdd is only for one column (the one in the command) of
+        // the blueprint and not all ones of the blueprint as before.
+        /** @var \Illuminate\Database\Schema\ColumnDefinition[] $columns */
+        $columns = isset($command['column']) ? [$command['column']] : $blueprint->getAddedColumns();
 
-        foreach (array_reverse($blueprint->getAddedColumns()) as $column) {
+        $sqlChangeDefault = [];
+        foreach ($columns as $column) {
             $attributes = $column->getAttributes();
             if (!\array_key_exists('initial', $attributes)) {
                 continue;
             }
 
-            if (\array_key_exists('default', $attributes)) {
-                $sql[] = sprintf('alter table %s alter column %s set default %s',
-                    $this->wrapTable($blueprint),
-                    $this->wrap($column),
-                    $this->getDefaultValue($column['default'])
-                );
-            } else {
-                $sql[] = sprintf('alter table %s alter column %s drop default',
-                    $this->wrapTable($blueprint),
-                    $this->wrap($column),
-                );
-            }
-
+            // Transform the column definition to a standard one understood by Laravel:
+            // - The `initial` modifier is saved to the `default` modifier to set the initial value when creating the column.
+            // - A SQL query is created to reset the `default` value afterward to NULL or the specified value.
+            $sqlChangeDefault[] = match (\array_key_exists('default', $attributes)) {
+                true => "alter table {$this->wrapTable($blueprint)} alter column {$this->wrap($column)} set default {$this->getDefaultValue($column['default'])}",
+                false => "alter table {$this->wrapTable($blueprint)} alter column {$this->wrap($column)} drop default",
+            };
             $column['default'] = $column['initial'];
         }
 
-        $sql[] = sprintf('alter table %s %s',
-            $this->wrapTable($blueprint),
-            implode(', ', $this->prefixArray('add column', $this->getColumns($blueprint)))
-        );
-
-        return array_reverse($sql);
+        return [
+            ...Arr::wrap(parent::compileAdd($blueprint, $command)), // Some Laravel versions produce a single string while others an array.
+            ...$sqlChangeDefault,
+        ];
     }
 
     /**

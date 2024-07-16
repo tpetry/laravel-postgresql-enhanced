@@ -17,34 +17,33 @@ trait GrammarTypes
      */
     public function compileChange(BaseBlueprint $blueprint, Fluent $command, Connection $connection): array
     {
-        $queries = [];
-
         // The table prefix is accessed differently based on Laravel version. In old version the $prefix was public,
         // while with new ones the $blueprint->prefix() method should be used. The issue is solved by invading the
         // object and getting the property directly.
         $prefix = (fn () => $this->prefix)->call($blueprint);
 
-        foreach ($blueprint->getChangedColumns() as $changedColumn) {
-            $blueprintColumn = new BaseBlueprint($blueprint->getTable(), null, $prefix);
-            $blueprintColumn->addColumn(
-                $changedColumn['type'],
-                $changedColumn['name'],
-                Arr::except($changedColumn->toArray(), ['compression']),
-            );
+        // In Laravel 11.15.0 the logic was changed that compileChange is only for one column (the one in the command)
+        // of the blueprint and not all ones of the blueprint as before.
+        /** @var \Illuminate\Database\Schema\ColumnDefinition[] $columns */
+        $columns = isset($command['column']) ? [$command['column']] : $blueprint->getChangedColumns();
 
-            // Remove Compression modifier because Laravel 11 won't work correctly with it (migrator builts incorrectly SQL).
-            $_modifiers = $this->modifiers;
-            $this->modifiers = array_filter($this->modifiers, fn ($str) => !\in_array($str, ['Compression']));
-            $changes = Arr::wrap(parent::compileChange($blueprintColumn, $command, $connection));
-            $this->modifiers = $_modifiers;
+        $queries = [];
+        foreach ($columns as $column) {
+            $modifierCompression = $column['compression'];
+            $modifierUsing = $column['using'];
+            unset($column['compression'], $column['using']);
 
-            foreach ($changes as $sql) {
+            $blueprintColumnExtract = new BaseBlueprint($blueprint->getTable(), null, $prefix);
+            $blueprintColumnExtract->addColumn($column['type'], $column['name'], $column->toArray());
+            $blueprintColumnExtractQueries = Arr::wrap(parent::compileChange($blueprint, $command, $connection));
+
+            foreach ($blueprintColumnExtractQueries as $sql) {
                 $regex = Regex::match('/^ALTER table (?P<table>.*?) alter (column )?(?P<column>.*?) type (?P<type>\w+)(?P<modifiers>,.*)?/i', $sql);
 
-                if (filled($changedColumn['using']) && $regex->hasMatch()) {
-                    $using = match ($connection->getSchemaGrammar()->isExpression($changedColumn['using'])) {
-                        true => $connection->getSchemaGrammar()->getValue($changedColumn['using']),
-                        false => $changedColumn['using'],
+                if (filled($modifierUsing) && $regex->hasMatch()) {
+                    $using = match ($connection->getSchemaGrammar()->isExpression($modifierUsing)) {
+                        true => $connection->getSchemaGrammar()->getValue($modifierUsing),
+                        false => $modifierUsing,
                     };
 
                     $queries[] = match (filled($modifiers = $regex->groupOr('modifiers', ''))) {
@@ -56,13 +55,8 @@ trait GrammarTypes
                 }
             }
 
-            if (filled($changedColumn['compression'])) {
-                $queries[] = sprintf(
-                    'alter table %s alter %s set compression %s',
-                    $this->wrapTable($blueprint->getTable()),
-                    $this->wrap($changedColumn['name']),
-                    $this->wrap($changedColumn['compression']),
-                );
+            if (filled($modifierCompression)) {
+                $queries[] = "alter table {$this->wrapTable($blueprint)} alter {$this->wrap($column['name'])} set compression {$this->wrap($modifierCompression)}";
             }
         }
 
