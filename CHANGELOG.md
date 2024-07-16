@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.40.2] - 2024-07-16
+### Fixed
+* Changes to adapt to bc-breaking migration behavior of Laravel 11.15.0
+
 ## [0.40.1] - 2024-07-15
 ### Fixed
 * Changing compression mode conflicted with upstream Laravel 11.x changes
