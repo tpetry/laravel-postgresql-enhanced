@@ -64,9 +64,9 @@ trait BuilderWhere
      * @param Expression|string $column
      * @param Expression|string $value
      */
-    public function orWhereLike($column, $value, bool $caseInsensitive = false): static
+    public function orWhereLike($column, $value, $caseSensitive = false): static
     {
-        return $this->whereLike($column, $value, $caseInsensitive, 'or');
+        return $this->whereLike($column, $value, $caseSensitive, 'or', false);
     }
 
     /**
@@ -183,11 +183,11 @@ trait BuilderWhere
      * @param Expression|string $value
      * @param string $boolean
      */
-    public function whereLike($column, $value, bool $caseInsensitive = false, $boolean = 'and'): static
+    public function whereLike($column, $value, $caseSensitive = false, $boolean = 'and', $not = false): static
     {
         $type = 'like';
 
-        $this->wheres[] = compact('type', 'column', 'value', 'caseInsensitive', 'boolean');
+        $this->wheres[] = compact('type', 'column', 'value', 'caseSensitive', 'boolean', 'not');
         $this->addBinding($value);
 
         return $this;
