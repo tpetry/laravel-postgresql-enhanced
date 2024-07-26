@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema as BaseSchema;
 
 /**
  * @method static void changeDomainConstraint(string $name, null|string|(callable(\Tpetry\PostgresqlEnhanced\Query\Builder): mixed) $check)
- * @method static void changeType( string $name, ?string $alteration = null )
+ * @method static void changeType(string $name, ?string $alteration = null)
  * @method static void createDomain(string $name, string $type, string|(callable(\Tpetry\PostgresqlEnhanced\Query\Builder): mixed) $check = null)
  * @method static void dropDomain(string ...$name)
  * @method static void dropDomainIfExists(string ...$name)
@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Schema as BaseSchema;
  * @method static void createFunctionOrReplace(string $name, array $parameters, array|string $return, string $language, string $body, array $options = [])
  * @method static void createRecursiveView(string $name, Builder|string $query, array $columns)
  * @method static void createRecursiveViewOrReplace(string $name, Builder|string $query, array $columns)
- * @method static void createType( string $name, string $type )
+ * @method static void createType(string $name, string $type)
  * @method static void createMaterializedView(string $name, Builder|string $query, bool $withData = true, array $columns = [])
  * @method static void createView(string $name, Builder|string $query, array $columns = [])
  * @method static void createViewOrReplace(string $name, Builder|string $query, array $columns = [])
@@ -27,8 +27,8 @@ use Illuminate\Support\Facades\Schema as BaseSchema;
  * @method static void dropExtensionIfExists(string ...$name)
  * @method static void dropFunction(string $name, ?array $arguments = null)
  * @method static void dropFunctionIfExists(string $name, ?array $arguments = null)
- * @method static void dropType( string ...$name )
- * @method static void dropTypeIfExists( string ...$name )
+ * @method static void dropType(string ...$name)
+ * @method static void dropTypeIfExists(string ...$name)
  * @method static void dropView(string ...$name)
  * @method static void dropViewIfExists(string ...$name)
  * @method static void dropMaterializedView(string ...$name)
