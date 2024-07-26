@@ -81,6 +81,14 @@ trait BlueprintTypes
     }
 
     /**
+     * Create a new type column on the table.
+     */
+    public function type(string $column, string $type): ColumnDefinition
+    {
+        return $this->domain($column, $type);
+    }
+
+    /**
      * Create a new european article number column on the table.
      */
     public function europeanArticleNumber13(string $column): ColumnDefinition
