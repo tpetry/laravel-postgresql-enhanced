@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Schema;
 
-use Closure;
 use Tpetry\PostgresqlEnhanced\Support\Helpers\Query;
 
 trait BuilderType
