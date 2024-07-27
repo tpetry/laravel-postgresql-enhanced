@@ -27,7 +27,7 @@ trait BuilderType
     public function createType(string $name, string $type): void
     {
         $sql = match (filled($type)) {
-            false => "create type {$this->getConnection()->getSchemaGrammar()->wrap($name)}",
+            false => "create type {$name}",
             true => "create type {$this->getConnection()->getSchemaGrammar()->wrap($name)} as {$type}",
         };
 
