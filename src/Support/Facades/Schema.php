@@ -9,7 +9,10 @@ use Illuminate\Support\Facades\Schema as BaseSchema;
 
 /**
  * @method static void changeDomainConstraint(string $name, null|string|(callable(\Tpetry\PostgresqlEnhanced\Query\Builder): mixed) $check)
+ * @method static void changeEnumTypeValueName( string $name, string $existingValue, string $newValue )
  * @method static void changeType(string $name, ?string $alteration = null)
+ * @method static void changeTypeName( string $name, string $newName )
+ * @method static void changeTypeToAddEnumValue(string $name, string $newValue)
  * @method static void createDomain(string $name, string $type, string|(callable(\Tpetry\PostgresqlEnhanced\Query\Builder): mixed) $check = null)
  * @method static void dropDomain(string ...$name)
  * @method static void dropDomainIfExists(string ...$name)

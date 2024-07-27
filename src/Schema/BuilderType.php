@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Schema;
 
-use Tpetry\PostgresqlEnhanced\Support\Helpers\Query;
-
 trait BuilderType
 {
     /**
@@ -19,6 +17,30 @@ trait BuilderType
         };
 
         $this->getConnection()->statement($sql);
+    }
+
+    /**
+     * Rename a type in the schema.
+     */
+    public function changeTypeName(string $name, string $newName): void
+    {
+        $this->changeType($name, "rename to {$newName}");
+    }
+
+    /**
+     * Add a new value to enum type in the schema.
+     */
+    public function changeTypeToAddEnumValue(string $name, string $newValue): void
+    {
+        $this->changeType($name, "add value if not exists '{$newValue}'");
+    }
+
+    /**
+     * Rename a value in enum type in the schema.
+     */
+    public function changeEnumTypeValueName(string $name, string $existingValue, string $newValue): void
+    {
+        $this->changeType($name, "rename value '{$existingValue}' to '{$newValue}'");
     }
 
     /**
