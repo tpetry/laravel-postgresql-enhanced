@@ -36,7 +36,7 @@ composer require tpetry/laravel-postgresql-enhanced
         - [Storage Parameters](#storage-parameters-index)
         - [Functional Indexes / Column Options](#functional-indexes--column-options)
         - [Fulltext Indexes](#fulltext-indexes)
-    - [Domain Types](#domain-types)
+    - [Custom Data Types and Domain Types](#custom-data-types-and-domain-types)
     - [Table Options](#table-options)
         - [Unlogged](#unlogged)
         - [Storage Parameters](#storage-parameters-table)
@@ -548,14 +548,86 @@ Schema::table('book', function (Blueprint $table) {
 });
 ```
 
-### Domain Types
+### Custom Data Types and Domain Types
 
-A relational database like PostgreSQL provides a lot of data types you can choose from.
-But they are only generic types that should match thousands of applications.
+A relational database like PostgreSQL provides a lot of data types you can choose from. But they are only generic types that should match thousands of applications.
 Your specific requirements are not covered.
-But with domain types, you can add application-specific types like a price column that has a specific amount of digits and is never negative:
-An existing base type (`numeric(9,2)`) is aliased to a new type with an optional condition that all values have to match.
-You can use that to create repeatable price columns in your tables or create completely new types like a license plate type that has to match a specific format.
+For that purpose, PostgreSQL provides the option to create a custom data type or domain type. On high level the difference between the two is that a custom data type can be of an enumerated type or a composite type while you create a domain type when you want to put some constraints on the data it can have.
+
+For example if your table is for chocolate products and you want to set a type which can only have either `dark` for `white` as values denoting the type of chocolate then you could create a data type say `chocolate_type` which can have only one of these two values. In the same table if you want to have a column for price which has a specific amount of digits and is never negative then you can do that with a domain type.
+
+PostgreSQL Documentation: [CREATE TYPE](https://www.postgresql.org/docs/current/sql-createtype.html), [CREATE DOMAIN](https://www.postgresql.org/docs/current/sql-createdomain.html)
+
+#### Create A Custom Data Type
+
+The `Schema` facade supports the creation of custom data types with the `createType` method by passing the name and the base type.
+
+```php
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::createType('chocolate_type', "enum('dark', 'white')");
+```
+
+#### Use Custom Data Types
+
+Custom data types created by you can be used in a migration like every other column by using the `type()` method and passing the column name and data type name to it:
+
+```php
+Schema::create('products', function (Blueprint $table): void {
+  $table->id();
+  $table->string('choco_name');
+  $table->type('choco_type', 'chocolate_type');
+  $table->timestampsTz();
+});
+```
+
+#### Altering Custom Data Types
+
+The base type of a custom data type cannot be changed after it has been created. But you can rename the data type, change its owner, change its attributes and if its an `enum` then you can add values to it and rename any existing values. ([Ref PostgreSQL docs](https://www.postgresql.org/docs/current/sql-altertype.html) for more)
+
+```php
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+// To rename the type:
+Schema::changeType('chocolate_type', 'RENAME TO choco_type');
+
+// You can also use `changeTypeName()` for renaming a type
+Schema::changeTypeName('chocolate_type', 'choco_type');
+
+// To add another value to enumerated type:
+Schema::changeType('chocolate_type', "ADD VALUE IF NOT EXISTS 'medium'");
+Schema::changeType('chocolate_type', "ADD VALUE IF NOT EXISTS 'medium' BEFORE 'white'");
+
+// You can also use `changeTypeToAddEnumValue()` to add a value to enum type
+Schema::changeTypeToAddEnumValue('chocolate_type', 'medium');
+Schema::changeTypeToAddEnumValue('chocolate_type', "'medium' BEFORE 'white'");
+
+// To rename a value in enumerated type:
+Schema::changeType('chocolate_type', "RENAME VALUE 'medium' TO 'medium-dark'");
+
+// You can also use `changeEnumTypeValueName()` to rename a value in enum type
+Schema::changeEnumTypeValueName('chocolate_type', 'medium', 'medium-dark');
+```
+
+#### Dropping Custom Data Types
+
+To remove custom data types, you have first to drop all columns using them (or change their type) and then use `dropType` or `dropTypeIfExists` provided by the `Schema` facade:
+
+```php
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::dropType('chocolate_type');
+Schema::dropTypeIfExists('chocolate_type');
+```
+
+You may drop multiple custom data types at once by passing all of their names as individual parameters:
+
+```php
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::dropType('chocolate_type', 'chocolate_price');
+Schema::dropTypeIfExists('chocolate_type', 'chocolate_price');
+```
 
 #### Create A Domain Type
 
