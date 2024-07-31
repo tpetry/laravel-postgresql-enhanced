@@ -16,6 +16,18 @@ You can install the package via composer:
 composer require tpetry/laravel-postgresql-enhanced
 ```
 
+# Versioning Policy
+
+**This package follows the semantic versioning policy.**
+**So you can always safely upgrade to a new minor and patch version without any issues.**
+
+As Laravel is a healthy framework that is still adding new database functionality, some things may break:
+For instance, in the past, Laravel introduced new builder methods that had already been part of this package for a long time - but with different semantics.
+In such cases, a new major version is promptly released with a breaking change to align with Laravel's implementation.
+
+When upgrading Laravel, you may also have to upgrade this package to a new major version when something breaks!
+The minimal breaking changes of the past years are listed in the [breaking changes section](#breaking-changes).
+
 # Features
 
 - [IDE Autocomplete](#ide-autocomplete)
@@ -1302,6 +1314,10 @@ Schema::create('comments', function (Blueprint $table) {
 
 # Breaking Changes
 
+* **1.0.0**
+  * Laravel 11.17 released a new `whereLike` and `orWhereLike` builder method so the behaviour had to be aligned with Laravel's implementation:
+    * The value is now searched case-insensitive by default instead of case-sensitive
+    * The `$caseSensitive` parameter had to be replaced by the `$caseInsensitive` parameter
 * 0.39.0 -> 0.40.0
   * The Enhanced PostgreSQL Driver PHPStan extension is now automatically registered with the PHPStan Extension Installer. The manual registration of the extension needs to be removed when PHPStan crashed because the extension is registered twice.
 * 0.35.0 -> 0.36.0
