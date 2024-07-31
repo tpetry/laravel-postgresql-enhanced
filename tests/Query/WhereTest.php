@@ -99,7 +99,7 @@ class WhereTest extends TestCase
             $this->getConnection()->table('example')->orWhereLike('str', 'OamekKIC', true)->orWhereLike('str', 'HmC3xURl', true)->get();
         });
         $this->assertEquals(
-            ['select * from "example" where "str" like ? or "str" like ?', 'select * from "example" where "str" ilike ? or "str" ilike ?'],
+            ['select * from "example" where "str" ilike ? or "str" ilike ?', 'select * from "example" where "str" like ? or "str" like ?'],
             array_column($queries, 'query'),
         );
         $this->assertEquals(
@@ -258,7 +258,7 @@ class WhereTest extends TestCase
             $this->getConnection()->table('example')->whereLike('str', 'IcuC5Cqz', true)->get();
         });
         $this->assertEquals(
-            ['select * from "example" where "str" like ?', 'select * from "example" where "str" ilike ?'],
+            ['select * from "example" where "str" ilike ?', 'select * from "example" where "str" like ?'],
             array_column($queries, 'query'),
         );
         $this->assertEquals(
