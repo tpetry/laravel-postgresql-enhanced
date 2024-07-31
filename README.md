@@ -195,7 +195,7 @@ Schema::createFunction(
 A sixth parameter lets you define further options for the function. Please [read the manual](https://www.postgresql.org/docs/current/sql-createfunction.html) for the exact meaning, some of them set enable or disable ways for PostgreSQL to optimize the execution.
 
 | Option         | Values                            | Description                                                                                                    |
-| -------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+|----------------|-----------------------------------|----------------------------------------------------------------------------------------------------------------|
 | `calledOnNull` | bool                              | Defines whether the function should be called for NULL values.                                                 |
 | `cost`         | integer                           | Defines the cost for executing the function.                                                                   |
 | `leakproof`    | bool                              | Informs whether the function has side effects.                                                                 |
@@ -254,7 +254,7 @@ Schema::table('projects', function (Blueprint $table): void {
 The following table contains all of the available trigger modifiers:
 
 | Modifier                                                                          | Description                                                                                                                                                        |
-| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+|-----------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `->forEachRow()`                                                                  | The trigger will be called for every row.                                                                                                                          |
 | `->forEachStatement()`                                                            | The trigger will be called once for each statement *(default)*.                                                                                                    |
 | `->transitionTables(`<br>`  old: 'oldrows',`<br>`  new: 'newrows',`<br>`)`        | The forEachStatement-trigger will provide the before/after state of the affected rows in special tables. You can omit either option if not valid for this trigger. |
@@ -1018,7 +1018,7 @@ User::query()
 In addition to the basic form of a Common Table Expression these optional settings are available to support all PostgreSQL options:
 
 | Option       | Type     | Description                                                                                                                                                                                              |
-| ------------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|--------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | materialized | `bool`   | Whether the CTE should be (not) materialized. This overrides PostgreSQL's automatic materialization decision. [(Documentation)](https://www.postgresql.org/docs/current/queries-with.html#id-1.5.6.12.7) |
 | recursive    | `bool`   | Whether to use a recursive CTE. [(Documentation)](https://www.postgresql.org/docs/current/queries-with.html#QUERIES-WITH-RECURSIVE)                                                                      |
 | cycle        | `string` | Specify the automatic cycle detection settings for recursive queries. [(Documentation)](https://www.postgresql.org/docs/current/queries-with.html#QUERIES-WITH-CYCLE)                                    |
