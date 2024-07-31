@@ -1170,7 +1170,7 @@ Some of the PostgreSQL types are represented in a string format that a Laravel a
 To make those types usable, these casts can be used with your eloquent models:
 
 | Type           | Cast                                                        |
-| -------------- | ----------------------------------------------------------- |
+|----------------|-------------------------------------------------------------|
 | `integerArray` | `Tpetry\PostgresqlEnhanced\Eloquent\Casts\IntegerArrayCast` |
 | `vector`       | `Tpetry\PostgresqlEnhanced\Eloquent\Casts\VectorArray`      |
 
