@@ -1103,11 +1103,11 @@ $query->orWhereNotBoolean($column, bool $value);
 
 #### Like
 
-With the `whereLike` scope you can compare a column to a (case-insensitive) value. 
+With the `whereLike` scope you can do case-(in)sensitive like comparisons between a column and a value. 
 
 ```php
-$query->whereLike($column, $value, $caseInsensitive = false);
-$query->orWhereLike($column, $value, $caseInsensitive = false);
+$query->whereLike($column, $value, $caseSensitive = false);
+$query->orWhereLike($column, $value, $caseSensitive = false);
 ```
 
 #### Between Symmetric

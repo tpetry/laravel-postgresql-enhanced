@@ -46,13 +46,13 @@ trait GrammarWhere
     /**
      * Compile a "like" clause.
      *
-     * @param array{caseInsensitive: bool, column: string, value: mixed} $where
+     * @param array{caseSensitive: bool, column: string, value: mixed} $where
      */
     public function whereLike(Builder $query, $where): string
     {
-        return match ((bool) $where['caseInsensitive']) {
-            true => "{$this->wrap($where['column'])} ilike {$this->parameter($where['value'])}",
-            false => "{$this->wrap($where['column'])} like {$this->parameter($where['value'])}",
+        return match ($where['caseSensitive']) {
+            true => "{$this->wrap($where['column'])} like {$this->parameter($where['value'])}",
+            false => "{$this->wrap($where['column'])} ilike {$this->parameter($where['value'])}",
         };
     }
 
