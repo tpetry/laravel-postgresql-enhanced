@@ -8,6 +8,48 @@ use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class OrderTest extends TestCase
 {
+    public function testNullsDefault(): void
+    {
+        $this->getConnection()->unprepared('CREATE TABLE example (col int)');
+
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->orderBy('col')->get();
+            $this->getConnection()->table('example')->orderBy('col', nulls: 'default')->get();
+        });
+        $this->assertEquals(
+            ['select * from "example" order by "col" asc', 'select * from "example" order by "col" asc'],
+            array_column($queries, 'query'),
+        );
+    }
+
+    public function testNullsFirst(): void
+    {
+        $this->getConnection()->unprepared('CREATE TABLE example (col int)');
+
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->orderBy('col', nulls: 'first')->get();
+            $this->getConnection()->table('example')->orderByNullsFirst('col')->get();
+        });
+        $this->assertEquals(
+            ['select * from "example" order by "col" asc nulls first', 'select * from "example" order by "col" asc nulls first'],
+            array_column($queries, 'query'),
+        );
+    }
+
+    public function testNullsLast(): void
+    {
+        $this->getConnection()->unprepared('CREATE TABLE example (col int)');
+
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->orderBy('col', nulls: 'last')->get();
+            $this->getConnection()->table('example')->orderByNullsLast('col')->get();
+        });
+        $this->assertEquals(
+            ['select * from "example" order by "col" asc nulls last', 'select * from "example" order by "col" asc nulls last'],
+            array_column($queries, 'query'),
+        );
+    }
+
     public function testVectorSimilarity(): void
     {
         if (!$this->getConnection()->table('pg_available_extensions')->where('name', 'vector')->exists()) {
