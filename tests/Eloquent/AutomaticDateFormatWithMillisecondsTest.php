@@ -50,7 +50,7 @@ class AutomaticDateFormatWithMillisecondsTest extends TestCase
 
     protected function createModel(): Model
     {
-        return new class() extends Model {
+        return new class extends Model {
             use AutomaticDateFormatWithMilliseconds;
 
             public $table = 'example';

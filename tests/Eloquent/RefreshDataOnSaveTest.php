@@ -41,7 +41,7 @@ class RefreshDataOnSaveTest extends TestCase
 
     protected function createModel(): Model
     {
-        return new class() extends Model {
+        return new class extends Model {
             use RefreshDataOnSave;
 
             public $table = 'example';

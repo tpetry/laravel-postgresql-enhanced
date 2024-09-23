@@ -6,7 +6,6 @@ namespace Tpetry\PostgresqlEnhanced\Eloquent\Mixins;
 
 use Closure;
 use Generator;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\LazyCollection;
 
 /** @mixin \Illuminate\Database\Eloquent\Builder */
@@ -19,7 +18,7 @@ class BuilderLazyByCursor
             return new LazyCollection(function () use ($chunkSize): Generator {
                 foreach ($this->applyScopes()->getQuery()->lazyByCursor($chunkSize)->chunk($chunkSize) as $items) {
                     $models = $this->getModel()->hydrate($items->all())->all();
-                    if (count($models) > 0) {
+                    if (\count($models) > 0) {
                         $models = $this->eagerLoadRelations($models);
                     }
 

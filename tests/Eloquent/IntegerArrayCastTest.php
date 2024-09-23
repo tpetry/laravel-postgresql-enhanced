@@ -18,7 +18,7 @@ class IntegerArrayCastTest extends TestCase
         }
 
         $cast = new IntegerArrayCast();
-        $model = new class() extends Model { };
+        $model = new class extends Model { };
 
         $this->assertNull($cast->get($model, 'column', null, []));
         $this->assertEquals([], $cast->get($model, 'column', '{}', []));
@@ -33,7 +33,7 @@ class IntegerArrayCastTest extends TestCase
         }
 
         $cast = new IntegerArrayCast();
-        $model = new class() extends Model { };
+        $model = new class extends Model { };
 
         $this->assertNull($cast->get($model, 'column', null, []));
 

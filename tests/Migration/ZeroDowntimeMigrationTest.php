@@ -21,7 +21,7 @@ class ZeroDowntimeMigrationTest extends TestCase
     public function testLongRunningApplicationLogicIsCancelled(): void
     {
         $this->expectException(ZeroDowntimeMigrationTimeoutException::class);
-        $this->runMigration(fn () => usleep(500_000), new class() extends Migration {
+        $this->runMigration(fn () => usleep(500_000), new class extends Migration {
             use ZeroDowntimeMigration;
             public $timeout = 0.4;
         });
@@ -33,7 +33,7 @@ class ZeroDowntimeMigrationTest extends TestCase
         $this->runMigration(function (): void {
             $this->app->get('db.connection')->statement("SELECT pg_sleep_for('250 milliseconds')");
             $this->app->get('db.connection')->statement("SELECT pg_sleep_for('250 milliseconds')");
-        }, new class() extends Migration {
+        }, new class extends Migration {
             use ZeroDowntimeMigration;
             public float $timeout = 0.4;
         });
@@ -42,7 +42,7 @@ class ZeroDowntimeMigrationTest extends TestCase
     public function testMigrationNeedsToRunInTransaction(): void
     {
         $this->expectException(RuntimeException::class);
-        $this->runMigration(fn () => usleep(1000), new class() extends Migration {
+        $this->runMigration(fn () => usleep(1000), new class extends Migration {
             use ZeroDowntimeMigration;
             public $timeout = 0.0;
             public $withinTransaction = false;
@@ -52,7 +52,7 @@ class ZeroDowntimeMigrationTest extends TestCase
     public function testOnlyRunsOnPostgresql(): void
     {
         $this->expectNotToPerformAssertions();
-        $this->runMigration(fn () => usleep(1000), new class() extends Migration {
+        $this->runMigration(fn () => usleep(1000), new class extends Migration {
             use ZeroDowntimeMigration;
 
             public $timeout = 0.0;
@@ -63,11 +63,11 @@ class ZeroDowntimeMigrationTest extends TestCase
     public function testTimeoutIsResetForEveryMigration(): void
     {
         $this->expectNotToPerformAssertions();
-        $this->runMigration(fn () => usleep(25_000), new class() extends Migration {
+        $this->runMigration(fn () => usleep(25_000), new class extends Migration {
             use ZeroDowntimeMigration;
             public $timeout = 0.04;
         });
-        $this->runMigration(fn () => usleep(25_000), new class() extends Migration {
+        $this->runMigration(fn () => usleep(25_000), new class extends Migration {
             use ZeroDowntimeMigration;
             public $timeout = 0.04;
         });
@@ -76,7 +76,7 @@ class ZeroDowntimeMigrationTest extends TestCase
     public function testTraitNeedsToBeUsedToActivate(): void
     {
         $this->expectNotToPerformAssertions();
-        $this->runMigration(fn () => usleep(1000), new class() extends Migration {
+        $this->runMigration(fn () => usleep(1000), new class extends Migration {
             public $timeout = 0.0;
         });
     }
