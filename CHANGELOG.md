@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2024-09-23
+### Fixed
+* Eager loading and lazy loading prevention was not implemented for lazyByCursor()
+
+### Added
+* `orderByNullsFirst`, `orderByNullsLast` and `$nulls` parameter for `orderBy`
+
 ## [1.0.1] - 2024-08-05
 ### Fixed
 * Migration failed when automatic aliases had been disabled in Laravel
