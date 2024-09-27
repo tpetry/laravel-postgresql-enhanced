@@ -375,8 +375,8 @@ class TypesTest extends TestCase
 
         $this->getConnection()->statement('CREATE EXTENSION IF NOT EXISTS vector');
         $queries = $this->runMigrations(
-            fnCreate: fn (Blueprint $table) => $table->vector('col'),
-            fnChange: fn (Blueprint $table) => $table->vector('col')->change(),
+            fnCreate: fn (Blueprint $table) => $table->vector('col', 1536),
+            fnChange: fn (Blueprint $table) => $table->vector('col', 1536)->change(),
         );
 
         $this->assertEquals('create table "test" ("col" vector(1536) not null)', $queries[0]['query'] ?? null);

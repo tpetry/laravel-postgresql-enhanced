@@ -251,7 +251,7 @@ trait BlueprintTypes
     /**
      * Create a new vector column on the table.
      */
-    public function vector(string $column, int $dimensions = 1536): ColumnDefinition
+    public function vector($column, $dimensions): ColumnDefinition
     {
         return $this->addColumn('vector', $column, compact('dimensions'));
     }
