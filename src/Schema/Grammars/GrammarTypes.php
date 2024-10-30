@@ -315,7 +315,10 @@ trait GrammarTypes
      */
     protected function typeVector(Fluent $column): string
     {
-        return "vector({$column['dimensions']})";
+        return match ($column['dimensions']) {
+            null => 'vector',
+            default => "vector({$column['dimensions']})",
+        };
     }
 
     /**

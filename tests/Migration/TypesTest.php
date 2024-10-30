@@ -375,11 +375,17 @@ class TypesTest extends TestCase
 
         $this->getConnection()->statement('CREATE EXTENSION IF NOT EXISTS vector');
         $queries = $this->runMigrations(
-            fnCreate: fn (Blueprint $table) => $table->vector('col', 1536),
-            fnChange: fn (Blueprint $table) => $table->vector('col', 1536)->change(),
+            fnCreate: function (Blueprint $table): void {
+                $table->vector('col1', 1536);
+                $table->vector('col2');
+            },
+            fnChange: function (Blueprint $table): void {
+                $table->vector('col1', 1536)->change();
+                $table->vector('col2')->change();
+            },
         );
 
-        $this->assertEquals('create table "test" ("col" vector(1536) not null)', $queries[0]['query'] ?? null);
+        $this->assertEquals('create table "test" ("col1" vector(1536) not null, "col2" vector not null)', $queries[0]['query'] ?? null);
     }
 
     public function testXmlTypeIsSupported(): void
