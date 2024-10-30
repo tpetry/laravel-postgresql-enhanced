@@ -1336,7 +1336,7 @@ Schema::create('comments', function (Blueprint $table) {
 
 * **2.0.0**
   * Laravel 11.25 released a new `vector` migration type so the behaviour had to be aligned with Laravel's implementation:
-    * The `$dimensions` parameter (formerly with a default of 1536) is now required
+    * A missing `$dimensions` parameter now leads to a vector type with unspecified dimension size (formerly defaulted to `$dimensions = 1536`) 
 * **1.0.0**
   * Laravel 11.17 released a new `whereLike` and `orWhereLike` builder method so the behaviour had to be aligned with Laravel's implementation:
     * The value is now searched case-insensitive by default instead of case-sensitive
