@@ -1,0 +1,115 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Anonymous function should return Illuminate\\Database\\Eloquent\\Collection but returns Illuminate\\Support\\Collection\<int, object\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Eloquent/Mixins/BuilderReturning.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\:\:forceDeleteReturning\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Eloquent/Mixins/BuilderReturning.php
+
+		-
+			message: '#^Call to protected method addTimestampsToUpsertValues\(\) of class Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\.$#'
+			identifier: method.protected
+			count: 1
+			path: src/Eloquent/Mixins/BuilderReturning.php
+
+		-
+			message: '#^Call to protected method addUpdatedAtColumn\(\) of class Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\.$#'
+			identifier: method.protected
+			count: 1
+			path: src/Eloquent/Mixins/BuilderReturning.php
+
+		-
+			message: '#^Call to protected method addUpdatedAtToUpsertColumns\(\) of class Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\.$#'
+			identifier: method.protected
+			count: 1
+			path: src/Eloquent/Mixins/BuilderReturning.php
+
+		-
+			message: '#^PHPDoc tag @var with type Illuminate\\Database\\Eloquent\\Builder is not subtype of native type \$this\(Tpetry\\PostgresqlEnhanced\\Eloquent\\Mixins\\BuilderReturning\)\.$#'
+			identifier: varTag.nativeType
+			count: 1
+			path: src/Eloquent/Mixins/BuilderReturning.php
+
+		-
+			message: '#^Call to function method_exists\(\) with Tpetry\\PostgresqlEnhanced\\Query\\Grammar and ''setConnection'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: src/PostgresEnhancedConnection.php
+
+		-
+			message: '#^Call to function method_exists\(\) with Tpetry\\PostgresqlEnhanced\\Schema\\Grammars\\Grammar and ''setConnection'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: src/PostgresEnhancedConnection.php
+
+		-
+			message: '#^Call to function method_exists\(\) with \$this\(Tpetry\\PostgresqlEnhanced\\Query\\Builder\) and ''applyBeforeQueryCal…'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 7
+			path: src/Query/Builder.php
+
+		-
+			message: '#^Return type \(array\<int, string\>\) of method Tpetry\\PostgresqlEnhanced\\Schema\\Grammars\\Grammar\:\:compileAdd\(\) should be compatible with return type \(string\) of method Illuminate\\Database\\Schema\\Grammars\\PostgresGrammar\:\:compileAdd\(\)$#'
+			identifier: method.childReturnType
+			count: 1
+			path: src/Schema/Grammars/Grammar.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Migrations\\Migration\:\:timeoutDown\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Support/Helpers/ZeroDowntimeMigrationSupervisor.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Migrations\\Migration\:\:timeoutUp\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Support/Helpers/ZeroDowntimeMigrationSupervisor.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Builder\<Tpetry\\PostgresqlEnhanced\\Tests\\Eloquent\\Example\>\:\:forceDeleteReturning\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: tests/Eloquent/BuilderReturningTest.php
+
+		-
+			message: '#^Call to function property_exists\(\) with \$this\(Illuminate\\Database\\Migrations\\Migration@anonymous/tests/Migration/ZeroDowntimeMigrationTest\.php\:24\) and ''timeout'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 2
+			path: tests/Migration/ZeroDowntimeMigrationTest.php
+
+		-
+			message: '#^Call to function property_exists\(\) with \$this\(Illuminate\\Database\\Migrations\\Migration@anonymous/tests/Migration/ZeroDowntimeMigrationTest\.php\:36\) and ''timeout'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 2
+			path: tests/Migration/ZeroDowntimeMigrationTest.php
+
+		-
+			message: '#^Call to function property_exists\(\) with \$this\(Illuminate\\Database\\Migrations\\Migration@anonymous/tests/Migration/ZeroDowntimeMigrationTest\.php\:45\) and ''timeout'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 2
+			path: tests/Migration/ZeroDowntimeMigrationTest.php
+
+		-
+			message: '#^Call to function property_exists\(\) with \$this\(Illuminate\\Database\\Migrations\\Migration@anonymous/tests/Migration/ZeroDowntimeMigrationTest\.php\:55\) and ''timeout'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 2
+			path: tests/Migration/ZeroDowntimeMigrationTest.php
+
+		-
+			message: '#^Call to function property_exists\(\) with \$this\(Illuminate\\Database\\Migrations\\Migration@anonymous/tests/Migration/ZeroDowntimeMigrationTest\.php\:66\) and ''timeout'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 2
+			path: tests/Migration/ZeroDowntimeMigrationTest.php
+
+		-
+			message: '#^Call to function property_exists\(\) with \$this\(Illuminate\\Database\\Migrations\\Migration@anonymous/tests/Migration/ZeroDowntimeMigrationTest\.php\:70\) and ''timeout'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 2
+			path: tests/Migration/ZeroDowntimeMigrationTest.php
