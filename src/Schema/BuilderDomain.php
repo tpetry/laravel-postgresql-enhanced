@@ -31,7 +31,7 @@ trait BuilderDomain
     /**
      * Create a new domain in the schema.
      */
-    public function createDomain(string $name, string $type, Closure|string $check = null): void
+    public function createDomain(string $name, string $type, Closure|string|null $check = null): void
     {
         if ($check instanceof Closure) {
             $query = tap($this->getConnection()->query(), $check);

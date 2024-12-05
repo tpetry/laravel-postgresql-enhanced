@@ -15,7 +15,7 @@ trait PostgresConnectionBackport
     /**
      * All of the callbacks that should be invoked before a query is executed.
      *
-     * @var \Closure[]
+     * @var Closure[]
      */
     protected $beforeExecutingCallbacks = [];
 

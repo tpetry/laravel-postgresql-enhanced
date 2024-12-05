@@ -31,7 +31,7 @@ class Builder extends PostgresBuilder
      *
      * @param string $table
      */
-    protected function createBlueprint($table, Closure $callback = null): Blueprint
+    protected function createBlueprint($table, ?Closure $callback = null): Blueprint
     {
         return new Blueprint($table, $callback);
     }

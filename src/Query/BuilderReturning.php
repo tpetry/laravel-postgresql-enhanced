@@ -16,7 +16,7 @@ trait BuilderReturning
     /**
      * Delete records from the database.
      *
-     * @return \Illuminate\Support\Collection<int, object>
+     * @return Collection<int, object>
      */
     public function deleteReturning(mixed $id = null, array $returning = ['*']): Collection
     {
@@ -44,7 +44,7 @@ trait BuilderReturning
     /**
      * Insert new records into the database while ignoring errors.
      *
-     * @return \Illuminate\Support\Collection<int, object>
+     * @return Collection<int, object>
      */
     public function insertOrIgnoreReturning(array $values, array $returning = ['*']): Collection
     {
@@ -80,7 +80,7 @@ trait BuilderReturning
     /**
      * Insert new records into the database.
      *
-     * @return \Illuminate\Support\Collection<int, object>
+     * @return Collection<int, object>
      */
     public function insertReturning(array $values, array $returning = ['*']): Collection
     {
@@ -128,7 +128,7 @@ trait BuilderReturning
      *
      * @param \Closure|\Illuminate\Contracts\Database\Query\Builder|string $query
      *
-     * @return \Illuminate\Support\Collection<int, object>
+     * @return Collection<int, object>
      */
     public function insertUsingReturning(array $columns, $query, array $returning = ['*']): Collection
     {
@@ -153,7 +153,7 @@ trait BuilderReturning
     /**
      * Update records in a PostgreSQL database using the update from syntax.
      *
-     * @return \Illuminate\Support\Collection<int, object>
+     * @return Collection<int, object>
      */
     public function updateFromReturning(array $values, array $returning = ['*']): Collection
     {
@@ -176,7 +176,7 @@ trait BuilderReturning
     /**
      * Insert or update a record matching the attributes, and fill it with values.
      *
-     * @return \Illuminate\Support\Collection<int, object>
+     * @return Collection<int, object>
      */
     public function updateOrInsertReturning(array $attributes, array $values = [], array $returning = ['*']): Collection
     {
@@ -194,7 +194,7 @@ trait BuilderReturning
     /**
      * Update records in the database.
      *
-     * @return \Illuminate\Support\Collection<int, object>
+     * @return Collection<int, object>
      */
     public function updateReturning(array $values, array $returning = ['*']): Collection
     {
@@ -217,7 +217,7 @@ trait BuilderReturning
     /**
      * Insert new records or update the existing ones.
      *
-     * @return \Illuminate\Support\Collection<int, object>
+     * @return Collection<int, object>
      */
     public function upsertReturning(array $values, array|string $uniqueBy, ?array $update = null, array $returning = ['*']): Collection
     {
