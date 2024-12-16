@@ -1206,6 +1206,12 @@ To make those types usable, these casts can be used with your eloquent models:
 | `integerArray` | `Tpetry\PostgresqlEnhanced\Eloquent\Casts\IntegerArrayCast` |
 | `vector`       | `Tpetry\PostgresqlEnhanced\Eloquent\Casts\VectorArray`      |
 
+Additionally, these casts exist to make using PostgreSQL more easy:
+
+| Cast                                                                   | Description                                                                                            |
+|------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
+| `Tpetry\PostgresqlEnhanced\Eloquent\Casts\JsonForceEmptyObjectAsArray` | Decodes JSON value as array in Laravel but ensures that empty values are always stored as JSON object. |
+
 ### Refresh Data on Save
 
 When you are using Laravel's `storedAs($expression)` feature in migrations to have dynamically computed columns in your database or triggers to update these columns, eloquent's behaviour is not doing exactly what you are expecting.
