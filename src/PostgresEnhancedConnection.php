@@ -10,6 +10,7 @@ use Illuminate\Database\PostgresConnection;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Str;
 use Throwable;
+use Tpetry\PostgresqlEnhanced\Backports\ConnectionBackport;
 use Tpetry\PostgresqlEnhanced\Query\Builder as QueryBuilder;
 use Tpetry\PostgresqlEnhanced\Query\Grammar as QueryGrammar;
 use Tpetry\PostgresqlEnhanced\Schema\Builder as SchemaBuilder;
@@ -18,7 +19,7 @@ use Tpetry\PostgresqlEnhanced\Support\Helpers\ZeroDowntimeMigrationSupervisor;
 
 class PostgresEnhancedConnection extends PostgresConnection
 {
-    use PostgresConnectionBackport;
+    use ConnectionBackport;
 
     /**
      * Additional bindings which will be used in run().
