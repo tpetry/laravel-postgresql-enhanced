@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Tpetry\PostgresqlEnhanced\Schema\Grammars;
 
 use Illuminate\Database\Schema\Grammars\PostgresGrammar;
-use Tpetry\PostgresqlEnhanced\Backports\GrammarBackport;
+use Tpetry\PostgresqlEnhanced\Backports\GrammarBackportEscape;
 
 class Grammar extends PostgresGrammar
 {
-    use GrammarBackport;
+    use GrammarBackportEscape;
     use GrammarIndex;
     use GrammarTable;
     use GrammarTrigger;
@@ -21,6 +21,22 @@ class Grammar extends PostgresGrammar
      * @var string[]
      */
     protected $modifiers = ['Compression', 'Collate', 'Nullable', 'Default', 'VirtualAs', 'StoredAs', 'GeneratedAs', 'Increment'];
+
+    /**
+     * Convert an array of columns with optional suffix keywords into a delimited string.
+     *
+     * @param array<int, string> $columns
+     */
+    public function columnizeWithSuffix(array $columns): string
+    {
+        $columns = array_map(function (string $column): string {
+            $parts = explode(' ', $column, 2);
+
+            return trim(\sprintf('%s %s', $this->wrap($parts[0]), $parts[1] ?? ''));
+        }, $columns);
+
+        return implode(', ', $columns);
+    }
 
     /**
      * Convert an array of names into a delimited string.
