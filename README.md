@@ -1384,7 +1384,7 @@ return new class extends Migration
             $table->bigInteger('website_id');
             $table->text('url');
             $table->float('duration');
-            $table->timestampTz('created_at')->nullable();
+            $table->timestampTz('created_at');
 
             $table->primary(['id', 'created_at']);
             $table->index(['website_id', 'created_at']);
