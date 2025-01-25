@@ -76,7 +76,7 @@ jobs:
 
     services:
       postgres:
-        image: ankane/pgvector
+        image: timescale/timescaledb-ha:pg17
         env:
           POSTGRES_PASSWORD: postgres
         ports:

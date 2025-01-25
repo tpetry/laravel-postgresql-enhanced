@@ -4,11 +4,22 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Schema;
 
+use Closure;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use Tpetry\PostgresqlEnhanced\Schema\Timescale\CaggBlueprint;
 use Tpetry\PostgresqlEnhanced\Support\Helpers\Query;
 
 trait BuilderView
 {
+    /**
+     * Create/Modify a continuous aggregate on the schema.
+     */
+    public function continuousAggregate($table, Closure $callback): void
+    {
+        $blueprint = new CaggBlueprint($table, $callback);
+        $blueprint->build($this->getConnection(), $this->getConnection()->getSchemaGrammar());
+    }
+
     /**
      * Create a materialized view on the schema.
      */
@@ -72,6 +83,22 @@ trait BuilderView
         }
         $query = Query::toSql($query);
         $this->getConnection()->statement("create or replace view {$name} as {$query}");
+    }
+
+    /**
+     * Drop continuous aggregates from the schema.
+     */
+    public function dropContinuousAggregate(string ...$name): void
+    {
+        $this->dropMaterializedView(...$name);
+    }
+
+    /**
+     * Drop continuous aggregates from the schema if they exist.
+     */
+    public function dropContinuousAggregateIfExists(string ...$name): void
+    {
+        $this->dropMaterializedViewIfExists(...$name);
     }
 
     /**

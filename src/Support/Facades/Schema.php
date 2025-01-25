@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Schema as BaseSchema;
 /**
  * @method static void changeDomainConstraint(string $name, null|string|(callable(\Tpetry\PostgresqlEnhanced\Query\Builder): mixed) $check)
  * @method static void createDomain(string $name, string $type, string|(callable(\Tpetry\PostgresqlEnhanced\Query\Builder): mixed) $check = null)
+ * @method static void continuousAggregate(string $name, (callable(\Tpetry\PostgresqlEnhanced\Schema\Timescale\CaggBlueprint): mixed) $table)
  * @method static void dropDomain(string ...$name)
  * @method static void dropDomainIfExists(string ...$name)
  * @method static void createExtension(string $name, ?string $schema = null)
@@ -21,6 +22,8 @@ use Illuminate\Support\Facades\Schema as BaseSchema;
  * @method static void createMaterializedView(string $name, Builder|string $query, bool $withData = true, array $columns = [])
  * @method static void createView(string $name, Builder|string $query, array $columns = [])
  * @method static void createViewOrReplace(string $name, Builder|string $query, array $columns = [])
+ * @method static void dropContinuousAggregate(string ...$name)
+ * @method static void dropContinuousAggregateIfExists(string ...$name)
  * @method static void dropExtension(string ...$name)
  * @method static void dropExtensionIfExists(string ...$name)
  * @method static void dropFunction(string $name, ?array $arguments = null)

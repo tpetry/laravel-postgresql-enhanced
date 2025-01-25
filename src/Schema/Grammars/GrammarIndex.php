@@ -146,10 +146,7 @@ trait GrammarIndex
 
             // In case index parameters are provided the column needs to escaped correctly and the rest is provided
             // exactly as provided.
-            $parts = explode(' ', $column, 2);
-            $column = trim(\sprintf('%s %s', $this->wrap($parts[0]), $parts[1] ?? ''));
-
-            return $column;
+            return $this->columnizeWithSuffix([$column]);
         }, $command['columns']);
 
         // A fulltext index needs special handling to wrap the columns into to_tsvector calls.

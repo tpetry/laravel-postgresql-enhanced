@@ -12,6 +12,7 @@ class Grammar extends PostgresGrammar
     use GrammarBackportEscape;
     use GrammarIndex;
     use GrammarTable;
+    use GrammarTimescale;
     use GrammarTrigger;
     use GrammarTypes;
 

@@ -83,7 +83,8 @@ The minimal breaking changes of the past years are listed in the [breaking chang
     - [Refresh Data on Save](#refresh-data-on-save)
     - [Date Formats](#date-formats)
 - [Expressions](#expressions)
-
+- [Supported Extensions](#supported-extensions)
+    - [Timescale](#timescale)
 ## IDE Autocomplete
 
 Laravel provides many extension capabilities, making it hard for IDEs to do proper autocomplete.
@@ -1337,6 +1338,93 @@ Schema::create('comments', function (Blueprint $table) {
     $table->text('text');
 });        
 ```
+
+# Supported Extensions
+
+You can use any extension with this PostgreSQL you like but some have received a deeper Laravel integration.
+
+## Timescale
+
+Timescale is fantastic and has many features.
+Therefore, it is impossible to explain everything here; consult their docs about the different features this extension provides.
+Here's a list of supported features and an example showcasing its usage:
+
+| Feature               | Actions                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+|-----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Hypertable            | `new CreateHypertable(string $column, string\|int $interval, string $partitionFunction = null)`<br/>`new ChangeChunkTimeInterval(string\|int $interval)`                                                                                                                                                                                                                                                                                                                            |
+| Chunk Skipping        | `new EnableChunkSkipping(string $column)`<br/>`new DisableChunkSkipping(string $column)`                                                                                                                                                                                                                                                                                                                                                                                            |
+| Compression           | `new EnableCompression(string\|array $orderBy = null, string\|array $segmentBy = null)`<br/> `new DisableCompression()`<br/>`new CreateCompressionPolicy(string\|int $compressAfter)`<br/>`new DropCompressionPolicy()`<br/>`new CompressChunks(DateTimeInterface\|string\|int $olderThan = null, DateTimeInterface\|string\|int $newerThan = null)`<br/>`new DecompressChunks(DateTimeInterface\|string\|int $olderThan = null, DateTimeInterface\|string\|int $newerThan = null)` |
+| Reordering            | `new CreateReorderPolicy(string $index)`<br/>`new CreateReorderPolicyByIndex(...$columns)`<br/>`new CreateReorderPolicyByUnique(...$columns)`<br/>`new DropReorderPolicy()`<br/>`new ReorderChunks(DateTimeInterface\|string\|int $olderThan = null, DateTimeInterface\|string\|int $newerThan = null)`                                                                                                                                                                             |
+| Data Retention        | `new CreateRetentionPolicy(string\|int $dropAfter)`<br/>`new DropRetentionPolicy()`<br/>`new DropChunks(DateTimeInterface\|string\|int $olderThan = null, DateTimeInterface\|string\|int $newerThan = null)`                                                                                                                                                                                                                                                                        |
+| Tiered Storage        | `new CreateTieringPolicy(string\|int $dropAfter)`<br/>`new DropTieringPolicy()`<br/>`new TierChunks(DateTimeInterface\|string\|int $olderThan = null, DateTimeInterface\|string\|int $newerThan = null)`<br/>`new UntierChunks(DateTimeInterface\|string\|int $olderThan = null, DateTimeInterface\|string\|int $newerThan = null)`                                                                                                                                                 |
+| Continuous Aggregates | `new CreateRefreshPolicy(string $interval, string\|int\|null $start, string\|int\|null $end)`<br/>`new DropRefreshPolicy()`<br/>`new RefreshData(DateTimeInterface\|int\|null $start, DateTimeInterface\|int\|null $end)`                                                                                                                                                                                                                                                           |
+
+```php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Migrations\Migration;
+use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\CreateCompressionPolicy;
+use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\CreateHypertable;
+use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\CreateRefreshPolicy;
+use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\CreateReorderPolicyByIndex;
+use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\CreateRetentionPolicy;
+use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\EnableChunkSkipping;
+use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\EnableCompression;
+use Tpetry\PostgresqlEnhanced\Schema\Timescale\CaggBlueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::createExtensionIfNotExists('timescaledb');
+
+        Schema::create('visits', function (Blueprint $table) {
+            $table->identity();
+            $table->bigInteger('website_id');
+            $table->text('url');
+            $table->float('duration');
+            $table->timestampTz('created_at')->nullable();
+
+            $table->primary(['id', 'created_at']);
+            $table->index(['website_id', 'created_at']);
+
+            $table->timescale(
+                new CreateHypertable('created_at', '1 day'),
+                new CreateReorderPolicyByIndex('website_id', 'created_at'),
+                new EnableCompression(segmentBy: 'website_id'),
+                new CreateCompressionPolicy('3 days'),
+                new CreateRetentionPolicy('1 year'),
+                new EnableChunkSkipping('id'),
+            );
+        });
+
+        Schema::continuousAggregate('visits_agg', function(CaggBlueprint $table) {
+            $table->as("
+                SELECT
+                    time_bucket('1 hour', created_at) AS bucket,
+                    website_id,
+                    url,
+                    SUM(duration) AS duration
+                FROM visits
+                GROUP BY bucket, website_id, url
+            ");
+            $table->realtime();
+            $table->index(['website_id','url']);
+
+            $table->timescale(
+                new CreateRefreshPolicy('5 minutes', '1 days', '2 hours'),
+                new EnableCompression(),
+                new CreateCompressionPolicy('2 days'),
+            );
+        });
+    }
+};
+```
+
+> [!WARNING]
+> Indexes are not automatically created when creating hypertables or continuous aggregates.
+> You have to create them manually.
 
 # Breaking Changes
 
