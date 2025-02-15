@@ -6,11 +6,13 @@ namespace Tpetry\PostgresqlEnhanced\Query;
 
 use Illuminate\Database\Query\Builder as BaseBuilder;
 use Illuminate\Database\Query\Grammars\PostgresGrammar;
+use Tpetry\PostgresqlEnhanced\Backports\GrammarBackportConstructor;
 use Tpetry\PostgresqlEnhanced\Backports\GrammarBackportEscape;
 use Tpetry\PostgresqlEnhanced\Backports\GrammarBackportSubstituteBindings;
 
 class Grammar extends PostgresGrammar
 {
+    use GrammarBackportConstructor;
     use GrammarBackportEscape;
     use GrammarBackportSubstituteBindings;
     use GrammarCte;

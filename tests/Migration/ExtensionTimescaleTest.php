@@ -401,8 +401,7 @@ class ExtensionTimescaleTest extends TestCase
 
     private function toSql(Action $action): array
     {
-        $grammar = new Grammar();
-        $grammar->setConnection($this->getConnection());
+        $grammar = new Grammar($this->getConnection());
 
         return $action->getValue($grammar, 'tbl');
     }

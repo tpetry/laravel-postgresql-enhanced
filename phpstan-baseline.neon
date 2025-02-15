@@ -37,28 +37,29 @@ parameters:
 			path: src/Eloquent/Mixins/BuilderReturning.php
 
 		-
-			message: '#^Call to function method_exists\(\) with Tpetry\\PostgresqlEnhanced\\Query\\Grammar and ''setConnection'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/PostgresEnhancedConnection.php
-
-		-
-			message: '#^Call to function method_exists\(\) with Tpetry\\PostgresqlEnhanced\\Schema\\Grammars\\Grammar and ''setConnection'' will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/PostgresEnhancedConnection.php
-
-		-
 			message: '#^Call to function method_exists\(\) with \$this\(Tpetry\\PostgresqlEnhanced\\Query\\Builder\) and ''applyBeforeQueryCal…'' will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 7
 			path: src/Query/Builder.php
 
 		-
+			message: '#^Method Illuminate\\Database\\Schema\\Grammars\\PostgresGrammar\:\:compileChange\(\) invoked with 3 parameters, 2 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: src/Schema/Grammars/Grammar.php
+			reportUnmatched: false
+
+		-
 			message: '#^Return type \(array\<int, string\>\) of method Tpetry\\PostgresqlEnhanced\\Schema\\Grammars\\Grammar\:\:compileAdd\(\) should be compatible with return type \(string\) of method Illuminate\\Database\\Schema\\Grammars\\PostgresGrammar\:\:compileAdd\(\)$#'
 			identifier: method.childReturnType
 			count: 1
 			path: src/Schema/Grammars/Grammar.php
+
+		-
+			message: '#^Parameter \#2 \$replace of function substr_replace expects array\|string, int\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Support/Helpers/MigrationIndex.php
 
 		-
 			message: '#^Call to an undefined method Illuminate\\Database\\Migrations\\Migration\:\:timeoutDown\(\)\.$#'

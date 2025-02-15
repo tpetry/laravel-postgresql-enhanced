@@ -8,9 +8,9 @@ use Closure;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Fluent;
-use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use Tpetry\PostgresqlEnhanced\Schema\Grammars\Grammar;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\Action;
+use Tpetry\PostgresqlEnhanced\Support\Helpers\MigrationIndex;
 use Tpetry\PostgresqlEnhanced\Support\Helpers\Query;
 
 class CaggBlueprint
@@ -78,12 +78,12 @@ class CaggBlueprint
      */
     public function index(string|array $columns, ?string $name = null, ?string $algorithm = null): Fluent
     {
-        $blueprint = new Blueprint($this->table);
+        $migration = new MigrationIndex();
 
         /** @var \Tpetry\PostgresqlEnhanced\Schema\IndexDefinition $fluent */
-        $fluent = tap($blueprint->index($columns, $name, $algorithm), function () use ($blueprint): void {
-            $this->commands[] = fn (Connection $connection, Grammar $grammar) => $blueprint->toSql($connection, $grammar);
-        });
+        $fluent = $migration->createCommand('index', $name ?: $migration->createName('index', '', $this->table, $columns), $columns, $algorithm);
+
+        $this->commands[] = fn (Connection $connection, Grammar $grammar) => [(new MigrationIndex())->compileCommand($grammar, $this->table, $fluent, false)];
 
         return $fluent;
     }

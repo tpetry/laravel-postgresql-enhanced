@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Schema\Grammars;
 
+use Illuminate\Container\Container;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint as BaseBlueprint;
 use Illuminate\Support\Arr;
@@ -15,13 +16,8 @@ trait GrammarTypes
     /**
      * Compile a change column command into a series of SQL statements.
      */
-    public function compileChange(BaseBlueprint $blueprint, Fluent $command, Connection $connection): array
+    public function compileChange(BaseBlueprint $blueprint, Fluent $command, ?Connection $connection = null): array
     {
-        // The table prefix is accessed differently based on Laravel version. In old version the $prefix was public,
-        // while with new ones the $blueprint->prefix() method should be used. The issue is solved by invading the
-        // object and getting the property directly.
-        $prefix = (fn () => $this->prefix)->call($blueprint);
-
         // In Laravel 11.15.0 the logic was changed that compileChange is only for one column (the one in the command)
         // of the blueprint and not all ones of the blueprint as before.
         /** @var \Illuminate\Database\Schema\ColumnDefinition[] $columns */
@@ -33,16 +29,25 @@ trait GrammarTypes
             $modifierUsing = $column['using'];
             unset($column['compression'], $column['using']);
 
-            $blueprintColumnExtract = new BaseBlueprint($blueprint->getTable(), null, $prefix);
+            // In Laravel 12.0.0 the BaseBlueprint constructor was changed and the container is used to use the specific
+            // constructor of each version:
+            // - Laravel >=12: new BaseBlueprint($connection, $table, $callback)
+            // - Laravel <=11: new BaseBlueprint($table, $callback, $prefix)
+            $blueprintColumnExtract = Container::getInstance()->make(BaseBlueprint::class, [
+                'connection' => $this->connection,
+                'table' => $blueprint->getTable(),
+                'prefix' => $this->connection->getTablePrefix(),
+                'callback' => null,
+            ]);
             $blueprintColumnExtract->addColumn($column['type'], $column['name'], $column->toArray());
-            $blueprintColumnExtractQueries = Arr::wrap(parent::compileChange($blueprint, $command, $connection));
+            $blueprintColumnExtractQueries = Arr::wrap(parent::compileChange($blueprint, $command, $this->connection));
 
             foreach ($blueprintColumnExtractQueries as $sql) {
                 $regex = Regex::match('/^ALTER table (?P<table>.*?) alter (column )?(?P<column>.*?) type (?P<type>\w+)(?P<modifiers>,.*)?/i', $sql);
 
                 if (filled($modifierUsing) && $regex->hasMatch()) {
-                    $using = match ($connection->getSchemaGrammar()->isExpression($modifierUsing)) {
-                        true => $connection->getSchemaGrammar()->getValue($modifierUsing),
+                    $using = match ($this->connection->getSchemaGrammar()->isExpression($modifierUsing)) {
+                        true => $this->connection->getSchemaGrammar()->getValue($modifierUsing),
                         false => $modifierUsing,
                     };
 
