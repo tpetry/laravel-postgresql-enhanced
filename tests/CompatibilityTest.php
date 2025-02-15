@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests;
 
-use DB;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CompatibilityTest extends TestCase

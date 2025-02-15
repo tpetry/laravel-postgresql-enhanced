@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions;
 
-use Arr;
+use Illuminate\Support\Arr;
 use Tpetry\PostgresqlEnhanced\Schema\Grammars\Grammar;
 
 class EnableCompression implements Action
