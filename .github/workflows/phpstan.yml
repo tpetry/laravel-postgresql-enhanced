@@ -7,7 +7,8 @@ jobs:
     name: phpstan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -16,14 +17,8 @@ jobs:
           extensions: fileinfo, pdo
           coverage: none
 
-      - name: Cache composer dependencies
-        uses: actions/cache@v2
-        with:
-          path: vendor
-          key: composer-${{ hashFiles('composer.lock') }}
-
-      - name: Run composer install
-        run: composer install -n --prefer-dist
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
 
       - name: Run phpstan
         run: ./vendor/bin/phpstan analyze
