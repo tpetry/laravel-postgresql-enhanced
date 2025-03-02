@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests\Migration;
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
 use Tpetry\PostgresqlEnhanced\Tests\TestCase;
@@ -80,6 +81,15 @@ class ViewTest extends TestCase
             Schema::createView('test_787483', DB::query()->selectRaw('random()'), ['column_275665']);
         });
         $this->assertEquals(['create view "test_787483" ("column_275665") as select random()'], array_column($queries, 'query'));
+    }
+
+    public function testDbWipeWillRemoveMaterializedViews(): void
+    {
+        DB::statement('CREATE MATERIALIZED VIEW test_585504 AS SELECT random() as column_954390');
+
+        Artisan::call('db:wipe --drop-views');
+
+        $this->assertEmpty($this->getConnection()->select('select * from pg_matviews'));
     }
 
     public function testDropView(): void

@@ -14,6 +14,7 @@ class Builder extends PostgresBuilder
     use BuilderExtension;
     use BuilderFunction;
     use BuilderView;
+    use BuilderWipe;
 
     /**
      * Get the database connection instance.

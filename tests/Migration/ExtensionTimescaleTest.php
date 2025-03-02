@@ -6,6 +6,7 @@ namespace Tpetry\PostgresqlEnhanced\Tests\Migration;
 
 use DateTimeImmutable;
 use DateTimeZone;
+use Illuminate\Support\Facades\Artisan;
 use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
 use Tpetry\PostgresqlEnhanced\Schema\Grammars\Grammar;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\Action;
@@ -339,6 +340,23 @@ class ExtensionTimescaleTest extends TestCase
             'drop index if exists _timescaledb_internal.idx',
             'alter materialized view "hypertbl_agg" set (timescaledb.compress = true)',
         ], array_column($queries, 'query'));
+    }
+
+    public function testDbWipeWillRemoveAllTimescaleStuff(): void
+    {
+        Schema::create('hypertbl', function (Blueprint $table): void {
+            $table->text('tenant_id');
+            $table->timestampsTz();
+            $table->timescale(new CreateHypertable('created_at', '14 days'));
+        });
+        Schema::continuousAggregate('hypertbl_agg', function (CaggBlueprint $table): void {
+            $table->as("select time_bucket('1 day', created_at) bucket, tenant_id, count(*) from hypertbl group by bucket, tenant_id");
+        });
+
+        Artisan::call('db:wipe --drop-views');
+
+        $this->assertEquals(0, $this->getConnection()->table('timescaledb_information.hypertables')->count());
+        $this->assertEquals(0, $this->getConnection()->table('timescaledb_information.continuous_aggregates')->count());
     }
 
     public function testDropContinuousAggregate(): void
