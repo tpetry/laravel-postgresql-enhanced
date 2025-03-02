@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.1] - 2025-03-02
+### Fixed
+* Artisan `migrate:fresh` support for materialized views
+* Artisan `migrate:fresh --drop-views` support for Timescale hypertables and continuous aggregates
+
 ## [2.3.0] - 2025-02-15
 ### Added
 * Laravel 12 support
