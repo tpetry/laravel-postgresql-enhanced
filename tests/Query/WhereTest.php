@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests\Query;
 
-use Illuminate\Support\Facades\App;
 use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class WhereTest extends TestCase
@@ -99,19 +98,10 @@ class WhereTest extends TestCase
             $this->getConnection()->table('example')->orWhereLike('str', 'ZsbBUJmR')->orWhereLike('str', '7Cc1Uf8t')->get();
             $this->getConnection()->table('example')->orWhereLike('str', 'OamekKIC', true)->orWhereLike('str', 'HmC3xURl', true)->get();
         });
-
-        if (version_compare(App::version(), '11.17.0', '>=')) {
-            $this->assertEquals(
-                ['select * from "example" where "str"::text ilike ? or "str"::text ilike ?', 'select * from "example" where "str"::text like ? or "str"::text like ?'],
-                array_column($queries, 'query'),
-            );
-        } else {
-            $this->assertEquals(
-                ['select * from "example" where "str" ilike ? or "str" ilike ?', 'select * from "example" where "str" like ? or "str" like ?'],
-                array_column($queries, 'query'),
-            );
-        }
-
+        $this->assertEquals(
+            ['select * from "example" where "str"::text ilike ? or "str"::text ilike ?', 'select * from "example" where "str"::text like ? or "str"::text like ?'],
+            array_column($queries, 'query'),
+        );
         $this->assertEquals(
             [['ZsbBUJmR', '7Cc1Uf8t'], ['OamekKIC', 'HmC3xURl']],
             array_column($queries, 'bindings'),
@@ -190,19 +180,10 @@ class WhereTest extends TestCase
             $this->getConnection()->table('example')->orWhereNotLike('str', 'ZsbBUJmR')->orWhereNotLike('str', '7Cc1Uf8t')->get();
             $this->getConnection()->table('example')->orWhereNotLike('str', 'OamekKIC', true)->orWhereNotLike('str', 'HmC3xURl', true)->get();
         });
-
-        if (version_compare(App::version(), '11.17.0', '>=')) {
-            $this->assertEquals(
-                ['select * from "example" where "str"::text not ilike ? or "str"::text not ilike ?', 'select * from "example" where "str"::text not like ? or "str"::text not like ?'],
-                array_column($queries, 'query'),
-            );
-        } else {
-            $this->assertEquals(
-                ['select * from "example" where "str" not ilike ? or "str" not ilike ?', 'select * from "example" where "str" not like ? or "str" not like ?'],
-                array_column($queries, 'query'),
-            );
-        }
-
+        $this->assertEquals(
+            ['select * from "example" where "str"::text not ilike ? or "str"::text not ilike ?', 'select * from "example" where "str"::text not like ? or "str"::text not like ?'],
+            array_column($queries, 'query'),
+        );
         $this->assertEquals(
             [['ZsbBUJmR', '7Cc1Uf8t'], ['OamekKIC', 'HmC3xURl']],
             array_column($queries, 'bindings'),
@@ -294,19 +275,10 @@ class WhereTest extends TestCase
             $this->getConnection()->table('example')->whereLike('str', 'UkAymQlg')->get();
             $this->getConnection()->table('example')->whereLike('str', 'IcuC5Cqz', true)->get();
         });
-
-        if (version_compare(App::version(), '11.17.0', '>=')) {
-            $this->assertEquals(
-                ['select * from "example" where "str"::text ilike ?', 'select * from "example" where "str"::text like ?'],
-                array_column($queries, 'query'),
-            );
-        } else {
-            $this->assertEquals(
-                ['select * from "example" where "str" ilike ?', 'select * from "example" where "str" like ?'],
-                array_column($queries, 'query'),
-            );
-        }
-
+        $this->assertEquals(
+            ['select * from "example" where "str"::text ilike ?', 'select * from "example" where "str"::text like ?'],
+            array_column($queries, 'query'),
+        );
         $this->assertEquals(
             [['UkAymQlg'], ['IcuC5Cqz']],
             array_column($queries, 'bindings'),
@@ -385,19 +357,10 @@ class WhereTest extends TestCase
             $this->getConnection()->table('example')->whereNotLike('str', 'UkAymQlg')->get();
             $this->getConnection()->table('example')->whereNotLike('str', 'IcuC5Cqz', true)->get();
         });
-
-        if (version_compare(App::version(), '11.17.0', '>=')) {
-            $this->assertEquals(
-                ['select * from "example" where "str"::text not ilike ?', 'select * from "example" where "str"::text not like ?'],
-                array_column($queries, 'query'),
-            );
-        } else {
-            $this->assertEquals(
-                ['select * from "example" where "str" not ilike ?', 'select * from "example" where "str" not like ?'],
-                array_column($queries, 'query'),
-            );
-        }
-
+        $this->assertEquals(
+            ['select * from "example" where "str"::text not ilike ?', 'select * from "example" where "str"::text not like ?'],
+            array_column($queries, 'query'),
+        );
         $this->assertEquals(
             [['UkAymQlg'], ['IcuC5Cqz']],
             array_column($queries, 'bindings'),
