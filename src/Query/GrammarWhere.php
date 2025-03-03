@@ -53,12 +53,7 @@ trait GrammarWhere
         $operator = $where['not'] ? 'not ' : '';
         $operator .= $where['caseSensitive'] ? 'like' : 'ilike';
 
-        return sprintf(
-            '%s::text %s %s',
-            $this->wrap($where['column']),
-            $operator,
-            $this->parameter($where['value']),
-        );
+        return "{$this->wrap($where['column'])}::text {$operator} {$this->parameter($where['value'])}";
     }
 
     /**

@@ -177,15 +177,15 @@ class WhereTest extends TestCase
         $this->getConnection()->unprepared('CREATE TABLE example (str text)');
 
         $queries = $this->withQueryLog(function (): void {
-            $this->getConnection()->table('example')->orWhereNotLike('str', 'ZsbBUJmR')->orWhereNotLike('str', '7Cc1Uf8t')->get();
-            $this->getConnection()->table('example')->orWhereNotLike('str', 'OamekKIC', true)->orWhereNotLike('str', 'HmC3xURl', true)->get();
+            $this->getConnection()->table('example')->orWhereNotLike('str', 'AERLFW4s')->orWhereNotLike('str', 'sPtXxruW')->get();
+            $this->getConnection()->table('example')->orWhereNotLike('str', 'EWnGRRc5', true)->orWhereNotLike('str', 'wihuWcph', true)->get();
         });
         $this->assertEquals(
             ['select * from "example" where "str"::text not ilike ? or "str"::text not ilike ?', 'select * from "example" where "str"::text not like ? or "str"::text not like ?'],
             array_column($queries, 'query'),
         );
         $this->assertEquals(
-            [['ZsbBUJmR', '7Cc1Uf8t'], ['OamekKIC', 'HmC3xURl']],
+            [['AERLFW4s', 'sPtXxruW'], ['EWnGRRc5', 'wihuWcph']],
             array_column($queries, 'bindings'),
         );
     }
@@ -354,15 +354,15 @@ class WhereTest extends TestCase
         $this->getConnection()->unprepared('CREATE TABLE example (str text)');
 
         $queries = $this->withQueryLog(function (): void {
-            $this->getConnection()->table('example')->whereNotLike('str', 'UkAymQlg')->get();
-            $this->getConnection()->table('example')->whereNotLike('str', 'IcuC5Cqz', true)->get();
+            $this->getConnection()->table('example')->whereNotLike('str', 'mgb7DtKz')->get();
+            $this->getConnection()->table('example')->whereNotLike('str', 'tpx6Bxpm', true)->get();
         });
         $this->assertEquals(
             ['select * from "example" where "str"::text not ilike ?', 'select * from "example" where "str"::text not like ?'],
             array_column($queries, 'query'),
         );
         $this->assertEquals(
-            [['UkAymQlg'], ['IcuC5Cqz']],
+            [['mgb7DtKz'], ['tpx6Bxpm']],
             array_column($queries, 'bindings'),
         );
     }
