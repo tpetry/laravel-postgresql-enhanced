@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.2] - 2025-03-03
+### Fixed
+* (or)WhereNotLike query build did not use the negation in the query
+* The (or)Where(Not)Like query builder methods did not cast the column to text like in Laravel (`col::text`)
+
 ## [2.3.1] - 2025-03-02
 ### Fixed
 * Artisan `migrate:fresh` support for materialized views
