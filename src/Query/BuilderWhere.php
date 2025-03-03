@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tpetry\PostgresqlEnhanced\Query;
 
 use Illuminate\Database\Query\Expression;
-use Illuminate\Support\Facades\App;
 
 trait BuilderWhere
 {
@@ -68,10 +67,6 @@ trait BuilderWhere
      */
     public function orWhereLike($column, $value, $caseSensitive = false): static
     {
-        if (version_compare(App::version(), '11.17.0', '>=')) {
-            return parent::orWhereLike($column, $value, $caseSensitive);
-        }
-
         return $this->whereLike($column, $value, $caseSensitive, 'or', false);
     }
 
@@ -193,10 +188,6 @@ trait BuilderWhere
      */
     public function whereLike($column, $value, $caseSensitive = false, $boolean = 'and', $not = false): static
     {
-        if (version_compare(App::version(), '11.17.0', '>=')) {
-            return parent::whereLike($column, $value, $caseSensitive, $boolean, $not);
-        }
-
         $type = 'like';
 
         $this->wheres[] = compact('type', 'column', 'value', 'caseSensitive', 'boolean', 'not');
