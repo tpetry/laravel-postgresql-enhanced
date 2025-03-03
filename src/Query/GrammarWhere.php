@@ -46,7 +46,7 @@ trait GrammarWhere
     /**
      * Compile a "like" clause.
      *
-     * @param array{caseSensitive: bool, column: string, value: mixed} $where
+     * @param array{caseSensitive: bool, column: string, not: bool, value: mixed} $where
      */
     public function whereLike(Builder $query, $where): string
     {
