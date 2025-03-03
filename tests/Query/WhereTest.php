@@ -99,7 +99,7 @@ class WhereTest extends TestCase
             $this->getConnection()->table('example')->orWhereLike('str', 'OamekKIC', true)->orWhereLike('str', 'HmC3xURl', true)->get();
         });
         $this->assertEquals(
-            ['select * from "example" where "str" ilike ? or "str" ilike ?', 'select * from "example" where "str" like ? or "str" like ?'],
+            ['select * from "example" where "str"::text ilike ? or "str"::text ilike ?', 'select * from "example" where "str"::text like ? or "str"::text like ?'],
             array_column($queries, 'query'),
         );
         $this->assertEquals(
@@ -169,6 +169,24 @@ class WhereTest extends TestCase
         $this->assertEquals(
             ['select * from "example" where "val" != true or "val" != false'],
             array_column($queries, 'query'),
+        );
+    }
+
+    public function testOrWhereNotLike(): void
+    {
+        $this->getConnection()->unprepared('CREATE TABLE example (str text)');
+
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->orWhereNotLike('str', 'AERLFW4s')->orWhereNotLike('str', 'sPtXxruW')->get();
+            $this->getConnection()->table('example')->orWhereNotLike('str', 'EWnGRRc5', true)->orWhereNotLike('str', 'wihuWcph', true)->get();
+        });
+        $this->assertEquals(
+            ['select * from "example" where "str"::text not ilike ? or "str"::text not ilike ?', 'select * from "example" where "str"::text not like ? or "str"::text not like ?'],
+            array_column($queries, 'query'),
+        );
+        $this->assertEquals(
+            [['AERLFW4s', 'sPtXxruW'], ['EWnGRRc5', 'wihuWcph']],
+            array_column($queries, 'bindings'),
         );
     }
 
@@ -258,7 +276,7 @@ class WhereTest extends TestCase
             $this->getConnection()->table('example')->whereLike('str', 'IcuC5Cqz', true)->get();
         });
         $this->assertEquals(
-            ['select * from "example" where "str" ilike ?', 'select * from "example" where "str" like ?'],
+            ['select * from "example" where "str"::text ilike ?', 'select * from "example" where "str"::text like ?'],
             array_column($queries, 'query'),
         );
         $this->assertEquals(
@@ -328,6 +346,24 @@ class WhereTest extends TestCase
         $this->assertEquals(
             ['select * from "example" where "val" != true and "val" != false'],
             array_column($queries, 'query'),
+        );
+    }
+
+    public function testWhereNotLike(): void
+    {
+        $this->getConnection()->unprepared('CREATE TABLE example (str text)');
+
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->whereNotLike('str', 'mgb7DtKz')->get();
+            $this->getConnection()->table('example')->whereNotLike('str', 'tpx6Bxpm', true)->get();
+        });
+        $this->assertEquals(
+            ['select * from "example" where "str"::text not ilike ?', 'select * from "example" where "str"::text not like ?'],
+            array_column($queries, 'query'),
+        );
+        $this->assertEquals(
+            [['mgb7DtKz'], ['tpx6Bxpm']],
+            array_column($queries, 'bindings'),
         );
     }
 }
