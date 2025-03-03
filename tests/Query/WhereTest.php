@@ -108,6 +108,24 @@ class WhereTest extends TestCase
         );
     }
 
+    public function testOrWhereNotLike(): void
+    {
+        $this->getConnection()->unprepared('CREATE TABLE example (str text)');
+
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->orWhereNotLike('str', 'ZsbBUJmR')->orWhereNotLike('str', '7Cc1Uf8t')->get();
+            $this->getConnection()->table('example')->orWhereNotLike('str', 'OamekKIC', true)->orWhereNotLike('str', 'HmC3xURl', true)->get();
+        });
+        $this->assertEquals(
+            ['select * from "example" where "str" not ilike ? or "str" not ilike ?', 'select * from "example" where "str" not like ? or "str" not like ?'],
+            array_column($queries, 'query'),
+        );
+        $this->assertEquals(
+            [['ZsbBUJmR', '7Cc1Uf8t'], ['OamekKIC', 'HmC3xURl']],
+            array_column($queries, 'bindings'),
+        );
+    }
+
     public function testOrWhereNotAllValues(): void
     {
         $this->getConnection()->unprepared('CREATE TABLE example (val text)');
@@ -259,6 +277,24 @@ class WhereTest extends TestCase
         });
         $this->assertEquals(
             ['select * from "example" where "str" ilike ?', 'select * from "example" where "str" like ?'],
+            array_column($queries, 'query'),
+        );
+        $this->assertEquals(
+            [['UkAymQlg'], ['IcuC5Cqz']],
+            array_column($queries, 'bindings'),
+        );
+    }
+
+    public function testWhereNotLike(): void
+    {
+        $this->getConnection()->unprepared('CREATE TABLE example (str text)');
+
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->whereNotLike('str', 'UkAymQlg')->get();
+            $this->getConnection()->table('example')->whereNotLike('str', 'IcuC5Cqz', true)->get();
+        });
+        $this->assertEquals(
+            ['select * from "example" where "str" not ilike ?', 'select * from "example" where "str" not like ?'],
             array_column($queries, 'query'),
         );
         $this->assertEquals(

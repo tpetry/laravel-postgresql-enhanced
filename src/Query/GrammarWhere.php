@@ -50,10 +50,10 @@ trait GrammarWhere
      */
     public function whereLike(Builder $query, $where): string
     {
-        return match ($where['caseSensitive']) {
-            true => "{$this->wrap($where['column'])} like {$this->parameter($where['value'])}",
-            false => "{$this->wrap($where['column'])} ilike {$this->parameter($where['value'])}",
-        };
+        $operator = $where['not'] ? 'not ' : '';
+        $operator .= $where['caseSensitive'] ? 'like' : 'ilike';
+        
+        return "{$this->wrap($where['column'])} {$operator} {$this->parameter($where['value'])}";
     }
 
     /**
