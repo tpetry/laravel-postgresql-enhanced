@@ -6,6 +6,7 @@ namespace Tpetry\PostgresqlEnhanced\Query;
 
 use Exception;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\App;
 
 trait GrammarWhere
 {
@@ -50,9 +51,13 @@ trait GrammarWhere
      */
     public function whereLike(Builder $query, $where): string
     {
+        if (version_compare(App::version(), '11.17.0', '>=')) {
+            return parent::whereLike($query, $where);
+        }
+
         $operator = $where['not'] ? 'not ' : '';
         $operator .= $where['caseSensitive'] ? 'like' : 'ilike';
-        
+
         return "{$this->wrap($where['column'])} {$operator} {$this->parameter($where['value'])}";
     }
 
