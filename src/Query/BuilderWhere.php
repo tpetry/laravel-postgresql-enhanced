@@ -111,6 +111,18 @@ trait BuilderWhere
     }
 
     /**
+     * Add an "or where not like" clause to the query.
+     *
+     * @param Expression|string $column
+     * @param Expression|string $value
+     * @param bool $caseSensitive
+     */
+    public function orWhereNotLike($column, $value, $caseSensitive = false): static
+    {
+        return $this->whereNotLike($column, $value, $caseSensitive, 'or');
+    }
+
+    /**
      * Add a where all statement to the query.
      *
      * @param Expression|string $column
@@ -178,7 +190,7 @@ trait BuilderWhere
     }
 
     /**
-     * Add a "where month" statement to the query.
+     * Add a "where like" statement to the query.
      *
      * @param Expression|string $column
      * @param Expression|string $value
@@ -234,5 +246,18 @@ trait BuilderWhere
     public function whereNotBoolean($column, bool $value): static
     {
         return $this->where($column, '!=', new Expression(var_export($value, true)));
+    }
+
+    /**
+     * Add a "where not like" statement to the query.
+     *
+     * @param Expression|string $column
+     * @param Expression|string $value
+     * @param bool $caseSensitive
+     * @param string $boolean
+     */
+    public function whereNotLike($column, $value, $caseSensitive = false, $boolean = 'and'): static
+    {
+        return $this->whereLike($column, $value, $caseSensitive, $boolean, true);
     }
 }
