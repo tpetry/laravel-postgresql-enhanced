@@ -13,7 +13,7 @@ trait BuilderWipe
         $continuousAggregates = $this->findRelations(
             rescue(
                 callback: fn () => $this->getConnection()->table('timescaledb_information.continuous_aggregates')->select(['view_schema as schema', 'view_name as name'])->whereIn('view_schema', $this->getActiveSchemas())->get(),
-                rescue: [],
+                rescue: fn () => collect(),
                 report: false,
             )
         );
@@ -27,7 +27,7 @@ trait BuilderWipe
         $hypertables = $this->findRelations(
             rescue(
                 callback: fn () => $this->getConnection()->table('timescaledb_information.hypertables')->select(['hypertable_schema as schema', 'hypertable_name as name'])->whereIn('hypertable_schema', $this->getActiveSchemas())->get(),
-                rescue: [],
+                rescue: fn () => collect(),
                 report: false,
             )
         );
