@@ -37,9 +37,21 @@ parameters:
 			path: src/Eloquent/Mixins/BuilderReturning.php
 
 		-
+			message: '#^Call to protected method addTimestampsToUpsertValues\(\) of class Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\.$#'
+			identifier: method.protected
+			count: 1
+			path: src/Eloquent/Mixins/BuilderUpsertPartial.php
+
+		-
+			message: '#^Call to protected method addUpdatedAtToUpsertColumns\(\) of class Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\.$#'
+			identifier: method.protected
+			count: 1
+			path: src/Eloquent/Mixins/BuilderUpsertPartial.php
+
+		-
 			message: '#^Call to function method_exists\(\) with \$this\(Tpetry\\PostgresqlEnhanced\\Query\\Builder\) and ''applyBeforeQueryCal…'' will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
-			count: 7
+			count: 8
 			path: src/Query/Builder.php
 
 		-

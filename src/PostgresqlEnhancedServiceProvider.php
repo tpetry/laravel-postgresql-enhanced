@@ -14,6 +14,7 @@ use Illuminate\Support\ServiceProvider;
 use PDO;
 use Tpetry\PostgresqlEnhanced\Eloquent\Mixins\BuilderLazyByCursor;
 use Tpetry\PostgresqlEnhanced\Eloquent\Mixins\BuilderReturning;
+use Tpetry\PostgresqlEnhanced\Eloquent\Mixins\BuilderUpsertPartial;
 use Tpetry\PostgresqlEnhanced\Support\Helpers\ZeroDowntimeMigrationSupervisor;
 use Tpetry\PostgresqlEnhanced\Types\BitType;
 use Tpetry\PostgresqlEnhanced\Types\CidrType;
@@ -89,6 +90,7 @@ class PostgresqlEnhancedServiceProvider extends ServiceProvider
     {
         EloquentBuilder::mixin(new BuilderLazyByCursor());
         EloquentBuilder::mixin(new BuilderReturning());
+        EloquentBuilder::mixin(new BuilderUpsertPartial());
 
         Connection::resolverFor('pgsql', function (PDO|Closure $pdo, string $database = '', string $tablePrefix = '', array $config = []) {
             return new PostgresEnhancedConnection($pdo, $database, $tablePrefix, $config);

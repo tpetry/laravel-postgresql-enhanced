@@ -470,6 +470,14 @@ Schema::table('users', function(Blueprint $table) {
 
 Partial Indexes are created with the `where` method on an index created by `fullText()`, `index()`, `spatialIndex()` or `uniqueIndex()`.
 
+> [!TIP]
+> The `upsert()` method will not work with partial indexes because the condition needs to also be applied to the upsert.
+> You can use the `upsertPartial()` method for this:
+> ```php
+> User::upsertPartial($users, ['email'], ['name', 'subscriptions'], 'deleted_at is null');
+> User::upsertPartial($users, ['email'], ['name', 'subscriptions'], fn($query) => $query->whereNull('deleted_at'));
+> ```
+
 #### Include Columns
 
 A really great feature of recent PostgreSQL versions is the ability to include columns in an index as non-key columns.
