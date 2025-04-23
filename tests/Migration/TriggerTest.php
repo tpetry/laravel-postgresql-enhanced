@@ -110,7 +110,7 @@ class TriggerTest extends TestCase
             Schema::table('example', function (Blueprint $table): void {
                 $table->trigger('noop_274029', 'noop()', 'after insert')
                     ->forEachRow()
-                    ->when(fn (Builder $query) => $query->where('NEW.id', 42));
+                    ->whenCondition(fn (Builder $query) => $query->where('NEW.id', 42));
             });
         });
         $this->assertEquals(['create trigger "noop_274029" after insert on "example" for each row when (NEW."id" = 42) execute function noop()'], array_column($queries, 'query'));
@@ -122,7 +122,7 @@ class TriggerTest extends TestCase
             Schema::table('example', function (Blueprint $table): void {
                 $table->trigger('noop_274029', 'noop()', 'after delete')
                     ->forEachRow()
-                    ->when('OLD.id = 0815');
+                    ->whenCondition('OLD.id = 0815');
             });
         });
         $this->assertEquals(['create trigger "noop_274029" after delete on "example" for each row when (OLD.id = 0815) execute function noop()'], array_column($queries, 'query'));

@@ -7,7 +7,7 @@ namespace Tpetry\PostgresqlEnhanced\Schema;
 use Illuminate\Support\Fluent;
 
 /**
- * @method $this when(string|callable $condition) Specify a condition when the trigger should be called.
+ * @method $this whenCondition(string|callable $condition) Specify a condition when the trigger should be called.
  * @method $this replace(bool $value = true) Specify whether the trigger should replace an existing one.
  */
 class TriggerDefinition extends Fluent

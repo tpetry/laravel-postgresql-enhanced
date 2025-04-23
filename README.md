@@ -266,13 +266,13 @@ Schema::table('projects', function (Blueprint $table): void {
 
 The following table contains all of the available trigger modifiers:
 
-| Modifier                                                                          | Description                                                                                                                                                        |
-|-----------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `->forEachRow()`                                                                  | The trigger will be called for every row.                                                                                                                          |
-| `->forEachStatement()`                                                            | The trigger will be called once for each statement *(default)*.                                                                                                    |
-| `->transitionTables(`<br>`  old: 'oldrows',`<br>`  new: 'newrows',`<br>`)`        | The forEachStatement-trigger will provide the before/after state of the affected rows in special tables. You can omit either option if not valid for this trigger. |
-| `->when('NEW.type = 4')`<br>`->when(fn ($query) => $query->where('NEW.type', 4))` | The trigger should only be called when the condition matches *(only with forEachRow)*.                                                                             |
-| `->replace(true)`                                                                 | The trigger will replace an existing one defined with the same name.                                                                                               |
+| Modifier                                                                                            | Description                                                                                                                                                        |
+|-----------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `->forEachRow()`                                                                                    | The trigger will be called for every row.                                                                                                                          |
+| `->forEachStatement()`                                                                              | The trigger will be called once for each statement *(default)*.                                                                                                    |
+| `->transitionTables(`<br>`  old: 'oldrows',`<br>`  new: 'newrows',`<br>`)`                          | The forEachStatement-trigger will provide the before/after state of the affected rows in special tables. You can omit either option if not valid for this trigger. |
+| `->whenCondition('NEW.type = 4')`<br>`->whenCondition(fn ($query) => $query->where('NEW.type', 4))` | The trigger should only be called when the condition matches *(only with forEachRow)*.                                                                             |
+| `->replace(true)`                                                                                   | The trigger will replace an existing one defined with the same name.                                                                                               |
 
 > [!NOTE] 
 > PostgreSQL always updates rows even if nothing changed, which may affect your performance. You can add the `suppress_redundant_updates_trigger()` trigger with a `BEFORE UPDATE` action to all tables.

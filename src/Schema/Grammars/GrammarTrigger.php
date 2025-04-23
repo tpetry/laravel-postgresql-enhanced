@@ -47,8 +47,8 @@ trait GrammarTrigger
             default => null,
         };
 
-        if (filled($command['when'])) {
-            $condition = $command['when'];
+        if (filled($command['whenCondition'])) {
+            $condition = $command['whenCondition'];
             if ($condition instanceof Closure) {
                 $query = ($condition)(DB::query());
                 $condition = trim(str_replace('select * where', '', Query::toSql($query)));
