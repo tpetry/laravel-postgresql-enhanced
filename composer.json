@@ -16,7 +16,8 @@
     "require": {
         "php": "^8.0",
         "doctrine/dbal": "^2.6|^3.5|^4.0",
-        "laravel/framework": "^6.0|^7.0|^8.79|^9.0|^10.0|^11.0|^12.0",
+        "laravel/framework": "*",
+        "illuminate/database": "^6.0|^7.0|^8.79|^9.0|^10.0|^11.0|^12.0",
         "spatie/regex": "^2.0|^3.0"
     },
     "require-dev": {
