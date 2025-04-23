@@ -1436,6 +1436,10 @@ return new class extends Migration
 
 # Breaking Changes
 
+* **3.0.0**
+    * Laravel 12.10.0 added the `Conditionable` trait to the `Fluent` class which conflicted with the `when` method for trigger definitions:
+        * The `when()` method for triggers has been replaced by the `whenCondition()` method
+    * Change the dependencies from `illuminate/*` packages to `laravel/framework` because the `rescue` function is not part of any package. This is only relevant when this package is used in a non-Laravel project — which is not directly supported either way.
 * **2.0.0**
   * Laravel 11.25 released a new `vector` migration type so the behaviour had to be aligned with Laravel's implementation:
     * A missing `$dimensions` parameter now leads to a vector type with unspecified dimension size (formerly defaulted to `$dimensions = 1536`) 
