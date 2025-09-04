@@ -7,9 +7,6 @@ namespace Tpetry\PostgresqlEnhanced\Schema;
 use Illuminate\Contracts\Database\Query\Expression;
 use Illuminate\Database\Schema\ColumnDefinition as BaseColumnDefinition;
 
-/**
- * @internal This class is not used. It only exists to teach Laravel projects using PHPStan or IDEs supporting auto-suggest about added functionality.
- */
 class ColumnDefinition extends BaseColumnDefinition
 {
     /**

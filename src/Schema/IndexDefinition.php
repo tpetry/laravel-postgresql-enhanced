@@ -6,9 +6,6 @@ namespace Tpetry\PostgresqlEnhanced\Schema;
 
 use Illuminate\Database\Schema\IndexDefinition as BaseIndexDefinition;
 
-/**
- * @internal This class is not used. It only exists to teach Laravel projects using PHPStan or IDEs supporting auto-suggest about added functionality.
- */
 class IndexDefinition extends BaseIndexDefinition
 {
     /**
