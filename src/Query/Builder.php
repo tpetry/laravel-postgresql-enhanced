@@ -113,4 +113,12 @@ class Builder extends BaseBuilder
             return parent::upsert($values, $uniqueBy, $update);
         }, prepend: $this->bindings['expressions']);
     }
+
+    /**
+     * Get a new join clause.
+     */
+    protected function newJoinClause($parentQuery, $type, $table): JoinClause
+    {
+        return new JoinClause($parentQuery, $type, $table);
+    }
 }
