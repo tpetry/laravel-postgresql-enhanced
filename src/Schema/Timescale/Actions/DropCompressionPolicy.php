@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions;
 
-use Tpetry\PostgresqlEnhanced\Schema\Grammars\Grammar;
-
-class DropCompressionPolicy implements Action
+/**
+ * @deprecated use DropColumnstorePolicy instead
+ */
+class DropCompressionPolicy extends DropColumnstorePolicy
 {
-    public function getValue(Grammar $grammar, string $table): array
-    {
-        return ["select remove_compression_policy({$grammar->escape($table)})"];
-    }
 }

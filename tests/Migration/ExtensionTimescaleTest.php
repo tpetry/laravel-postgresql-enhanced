@@ -12,6 +12,9 @@ use Tpetry\PostgresqlEnhanced\Schema\Grammars\Grammar;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\Action;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\ChangeChunkTimeInterval;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\CompressChunks;
+use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\ConvertToColumnstore;
+use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\ConvertToRowstore;
+use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\CreateColumnstorePolicy;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\CreateCompressionPolicy;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\CreateHypertable;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\CreateRefreshPolicy;
@@ -22,14 +25,17 @@ use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\CreateRetentionPolicy;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\CreateTieringPolicy;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\DecompressChunks;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\DisableChunkSkipping;
+use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\DisableColumnstore;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\DisableCompression;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\DropChunks;
+use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\DropColumnstorePolicy;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\DropCompressionPolicy;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\DropRefreshPolicy;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\DropReorderPolicy;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\DropRetentionPolicy;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\DropTieringPolicy;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\EnableChunkSkipping;
+use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\EnableColumnstore;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\EnableCompression;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\RefreshData;
 use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\ReorderChunks;
@@ -75,6 +81,57 @@ class ExtensionTimescaleTest extends TestCase
         $this->assertEquals(["select compress_chunk(c) from show_chunks('tbl', older_than => '2025-01-15T10:27:42+00:00') c"], $this->toSql(new CompressChunks(olderThan: $date)));
         $this->assertEquals(["select compress_chunk(c) from show_chunks('tbl', newer_than => '2025-01-15T10:27:42+00:00') c"], $this->toSql(new CompressChunks(newerThan: $date)));
         $this->assertEquals(["select compress_chunk(c) from show_chunks('tbl', older_than => '2025-01-15T10:27:42+00:00', newer_than => '2025-01-15T10:27:42+00:00') c"], $this->toSql(new CompressChunks(olderThan: $date, newerThan: $date)));
+    }
+
+    public function testActionConvertToColumnstore(): void
+    {
+        $this->assertEquals(["select compress_chunk(c) from show_chunks('tbl') c"], $this->toSql(new ConvertToColumnstore()));
+
+        $this->assertEquals(["select compress_chunk(c) from show_chunks('tbl', older_than => 5000) c"], $this->toSql(new ConvertToColumnstore(olderThan: 5000)));
+        $this->assertEquals(["select compress_chunk(c) from show_chunks('tbl', newer_than => 5000) c"], $this->toSql(new ConvertToColumnstore(newerThan: 5000)));
+        $this->assertEquals(["select compress_chunk(c) from show_chunks('tbl', older_than => 5000, newer_than => 5000) c"], $this->toSql(new ConvertToColumnstore(olderThan: 5000, newerThan: 5000)));
+
+        $this->assertEquals(["select compress_chunk(c) from show_chunks('tbl', older_than => 5000) c"], $this->toSql(new ConvertToColumnstore(olderThan: '5000')));
+        $this->assertEquals(["select compress_chunk(c) from show_chunks('tbl', newer_than => 5000) c"], $this->toSql(new ConvertToColumnstore(newerThan: '5000')));
+        $this->assertEquals(["select compress_chunk(c) from show_chunks('tbl', older_than => 5000, newer_than => 5000) c"], $this->toSql(new ConvertToColumnstore(olderThan: '5000', newerThan: '5000')));
+
+        $this->assertEquals(["select compress_chunk(c) from show_chunks('tbl', older_than => interval '1 month') c"], $this->toSql(new ConvertToColumnstore(olderThan: '1 month')));
+        $this->assertEquals(["select compress_chunk(c) from show_chunks('tbl', newer_than => interval '1 month') c"], $this->toSql(new ConvertToColumnstore(newerThan: '1 month')));
+        $this->assertEquals(["select compress_chunk(c) from show_chunks('tbl', older_than => interval '1 month', newer_than => interval '1 month') c"], $this->toSql(new ConvertToColumnstore(olderThan: '1 month', newerThan: '1 month')));
+
+        $date = DateTimeImmutable::createFromFormat('U', '1736936862', new DateTimeZone('UTC'));
+        $this->assertEquals(["select compress_chunk(c) from show_chunks('tbl', older_than => '2025-01-15T10:27:42+00:00') c"], $this->toSql(new ConvertToColumnstore(olderThan: $date)));
+        $this->assertEquals(["select compress_chunk(c) from show_chunks('tbl', newer_than => '2025-01-15T10:27:42+00:00') c"], $this->toSql(new ConvertToColumnstore(newerThan: $date)));
+        $this->assertEquals(["select compress_chunk(c) from show_chunks('tbl', older_than => '2025-01-15T10:27:42+00:00', newer_than => '2025-01-15T10:27:42+00:00') c"], $this->toSql(new ConvertToColumnstore(olderThan: $date, newerThan: $date)));
+    }
+
+    public function testActionConvertToRowstore(): void
+    {
+        $this->assertEquals(["select decompress_chunk(c) from show_chunks('tbl') c"], $this->toSql(new ConvertToRowstore()));
+
+        $this->assertEquals(["select decompress_chunk(c) from show_chunks('tbl', older_than => 5000) c"], $this->toSql(new ConvertToRowstore(olderThan: 5000)));
+        $this->assertEquals(["select decompress_chunk(c) from show_chunks('tbl', newer_than => 5000) c"], $this->toSql(new ConvertToRowstore(newerThan: 5000)));
+        $this->assertEquals(["select decompress_chunk(c) from show_chunks('tbl', older_than => 5000, newer_than => 5000) c"], $this->toSql(new ConvertToRowstore(olderThan: 5000, newerThan: 5000)));
+
+        $this->assertEquals(["select decompress_chunk(c) from show_chunks('tbl', older_than => 5000) c"], $this->toSql(new ConvertToRowstore(olderThan: '5000')));
+        $this->assertEquals(["select decompress_chunk(c) from show_chunks('tbl', newer_than => 5000) c"], $this->toSql(new ConvertToRowstore(newerThan: '5000')));
+        $this->assertEquals(["select decompress_chunk(c) from show_chunks('tbl', older_than => 5000, newer_than => 5000) c"], $this->toSql(new ConvertToRowstore(olderThan: '5000', newerThan: '5000')));
+
+        $this->assertEquals(["select decompress_chunk(c) from show_chunks('tbl', older_than => interval '1 month') c"], $this->toSql(new ConvertToRowstore(olderThan: '1 month')));
+        $this->assertEquals(["select decompress_chunk(c) from show_chunks('tbl', newer_than => interval '1 month') c"], $this->toSql(new ConvertToRowstore(newerThan: '1 month')));
+        $this->assertEquals(["select decompress_chunk(c) from show_chunks('tbl', older_than => interval '1 month', newer_than => interval '1 month') c"], $this->toSql(new ConvertToRowstore(olderThan: '1 month', newerThan: '1 month')));
+
+        $date = DateTimeImmutable::createFromFormat('U', '1736936862', new DateTimeZone('UTC'));
+        $this->assertEquals(["select decompress_chunk(c) from show_chunks('tbl', older_than => '2025-01-15T10:27:42+00:00') c"], $this->toSql(new ConvertToRowstore(olderThan: $date)));
+        $this->assertEquals(["select decompress_chunk(c) from show_chunks('tbl', newer_than => '2025-01-15T10:27:42+00:00') c"], $this->toSql(new ConvertToRowstore(newerThan: $date)));
+        $this->assertEquals(["select decompress_chunk(c) from show_chunks('tbl', older_than => '2025-01-15T10:27:42+00:00', newer_than => '2025-01-15T10:27:42+00:00') c"], $this->toSql(new ConvertToRowstore(olderThan: $date, newerThan: $date)));
+    }
+
+    public function testActionCreateColumnstorePolicy(): void
+    {
+        $this->assertEquals(["select add_compression_policy('tbl', compress_after => interval '1 month')"], $this->toSql(new CreateColumnstorePolicy('1 month')));
+        $this->assertEquals(["select add_compression_policy('tbl', compress_after => 86400)"], $this->toSql(new CreateColumnstorePolicy('86400')));
+        $this->assertEquals(["select add_compression_policy('tbl', compress_after => 86400)"], $this->toSql(new CreateColumnstorePolicy(86400)));
     }
 
     public function testActionCreateCompressionPolicy(): void
@@ -162,6 +219,11 @@ class ExtensionTimescaleTest extends TestCase
         $this->assertEquals(["select disable_chunk_skipping('tbl', 'id')"], $this->toSql(new DisableChunkSkipping('id')));
     }
 
+    public function testActionDisableColumnstore(): void
+    {
+        $this->assertEquals(['alter table "tbl" set (timescaledb.compress = false)'], $this->toSql(new DisableColumnstore()));
+    }
+
     public function testActionDisableCompression(): void
     {
         $this->assertEquals(['alter table "tbl" set (timescaledb.compress = false)'], $this->toSql(new DisableCompression()));
@@ -187,6 +249,11 @@ class ExtensionTimescaleTest extends TestCase
         $this->assertEquals(["select drop_chunks('tbl', older_than => '2025-01-15T10:27:42+00:00')"], $this->toSql(new DropChunks(olderThan: $date)));
         $this->assertEquals(["select drop_chunks('tbl', newer_than => '2025-01-15T10:27:42+00:00')"], $this->toSql(new DropChunks(newerThan: $date)));
         $this->assertEquals(["select drop_chunks('tbl', older_than => '2025-01-15T10:27:42+00:00', newer_than => '2025-01-15T10:27:42+00:00')"], $this->toSql(new DropChunks(olderThan: $date, newerThan: $date)));
+    }
+
+    public function testActionDropColumnstorePolicy(): void
+    {
+        $this->assertEquals(["select remove_compression_policy('tbl')"], $this->toSql(new DropColumnstorePolicy()));
     }
 
     public function testActionDropCompressionPolicy(): void
@@ -217,6 +284,20 @@ class ExtensionTimescaleTest extends TestCase
     public function testActionEnableChunkSkipping(): void
     {
         $this->assertEquals(["select enable_chunk_skipping('tbl', 'id')"], $this->toSql(new EnableChunkSkipping('id')));
+    }
+
+    public function testActionEnableColumnstore(): void
+    {
+        $this->assertEquals(['alter table "tbl" set (timescaledb.compress = true)'], $this->toSql(new EnableColumnstore()));
+
+        $this->assertEquals(['alter table "tbl" set (timescaledb.compress = true, timescaledb.compress_orderby = \'"time"\')'], $this->toSql(new EnableColumnstore(orderBy: 'time')));
+        $this->assertEquals(['alter table "tbl" set (timescaledb.compress = true, timescaledb.compress_orderby = \'"time", "time2"\')'], $this->toSql(new EnableColumnstore(orderBy: ['time', 'time2'])));
+
+        $this->assertEquals(['alter table "tbl" set (timescaledb.compress = true, timescaledb.compress_segmentby = \'"tenant_id"\')'], $this->toSql(new EnableColumnstore(segmentBy: 'tenant_id')));
+        $this->assertEquals(['alter table "tbl" set (timescaledb.compress = true, timescaledb.compress_segmentby = \'"tenant_id", "shop_id"\')'], $this->toSql(new EnableColumnstore(segmentBy: ['tenant_id', 'shop_id'])));
+
+        $this->assertEquals(['alter table "tbl" set (timescaledb.compress = true, timescaledb.compress_orderby = \'"time"\', timescaledb.compress_segmentby = \'"tenant_id"\')'], $this->toSql(new EnableColumnstore(orderBy: 'time', segmentBy: 'tenant_id')));
+        $this->assertEquals(['alter table "tbl" set (timescaledb.compress = true, timescaledb.compress_orderby = \'"time", "time2"\', timescaledb.compress_segmentby = \'"tenant_id", "shop_id"\')'], $this->toSql(new EnableColumnstore(orderBy: ['time', 'time2'], segmentBy: ['tenant_id', 'shop_id'])));
     }
 
     public function testActionEnableCompression(): void
