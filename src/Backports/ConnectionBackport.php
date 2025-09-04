@@ -90,7 +90,7 @@ trait ConnectionBackport
      */
     protected function escapeString($value): string
     {
-        return $this->getPdo()->quote($value);
+        return $this->getReadPdo()->quote($value);
     }
 
     /**
