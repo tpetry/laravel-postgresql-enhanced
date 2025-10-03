@@ -39,6 +39,7 @@ The minimal breaking changes of the past years are listed in the [breaking chang
     - [Triggers](#triggers)
     - [Views](#views)
         - [Materialized Views](#materialized-views)
+    - [Foreign Keys](#foreign-keys)
     - [Indexes](#indexes)
         - [Concurrently](#concurrently)
         - [Nulls Not Distinct](#nulls-not-distinct)
@@ -376,6 +377,23 @@ Schema::refreshMaterializedView('users_with_2fa');
 Schema::refreshMaterializedView('users_with_2fa', concurrently: true);
 Schema::refreshMaterializedView('users_with_2fa', withData: false);
 Schema::refreshMaterializedView('users_with_2fa', withData: true);
+```
+
+### Foreign Keys
+
+Many large applications don't use foreign keys because of performance reasons and migrations become more complicated.
+However, they are convenient as graphical tools can show the relationships between tables.
+With PostgreSQL 18, you can activate the `NOT ENFORCED` mode for foreign keys so they are never checked, while still helping database tools to show the relationships between tables.
+
+On top of that, the integration with Laravel is built so you can have actual foreign keys in development/testing (to see development issues early when foreign key errors are thrown), while production uses the non-enforced version.
+
+```php
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::table('posts', function (Blueprint $table) {
+    $table->foreignId('user_id')->constrained()->notEnforced(app()->isProduction());
+});
 ```
 
 ### Indexes

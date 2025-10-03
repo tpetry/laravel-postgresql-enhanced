@@ -8,6 +8,9 @@ services:
     - class: Tpetry\PostgresqlEnhanced\Support\Phpstan\SchemaColumnDefinitionExtension
       tags:
         - phpstan.broker.methodsClassReflectionExtension
+    - class: Tpetry\PostgresqlEnhanced\Support\Phpstan\SchemaForeignKeyDefinitionExtension
+      tags:
+        - phpstan.broker.methodsClassReflectionExtension
     - class: Tpetry\PostgresqlEnhanced\Support\Phpstan\SchemaIndexDefinitionExtension
       tags:
         - phpstan.broker.methodsClassReflectionExtension
