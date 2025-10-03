@@ -51,6 +51,10 @@ class ExtensionTimescaleTest extends TestCase
     {
         parent::setUp();
 
+        if (!$this->getConnection()->table('pg_available_extensions')->where('name', 'timescaledb')->exists()) {
+            $this->markTestSkipped('TimescaleDB extension is not available.');
+        }
+
         Schema::createExtensionIfNotExists('timescaledb');
     }
 
