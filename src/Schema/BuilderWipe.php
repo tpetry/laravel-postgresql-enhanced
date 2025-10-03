@@ -10,13 +10,11 @@ trait BuilderWipe
 {
     public function dropAllContinuousAggregates(): void
     {
-        $continuousAggregates = $this->findRelations(
-            rescue(
-                callback: fn () => $this->getConnection()->table('timescaledb_information.continuous_aggregates')->select(['view_schema as schema', 'view_name as name'])->whereIn('view_schema', $this->getActiveSchemas())->get(),
-                rescue: fn () => collect(),
-                report: false,
-            )
-        );
+        if (!$this->getConnection()->table('information_schema.tables')->where('table_schema', 'timescaledb_information')->where('table_name', 'continuous_aggregates')->exists()) {
+            return;
+        }
+
+        $continuousAggregates = $this->findRelations($this->getConnection()->table('timescaledb_information.continuous_aggregates')->select(['view_schema as schema', 'view_name as name'])->whereIn('view_schema', $this->getActiveSchemas())->get());
         foreach ($continuousAggregates as $continuousAggregate) {
             $this->connection->statement("drop materialized view if exists {$this->grammar->wrap($continuousAggregate['schema_qualified_name'])} cascade");
         }
@@ -24,13 +22,11 @@ trait BuilderWipe
 
     public function dropAllHypertables(): void
     {
-        $hypertables = $this->findRelations(
-            rescue(
-                callback: fn () => $this->getConnection()->table('timescaledb_information.hypertables')->select(['hypertable_schema as schema', 'hypertable_name as name'])->whereIn('hypertable_schema', $this->getActiveSchemas())->get(),
-                rescue: fn () => collect(),
-                report: false,
-            )
-        );
+        if (!$this->getConnection()->table('information_schema.tables')->where('table_schema', 'timescaledb_information')->where('table_name', 'hypertables')->exists()) {
+            return;
+        }
+
+        $hypertables = $this->findRelations($this->getConnection()->table('timescaledb_information.hypertables')->select(['hypertable_schema as schema', 'hypertable_name as name'])->whereIn('hypertable_schema', $this->getActiveSchemas())->get());
         foreach ($hypertables as $hypertable) {
             $this->connection->statement("drop table if exists {$this->grammar->wrap($hypertable['schema_qualified_name'])} cascade");
         }
