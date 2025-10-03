@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] - 2025-10-03
+### Added
+* `notEnforced()` foreign key constraint definition (#117)
+
+### Fixed
+* Unit tests failed when TimescaleDB extension was not installed
+* `db:wipe --drop-views` could fail when TimescaleDB extension was not installed
+
 ## [3.1.0] - 2025-09-04
 ### Fixed
 * Removed the @internal tag from column/index definition classes beause PHPStan complained when using them (#109) 
