@@ -12,11 +12,19 @@ class Uuid7 implements Expression
 {
     public function __construct(
         private readonly ?DateTimeInterface $time = null,
+        private readonly bool $native = false,
     ) {
     }
 
     public function getValue(Grammar $grammar): string
     {
+        if ($this->native) {
+            return match ($this->time) {
+                null => 'uuidv7()',
+                default => "uuidv7('{$this->time->format('Y-m-d H:i:s.uP')}'::timestamptz - clock_timestamp())",
+            };
+        }
+
         // The UUIDv7 algorithm in pure PostgreSQL SQL is copied from:
         // https://gist.github.com/fabiolimace/515a0440e3e40efeb234e12644a6a346#file-uuidv7-sql
 

@@ -1365,6 +1365,18 @@ Schema::create('comments', function (Blueprint $table) {
 });        
 ```
 
+When using PostgreSQL 18, you can also use the more efficient native implementation within PostgreSQL instead of the one provided by the expression:
+
+```php
+use Tpetry\PostgresqlEnhanced\Expressions\Uuid7;
+
+Schema::create('comments', function (Blueprint $table) {
+    $table->id();
+    $table->uuid()->default(new Uuid7(native: true))->unique();
+    $table->text('text');
+});  
+```
+
 # Supported Extensions
 
 You can use any extension with this PostgreSQL you like but some have received a deeper Laravel integration.

@@ -22,7 +22,15 @@ class Uuid7Test extends TestCase
         }
     }
 
-    public function testIncludesTimestampOrClock(): void
+    public function testNative(): void
+    {
+        $time = CarbonImmutable::createFromFormat('Y-m-d H:i:s.uP', '2009-04-23 14:57:17.830618-04:00');
+
+        $this->assertEquals('uuidv7()', (new Uuid7(native: true))->getValue($this->getConnection()->getQueryGrammar()));
+        $this->assertEquals("uuidv7('2009-04-23 14:57:17.830618-04:00'::timestamptz - clock_timestamp())", (new Uuid7($time, native: true))->getValue($this->getConnection()->getQueryGrammar()));
+    }
+
+    public function testReimplementedIncludesTimestampOrClock(): void
     {
         $uuidNow = (new Uuid7())->getValue($this->getConnection()->getQueryGrammar());
         $this->assertStringContainsString('statement_timestamp()', $uuidNow);
@@ -36,7 +44,7 @@ class Uuid7Test extends TestCase
      * Two different expression invocations would always be unique because of different time.
      * So the time is fixed to check for the randomness.
      */
-    public function testIsRandom(): void
+    public function testReimplementedIsRandom(): void
     {
         $uuid = new Uuid7(CarbonImmutable::now());
 
@@ -46,7 +54,7 @@ class Uuid7Test extends TestCase
         $this->assertNotEquals($value1, $value2);
     }
 
-    public function testTimeIncreases(): void
+    public function testReimplementedTimeIncreases(): void
     {
         $uuid = new Uuid7();
 
