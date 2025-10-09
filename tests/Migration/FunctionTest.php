@@ -40,6 +40,16 @@ class FunctionTest extends TestCase
         $this->assertEquals(['create function "test_986688"("p415305" int) returns int language plpgsql cost 100 as $$ begin select abs(p415305);end $$'], array_column($queries, 'query'));
     }
 
+    public function testCreateFunctionSearchPath(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createFunction('test_294025', ['p628467' => 'int'], 'int', 'plpgsql', 'begin select abs(p628467);end', [
+                'searchPath' => ['public', 'extensions'],
+            ]);
+        });
+        $this->assertEquals(['create or replace function "test_294025"("p628467" int) returns int language plpgsql set search_path TO public,extensions as $$ begin select abs(p628467);end $$'], array_column($queries, 'query'));
+    }
+
     public function testCreateFunctionLanguagePlpgsql(): void
     {
         $queries = $this->withQueryLog(function (): void {
@@ -149,6 +159,16 @@ class FunctionTest extends TestCase
             ]);
         });
         $this->assertEquals(['create or replace function "test_284015"("p578067" int) returns int language plpgsql cost 100 as $$ begin select abs(p578067);end $$'], array_column($queries, 'query'));
+    }
+
+    public function testCreateFunctionOrReplaceSearchPath(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            Schema::createFunctionOrReplace('test_883223', ['p173569' => 'int'], 'int', 'plpgsql', 'begin select abs(p173569);end', [
+                'searchPath' => ['public', 'extensions'],
+            ]);
+        });
+        $this->assertEquals(['create or replace function "test_883223"("p173569" int) returns int language plpgsql set search_path TO public,extensions as $$ begin select abs(p173569);end $$'], array_column($queries, 'query'));
     }
 
     public function testCreateFunctionOrReplaceLanguagePlpgsql(): void
