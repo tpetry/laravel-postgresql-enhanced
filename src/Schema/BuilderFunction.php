@@ -13,7 +13,7 @@ trait BuilderFunction
      *
      * @param array<string, string> $parameters
      * @param array<string, string>|string $return
-     * @param array{calledOnNull?: bool, cost?: int, leakproof?: bool, parallel?: 'restricted'|'safe'|'unsafe', security?: 'definer'|'invoker', volatility?: 'immutable'|'stable'|'volatile'} $options
+     * @param array{calledOnNull?: bool, cost?: int, leakproof?: bool, parallel?: 'restricted'|'safe'|'unsafe', security?: 'definer'|'invoker', volatility?: 'immutable'|'stable'|'volatile', searchPath?: array<int, string>} $options
      */
     public function createFunction(string $name, array $parameters, array|string $return, string $language, string $body, array $options = []): void
     {
@@ -25,7 +25,7 @@ trait BuilderFunction
      *
      * @param array<string, string> $parameters
      * @param array<string, string>|string $return
-     * @param array{calledOnNull?: bool, cost?: int, leakproof?: bool, parallel?: 'restricted'|'safe'|'unsafe', security?: 'definer'|'invoker', volatility?: 'immutable'|'stable'|'volatile'} $options
+     * @param array{calledOnNull?: bool, cost?: int, leakproof?: bool, parallel?: 'restricted'|'safe'|'unsafe', security?: 'definer'|'invoker', volatility?: 'immutable'|'stable'|'volatile', searchPath?: array<int, string>} $options
      */
     public function createFunctionOrReplace(string $name, array $parameters, array|string $return, string $language, string $body, array $options = []): void
     {
@@ -71,7 +71,7 @@ trait BuilderFunction
      *
      * @param array<string, string> $parameters
      * @param array<string, string>|string $return
-     * @param array{calledOnNull?: bool, cost?: int, leakproof?: bool, parallel?: 'restricted'|'safe'|'unsafe', security?: 'definer'|'invoker', volatility?: 'immutable'|'stable'|'volatile'} $options
+     * @param array{calledOnNull?: bool, cost?: int, leakproof?: bool, parallel?: 'restricted'|'safe'|'unsafe', security?: 'definer'|'invoker', volatility?: 'immutable'|'stable'|'volatile', searchPath?: array<int, string>} $options
      */
     private function createGenericFunction(string $name, array $parameters, array|string $return, string $language, string $body, array $options, bool $createOrReplace): void
     {
@@ -101,6 +101,7 @@ trait BuilderFunction
                 'calledOnNull' === $key => $value ? 'called on null input' : 'returns null on null input',
                 'leakproof' === $key => $value ? 'leakproof' : 'not leakproof',
                 'volatility' === $key => $value,
+                'searchPath' => 'SET search_path TO ' . implode(', ', $value),
                 \in_array($key, ['cost', 'parallel', 'security']) => "{$key} {$value}",
                 default => throw_if(true, message: "Unknown option '{$key}'."),
             };
