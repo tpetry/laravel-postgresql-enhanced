@@ -216,6 +216,7 @@ A sixth parameter lets you define further options for the function. Please [read
 | `parallel`     | `restricted`, `safe`, `unsafe`    | Defines whether the function can be executed in parallel.                                                      |
 | `security`     | `definer`, `invoker`              | Defines that the function will be executed with the privileges of the current user or creator of the function. |
 | `volatility`   | `immutable`, `stable`, `volatile` | Informs whether the function changes database values.                                                          |
+| `searchPath`   | array\<string\> | Defines the search path of the function.                                                          |
 
 The former example can be optimized by using the special `sql:expression` language identifier created by this driver. The function body can only be one SQL expression, but it will be inlined in the query instead of executed with recent PostgreSQL versions for much better performance: 
 
