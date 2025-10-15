@@ -101,7 +101,7 @@ trait BuilderFunction
                 'calledOnNull' === $key => $value ? 'called on null input' : 'returns null on null input',
                 'leakproof' === $key => $value ? 'leakproof' : 'not leakproof',
                 'volatility' === $key => $value,
-                'searchPath' => 'SET search_path TO ' . implode(', ', $value),
+                'searchPath' === $key => 'SET search_path TO ' . implode(', ', $value),
                 \in_array($key, ['cost', 'parallel', 'security']) => "{$key} {$value}",
                 default => throw_if(true, message: "Unknown option '{$key}'."),
             };
