@@ -47,7 +47,7 @@ class FunctionTest extends TestCase
                 'searchPath' => ['public', 'extensions'],
             ]);
         });
-        $this->assertEquals(['create function "test_294025"("p628467" int) returns int language plpgsql set search_path TO public, extensions as $$ begin select abs(p628467);end $$'], array_column($queries, 'query'));
+        $this->assertEquals(['create function "test_294025"("p628467" int) returns int language plpgsql SET search_path TO public, extensions as $$ begin select abs(p628467);end $$'], array_column($queries, 'query'));
     }
 
     public function testCreateFunctionLanguagePlpgsql(): void
@@ -168,7 +168,7 @@ class FunctionTest extends TestCase
                 'searchPath' => ['public', 'extensions'],
             ]);
         });
-        $this->assertEquals(['create or replace function "test_883223"("p173569" int) returns int language plpgsql set search_path TO public, extensions as $$ begin select abs(p173569);end $$'], array_column($queries, 'query'));
+        $this->assertEquals(['create or replace function "test_883223"("p173569" int) returns int language plpgsql SET search_path TO public, extensions as $$ begin select abs(p173569);end $$'], array_column($queries, 'query'));
     }
 
     public function testCreateFunctionOrReplaceLanguagePlpgsql(): void
