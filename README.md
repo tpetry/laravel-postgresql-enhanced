@@ -49,6 +49,7 @@ The minimal breaking changes of the past years are listed in the [breaking chang
         - [Storage Parameters](#storage-parameters-index)
         - [Functional Indexes / Column Options](#functional-indexes--column-options)
         - [Fulltext Indexes](#fulltext-indexes)
+        - [Temporal Indexes](#temporal-indexes)
     - [Domain Types](#domain-types)
     - [Table Options](#table-options)
         - [Unlogged](#unlogged)
@@ -586,6 +587,68 @@ Schema::table('book', function (Blueprint $table) {
         ->weight(['A', 'B']);
 });
 ```
+
+#### Temporal Indexes
+
+Imagine you've built a shopping system and one day a customer complains that his order was sent to their old address, which is hundreds of miles away from the current one.
+The current data in the database also shows you the current address - so you made a mistake?
+But how was the address when the order was shipped?
+Have you logged the change in an audit table?
+Happy for you if you did, but querying the data is complicated...
+
+So PostgreSQL 18 added support for temporal database features:
+You can now version control your data with primary keys, unique keys and foreign keys that are only valid for a specific point in time:
+
+```php
+use Tpetry\PostgresqlEnhanced\Schema\Blueprint;
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::createExtensionIfNotExists('btree_gist');
+Schema::create('addresses', function (Blueprint $table) {
+    $table->uuid('id');
+    $table->timestampTzRange('valid');
+    // ...
+
+    $table->primary(['id', 'valid WITHOUT OVERLAPS']);
+});
+Schema::create('orders', function (Blueprint $table) {
+    $table->uuid('id');
+    $table->uuid('address_id');
+    $table->text('reference_nr');
+    $table->timestampTzRange('valid');
+    // ...
+
+    $table->primary(['id', 'valid WITHOUT OVERLAPS']);
+    $table->unique(['reference_nr', 'valid WITHOUT OVERLAPS']);
+    $table->foreign(['address_id', 'PERIOD valid'])->references(['id', 'PERIOD valid'])->on('addresses');
+});
+
+Address::insert([
+    [
+        'id' => '7f8f1ee1-63fc-4472-8950-034aeb75da38',
+        'valid' => '["2000-01-01 00:00:00+00","2025-01-01 00:00:00+00")',
+    ],
+    [
+        'id' => '7f8f1ee1-63fc-4472-8950-034aeb75da38',
+        'valid' => '["2025-01-01 00:00:00+00",)',
+    ],
+]);
+Order::insert([
+    'id' => '93c7d2a9-41d9-4fba-9943-7c97c4420d59',
+    'address_id' => '7f8f1ee1-63fc-4472-8950-034aeb75da38',
+    'reference_nr' => '1234567890',
+    'valid' => '["2025-10-17 10:46:34+00",)',
+]);
+        
+Order::query()
+    ->join('addresses', 'addresses.id', 'orders.address_id')
+    ->where('addresses.valid', '@>', new Expression('LOWER(orders.valid)'))
+    ->whereKey('93c7d2a9-41d9-4fba-9943-7c97c4420d59');
+```
+
+> [!NOTE]
+> There is no Eloquent implementation for temporal features yet.
+> But a full implementation would replace Laravel's soft-deletes implementation.
 
 ### Domain Types
 

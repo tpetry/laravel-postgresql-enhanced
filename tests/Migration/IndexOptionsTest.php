@@ -695,6 +695,63 @@ class IndexOptionsTest extends TestCase
         $this->assertEquals(['create index "index_477176" on "test_533609" ("col_889546") with (fillfactor = 80)'], array_column($queries, 'query'));
     }
 
+    public function testWithoutOverlapsPrimary(): void
+    {
+        if (Comparator::lessThan($this->getConnection()->serverVersion(), '18')) {
+            $this->markTestSkipped('WITHOUT OVERLAPS is first supported with PostgreSQL 18.');
+        }
+
+        Schema::createExtensionIfNotExists('btree_gist');
+        Schema::create('test_897145', function (Blueprint $table): void {
+            $table->string('col_301428');
+            $table->timestampTzRange('col_734356');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_897145', function (Blueprint $table): void {
+                $table->primary(['col_301428', 'col_734356 WITHOUT OVERLAPS']);
+            });
+        });
+        $this->assertEquals(['alter table "test_897145" add primary key ("col_301428", "col_734356" WITHOUT OVERLAPS)'], array_column($queries, 'query'));
+    }
+
+    public function testWithoutOverlapsUniqueByColumn(): void
+    {
+        if (Comparator::lessThan($this->getConnection()->serverVersion(), '18')) {
+            $this->markTestSkipped('WITHOUT OVERLAPS is first supported with PostgreSQL 18.');
+        }
+
+        Schema::createExtensionIfNotExists('btree_gist');
+        Schema::create('test_849793', function (Blueprint $table): void {
+            $table->string('col_376999');
+            $table->timestampTzRange('col_513975');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_849793', function (Blueprint $table): void {
+                $table->unique(['col_376999', 'col_513975 WITHOUT OVERLAPS']);
+            });
+        });
+        $this->assertEquals(['alter table "test_849793" add constraint "test_849793_col_376999_col_513975_unique" unique ("col_376999", "col_513975" WITHOUT OVERLAPS)'], array_column($queries, 'query'));
+    }
+
+    public function testWithoutOverlapsUniqueByName(): void
+    {
+        if (Comparator::lessThan($this->getConnection()->serverVersion(), '18')) {
+            $this->markTestSkipped('WITHOUT OVERLAPS is first supported with PostgreSQL 18.');
+        }
+
+        Schema::createExtensionIfNotExists('btree_gist');
+        Schema::create('test_224202', function (Blueprint $table): void {
+            $table->string('col_405091');
+            $table->timestampTzRange('col_427625');
+        });
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_224202', function (Blueprint $table): void {
+                $table->unique(['col_405091', 'col_427625 WITHOUT OVERLAPS'], 'index_142173');
+            });
+        });
+        $this->assertEquals(['alter table "test_224202" add constraint "index_142173" unique ("col_405091", "col_427625" WITHOUT OVERLAPS)'], array_column($queries, 'query'));
+    }
+
     public function testWithRawIndex(): void
     {
         if (Comparator::lessThan($this->app->version(), '7.7.0')) {

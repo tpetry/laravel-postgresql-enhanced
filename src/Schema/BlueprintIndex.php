@@ -88,10 +88,6 @@ trait BlueprintIndex
      */
     protected function createIndexName($type, array $columns): string
     {
-        if ('unique' === $type) {
-            return parent::createIndexName($type, $columns);
-        }
-
         $columns = array_map(function (string $column): string {
             // When the column has a structure like '(.+).*' it's an functional index. But it's not
             // easily possible to extract column names from a functional expression so the developer
@@ -112,9 +108,12 @@ trait BlueprintIndex
             }
 
             // When index parameters are defined the space in the sql grammar is the separation character
-            // of the column and all params. So in case a space is available only the part before the first
-            // space character is declaring the column and will be used.
-            return Str::before($column, ' ');
+            // of the column and all params. So in case a space is available, special index behavior is
+            // defined and the real column name must be extracted.
+            return match (str_starts_with(strtolower($column), 'period ')) {
+                true => Str::after($column, ' '),
+                false => Str::before($column, ' '),
+            };
         }, $columns);
 
         return parent::createIndexName($type, $columns);

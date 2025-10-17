@@ -44,4 +44,22 @@ class ForeignKeyTest extends TestCase
         });
         $this->assertEquals(['alter table "test_861910" add constraint "test_861910_col_422395_foreign" foreign key ("col_422395") references "test_940615" ("col_422395") not enforced'], array_column($queries, 'query'));
     }
+
+    public function testPeriod(): void
+    {
+        if (Comparator::lessThan($this->getConnection()->serverVersion(), '18')) {
+            $this->markTestSkipped('Foreign key PERIOD is first supported with PostgreSQL 18.');
+        }
+
+        Schema::createExtensionIfNotExists('btree_gist');
+        $this->getConnection()->statement('CREATE TABLE test_668671 (col_975277 bigint, valid tstzrange, PRIMARY KEY (col_975277, valid WITHOUT OVERLAPS))');
+        $this->getConnection()->statement('CREATE TABLE test_178855 (col_975277 bigint, valid tstzrange, PRIMARY KEY (col_975277, valid WITHOUT OVERLAPS))');
+
+        $queries = $this->withQueryLog(function (): void {
+            Schema::table('test_178855', function (Blueprint $table): void {
+                $table->foreign(['col_975277', 'PERIOD valid'])->references(['col_975277', 'PERIOD valid'])->on('test_668671');
+            });
+        });
+        $this->assertEquals(['alter table "test_178855" add constraint "test_178855_col_975277_valid_foreign" foreign key ("col_975277", PERIOD "valid") references "test_668671" ("col_975277", PERIOD "valid")'], array_column($queries, 'query'));
+    }
 }

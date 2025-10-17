@@ -83,7 +83,7 @@ class CaggBlueprint
         /** @var \Tpetry\PostgresqlEnhanced\Schema\IndexDefinition $fluent */
         $fluent = $migration->createCommand('index', $name ?: $migration->createName('index', '', $this->table, $columns), $columns, $algorithm);
 
-        $this->commands[] = fn (Connection $connection, Grammar $grammar) => [(new MigrationIndex())->compileCommand($grammar, $this->table, $fluent, false)];
+        $this->commands[] = fn (Connection $connection, Grammar $grammar) => [(new MigrationIndex())->compileCommand($grammar, $this->table, $fluent, 'index')];
 
         return $fluent;
     }

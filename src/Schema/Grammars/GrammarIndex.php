@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Schema\Grammars;
 
+use Illuminate\Contracts\Database\Query\Expression as ExpressionContract;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Fluent;
 use Tpetry\PostgresqlEnhanced\Support\Helpers\MigrationIndex;
@@ -73,7 +75,7 @@ trait GrammarIndex
     {
         $command['algorithm'] ??= 'gin';
 
-        return (new MigrationIndex())->compileCommand($this, $blueprint->getTable(), $command, false);
+        return (new MigrationIndex())->compileCommand($this, $blueprint->getTable(), $command, 'index');
     }
 
     /**
@@ -81,7 +83,15 @@ trait GrammarIndex
      */
     public function compileIndex(Blueprint $blueprint, Fluent $command): string
     {
-        return (new MigrationIndex())->compileCommand($this, $blueprint->getTable(), $command, false);
+        return (new MigrationIndex())->compileCommand($this, $blueprint->getTable(), $command, 'index');
+    }
+
+    /**
+     * Compile a primary key command.
+     */
+    public function compilePrimary(Blueprint $blueprint, Fluent $command): string
+    {
+        return (new MigrationIndex())->compileCommand($this, $blueprint->getTable(), $command, 'primary');
     }
 
     /**
@@ -91,7 +101,27 @@ trait GrammarIndex
     {
         $command['algorithm'] = 'gist';
 
-        return (new MigrationIndex())->compileCommand($this, $blueprint->getTable(), $command, false);
+        return (new MigrationIndex())->compileCommand($this, $blueprint->getTable(), $command, 'index');
+    }
+
+    /**
+     * Compile a unique key command.
+     *
+     * @return string|string[]
+     */
+    public function compileUnique(Blueprint $blueprint, Fluent $command): mixed
+    {
+        $command['columns'] = array_map(function (string|Expression|ExpressionContract $column) {
+            if ($this->isExpression($column)) {
+                return $column;
+            }
+
+            $parts = explode(' ', $column, 2);
+
+            return new Expression(trim(\sprintf('%s %s', $this->wrap($parts[0]), $parts[1] ?? '')));
+        }, $command['columns']);
+
+        return parent::compileUnique($blueprint, $command);
     }
 
     /**
@@ -99,6 +129,6 @@ trait GrammarIndex
      */
     public function compileUnique2(Blueprint $blueprint, Fluent $command): string
     {
-        return (new MigrationIndex())->compileCommand($this, $blueprint->getTable(), $command, true);
+        return (new MigrationIndex())->compileCommand($this, $blueprint->getTable(), $command, 'unique');
     }
 }

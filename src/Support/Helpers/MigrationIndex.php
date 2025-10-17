@@ -18,7 +18,10 @@ use Tpetry\PostgresqlEnhanced\Schema\Grammars\Grammar;
  */
 class MigrationIndex
 {
-    public function compileCommand(Grammar $grammar, string $table, Fluent $command, bool $unique): string
+    /**
+     * @param 'index'|'primary'|'unique' $type
+     */
+    public function compileCommand(Grammar $grammar, string $table, Fluent $command, string $type): string
     {
         // If the index is partial index using a closure a dummy query builder is provided to the closure. The query is
         // then transformed to a static query and the select part is removed to only keep the condition.
@@ -72,20 +75,27 @@ class MigrationIndex
             $columns = ['('.implode(' || ', $columns).')'];
         }
 
-        $index = [
-            $unique ? 'create unique index' : 'create index',
-            $command['concurrently'] ? 'concurrently' : null,
-            $command['ifNotExists'] ? 'if not exists' : null,
-            $grammar->wrap($command['index']),
-            'on',
-            $grammar->wrapTable($table),
-            $command['algorithm'] ? "using {$command['algorithm']}" : null,
-            '('.implode(', ', $columns).')',
-            $command['include'] ? 'include ('.implode(',', $grammar->wrapArray(Arr::wrap($command['include']))).')' : null,
-            $command['nullsNotDistinct'] ? 'nulls not distinct' : null,
-            $command['with'] ? "with ({$command['with']})" : null,
-            $command['where'] ? "where {$command['where']}" : null,
-        ];
+        $index = match ($type) {
+            'index', 'unique' => [
+                'unique' === $type ? 'create unique index' : 'create index',
+                $command['concurrently'] ? 'concurrently' : null,
+                $command['ifNotExists'] ? 'if not exists' : null,
+                $grammar->wrap($command['index']),
+                'on',
+                $grammar->wrapTable($table),
+                $command['algorithm'] ? "using {$command['algorithm']}" : null,
+                '('.implode(', ', $columns).')',
+                $command['include'] ? 'include ('.implode(',', $grammar->wrapArray(Arr::wrap($command['include']))).')' : null,
+                $command['nullsNotDistinct'] ? 'nulls not distinct' : null,
+                $command['with'] ? "with ({$command['with']})" : null,
+                $command['where'] ? "where {$command['where']}" : null,
+            ],
+            'primary' => [
+                'alter table',
+                $grammar->wrapTable($table),
+                'add primary key ('.implode(', ', $columns).')',
+            ],
+        };
         $sql = implode(' ', array_filter($index, fn (?string $part) => filled($part)));
 
         return $sql;
@@ -104,6 +114,7 @@ class MigrationIndex
             true => substr_replace("{$table}.{$prefix}", strrpos($table, '.'), 1),
             false => $prefix.$table,
         };
+        $columns = array_map(fn (string $column) => Str::before($column, ' '), $columns);
 
         $index = strtolower($table.'_'.implode('_', $columns).'_'.$type);
 
