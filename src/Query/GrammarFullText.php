@@ -35,6 +35,9 @@ trait GrammarFullText
         if (($where['options']['mode'] ?? []) === 'websearch') {
             $mode = 'websearch_to_tsquery';
         }
+        if (($where['options']['mode'] ?? []) === 'none') {
+            $mode = 'to_tsquery';
+        }
 
         return "({$columns}) @@ {$mode}('{$language}', {$this->parameter($where['value'])})";
     }
