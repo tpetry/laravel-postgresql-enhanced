@@ -12,19 +12,19 @@ class CreateHypertable implements Action
         private string $column,
         private string|int $interval,
         private ?string $partitionFunction = null,
-    ) {
-    }
+        private bool $migrateData = false,
+    ) {}
 
     public function getValue(Grammar $grammar, string $table): array
     {
-        return ["select create_hypertable({$grammar->escape($table)}, {$this->buildRange($grammar)}, create_default_indexes => false)"];
+        return ["select create_hypertable({$grammar->escape($table)}, {$this->buildRange($grammar)}, create_default_indexes => false, migrate_data => {$grammar->escape($this->migrateData)})"];
     }
 
     private function buildRange(Grammar $grammar): string
     {
         $column = $grammar->escape($this->column);
         $interval = is_numeric($this->interval) ? $this->interval : "interval {$grammar->escape($this->interval)}";
-        $partitionFunction = transform($this->partitionFunction, fn (string $name) => $grammar->escape($name));
+        $partitionFunction = transform($this->partitionFunction, fn(string $name) => $grammar->escape($name));
 
         return match (filled($partitionFunction)) {
             false => "by_range({$column}, {$interval})",
