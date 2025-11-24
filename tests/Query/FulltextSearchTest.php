@@ -71,7 +71,52 @@ class FulltextSearchTest extends TestCase
         $this->assertEquals([['test']], array_column($queries, 'bindings'));
     }
 
-    public function testMode(): void
+    public function testModeNone(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()
+                ->table('example')
+                ->whereFullText(['str1', 'str2'], 'test', ['mode' => 'none'])
+                ->get();
+        });
+        $this->assertEquals(
+            ['select * from "example" where (to_tsvector(\'english\', "str1") || to_tsvector(\'english\', "str2")) @@ to_tsquery(\'english\', ?)'],
+            array_column($queries, 'query'),
+        );
+        $this->assertEquals([['test']], array_column($queries, 'bindings'));
+    }
+
+    public function testModePhrase(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()
+                ->table('example')
+                ->whereFullText(['str1', 'str2'], 'test', ['mode' => 'phrase'])
+                ->get();
+        });
+        $this->assertEquals(
+            ['select * from "example" where (to_tsvector(\'english\', "str1") || to_tsvector(\'english\', "str2")) @@ phraseto_tsquery(\'english\', ?)'],
+            array_column($queries, 'query'),
+        );
+        $this->assertEquals([['test']], array_column($queries, 'bindings'));
+    }
+
+    public function testModePlain(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()
+                ->table('example')
+                ->whereFullText(['str1', 'str2'], 'test', ['mode' => 'plain'])
+                ->get();
+        });
+        $this->assertEquals(
+            ['select * from "example" where (to_tsvector(\'english\', "str1") || to_tsvector(\'english\', "str2")) @@ plainto_tsquery(\'english\', ?)'],
+            array_column($queries, 'query'),
+        );
+        $this->assertEquals([['test']], array_column($queries, 'bindings'));
+    }
+
+    public function testModeWebsearch(): void
     {
         $queries = $this->withQueryLog(function (): void {
             $this->getConnection()
