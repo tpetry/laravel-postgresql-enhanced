@@ -13,7 +13,8 @@ class CreateHypertable implements Action
         private string|int $interval,
         private ?string $partitionFunction = null,
         private bool $migrateData = false,
-    ) {}
+    ) {
+    }
 
     public function getValue(Grammar $grammar, string $table): array
     {
@@ -24,7 +25,7 @@ class CreateHypertable implements Action
     {
         $column = $grammar->escape($this->column);
         $interval = is_numeric($this->interval) ? $this->interval : "interval {$grammar->escape($this->interval)}";
-        $partitionFunction = transform($this->partitionFunction, fn(string $name) => $grammar->escape($name));
+        $partitionFunction = transform($this->partitionFunction, fn (string $name) => $grammar->escape($name));
 
         return match (filled($partitionFunction)) {
             false => "by_range({$column}, {$interval})",
