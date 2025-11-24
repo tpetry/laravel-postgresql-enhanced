@@ -1029,9 +1029,9 @@ Depending on your requirements a search term can be handled completely different
     ```php
     Book::whereFullText(['title', 'description'], '"PostgreSQL database" -MySQL', ['mode' => 'websearch'])->get();
     ```
-* `none`: No mode is used, the search term is directly passed to the `to_tsquery` function. This gives you the most control over the search term and behaviour.<br><b>Quick tip:</b> Do not use this for terms with spaces having no operators. Spaced terms should contain operators to be parsed correctly e.g `'PostgreSQL database'` can be `'Postgre:* & database'` or `'Postgre:* & database:* & !MySQL:*'` or `'Postgre:* | database:*'` or `'Postgres | database'` or `'Postgres & database'` etc. see [PostgreSQL Documentation](https://www.postgresql.org/docs/18/textsearch-controls.html#TEXTSEARCH-PARSING-QUERIES)
+* `none`: No mode is used, the search term is directly passed to the `to_tsquery` function. This gives you the most control over the search term and behavior, but you must sanitize the input yourself and create a valid `tsquery` search term.
     ```php
-    Book::whereFullText(['title', 'description'], 'Postgre:*', ['mode' => 'none'])->get();
+    Book::whereFullText(['title', 'description'], 'PostgreSQL & database', ['mode' => 'none'])->get();
     ```
 
 #### Weighting
