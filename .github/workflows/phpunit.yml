@@ -83,7 +83,7 @@ jobs:
 
     services:
       postgres:
-        image: timescale/timescaledb-ha:pg17
+        image: timescale/timescaledb-ha:pg18
         env:
           POSTGRES_PASSWORD: postgres
         ports:
