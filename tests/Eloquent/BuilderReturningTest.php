@@ -234,6 +234,7 @@ class BuilderReturningTest extends TestCase
             $this->assertInstanceOf(Collection::class, $result);
             $this->assertEquals([['id' => 1, 'str' => 'L55uRXMI', 'created_at' => null, 'updated_at' => null, 'deleted_at' => null]], $result->toArray());
             $this->assertInstanceOf(ExampleTimestamps::class, $result->first());
+            $this->assertTrue($result->first()->wasRecentlyCreated);
         });
         $this->assertEquals(['insert into "example" ("str") values (?) returning *'], array_column($queries, 'query'));
     }
@@ -261,6 +262,7 @@ class BuilderReturningTest extends TestCase
             $this->assertInstanceOf(Collection::class, $result);
             $this->assertEquals([['str' => 'HarJvEmz']], $result->toArray());
             $this->assertInstanceOf(ExampleTimestamps::class, $result->first());
+            $this->assertTrue($result->first()->wasRecentlyCreated);
         });
         $this->assertEquals(['insert into "example" ("str") values (?) returning "str"'], array_column($queries, 'query'));
     }
@@ -275,6 +277,7 @@ class BuilderReturningTest extends TestCase
             $this->assertInstanceOf(Collection::class, $result);
             $this->assertEquals([['id' => 1, 'str' => 'LOfbaRG4', 'created_at' => null, 'updated_at' => null, 'deleted_at' => null]], $result->toArray());
             $this->assertInstanceOf(ExampleTimestamps::class, $result->first());
+            $this->assertTrue($result->first()->wasRecentlyCreated);
         });
         $this->assertEquals(['insert into "example" ("str") select \'LOfbaRG4\' returning *'], array_column($queries, 'query'));
     }
@@ -302,6 +305,7 @@ class BuilderReturningTest extends TestCase
             $this->assertInstanceOf(Collection::class, $result);
             $this->assertEquals([['str' => 'CT4TfugQ']], $result->toArray());
             $this->assertInstanceOf(ExampleTimestamps::class, $result->first());
+            $this->assertTrue($result->first()->wasRecentlyCreated);
         });
         $this->assertEquals(['insert into "example" ("str") select \'CT4TfugQ\' returning "str"'], array_column($queries, 'query'));
     }
