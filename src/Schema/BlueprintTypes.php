@@ -227,7 +227,7 @@ trait BlueprintTypes
     /**
      * Create a new tsvector column on the table.
      */
-    public function tsvector(string $column): ColumnDefinition
+    public function tsvector($column): ColumnDefinition
     {
         return $this->addColumn('tsvector', $column);
     }
