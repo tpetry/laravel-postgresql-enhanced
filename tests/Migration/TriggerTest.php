@@ -29,8 +29,8 @@ class TriggerTest extends TestCase
 
     public function testCreateTrigger(): void
     {
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('example', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('example', static function (Blueprint $table): void {
                 $table->trigger('noop_916042', 'noop(42)', 'before update');
                 $table->trigger('noop_652445', 'noop(0815)', 'after delete');
             });
@@ -43,8 +43,8 @@ class TriggerTest extends TestCase
 
     public function testCreateTriggerForEachRow(): void
     {
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('example', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('example', static function (Blueprint $table): void {
                 $table->trigger('noop_176019', 'noop()', 'after insert')
                     ->forEachRow();
             });
@@ -54,8 +54,8 @@ class TriggerTest extends TestCase
 
     public function testCreateTriggerForEachStatement(): void
     {
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('example', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('example', static function (Blueprint $table): void {
                 $table->trigger('noop_311234', 'noop()', 'after delete')
                     ->forEachStatement();
             });
@@ -65,8 +65,8 @@ class TriggerTest extends TestCase
 
     public function testCreateTriggerReplace(): void
     {
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('example', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('example', static function (Blueprint $table): void {
                 $table->trigger('noop_322869', 'noop()', 'after update')
                     ->replace();
                 $table->trigger('noop_485134', 'noop()', 'after update')
@@ -84,8 +84,8 @@ class TriggerTest extends TestCase
 
     public function testCreateTriggerTransitionTables(): void
     {
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('example', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('example', static function (Blueprint $table): void {
                 $table->trigger('noop_989634', 'noop()', 'after update')
                     ->transitionTables();
                 $table->trigger('noop_641784', 'noop()', 'after update')
@@ -106,11 +106,11 @@ class TriggerTest extends TestCase
 
     public function testCreateTriggerWhenBuilder(): void
     {
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('example', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('example', static function (Blueprint $table): void {
                 $table->trigger('noop_274029', 'noop()', 'after insert')
                     ->forEachRow()
-                    ->whenCondition(fn (Builder $query) => $query->where('NEW.id', 42));
+                    ->whenCondition(static fn (Builder $query) => $query->where('NEW.id', 42));
             });
         });
         $this->assertEquals(['create trigger "noop_274029" after insert on "example" for each row when (NEW."id" = 42) execute function noop()'], array_column($queries, 'query'));
@@ -118,8 +118,8 @@ class TriggerTest extends TestCase
 
     public function testCreateTriggerWhenSql(): void
     {
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('example', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('example', static function (Blueprint $table): void {
                 $table->trigger('noop_274029', 'noop()', 'after delete')
                     ->forEachRow()
                     ->whenCondition('OLD.id = 0815');
@@ -131,8 +131,8 @@ class TriggerTest extends TestCase
     public function testDropTrigger(): void
     {
         $this->getConnection()->unprepared('create trigger "noop_360231" before update on "example" execute function noop()');
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('example', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('example', static function (Blueprint $table): void {
                 $table->dropTrigger('noop_360231');
             });
         });
@@ -141,8 +141,8 @@ class TriggerTest extends TestCase
 
     public function testDropTriggerIfExists(): void
     {
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('example', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('example', static function (Blueprint $table): void {
                 $table->dropTriggerIfExists('noop_276055');
             });
         });

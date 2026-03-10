@@ -17,7 +17,7 @@ class CompatibilityTest extends TestCase
     public function testCompatabilityMigrationOrdering(): void
     {
         DB::statement('create table test()');
-        $queries = $this->withQueryLog(function (): void {
+        $queries = $this->withQueryLog(static function (): void {
             Schema::table('test', static function (Blueprint $table): void {
                 $table->text('column_one');
                 $table->text('column_two');

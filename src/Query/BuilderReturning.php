@@ -247,7 +247,7 @@ trait BuilderReturning
 
         $bindings = $this->cleanBindings(array_merge(
             Arr::flatten($values, 1),
-            collect($update)->reject(function ($_value, $key) {
+            collect($update)->reject(static function ($_value, $key) {
                 return \is_int($key);
             })->all()
         ));

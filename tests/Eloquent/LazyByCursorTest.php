@@ -24,7 +24,7 @@ class LazyByCursorTest extends TestCase
 
     public function testClosesCursorOnBreak(): void
     {
-        $queries = $this->withQueryLog(function (): void {
+        $queries = $this->withQueryLog(static function (): void {
             foreach (ExampleLazyByCursor::orderBy('id')->lazyByCursor(2) as $row) {
                 break;
             }
@@ -40,8 +40,8 @@ class LazyByCursorTest extends TestCase
 
     public function testIteratesInBatches(): void
     {
-        $queries = $this->withQueryLog(function (): void {
-            ExampleLazyByCursor::orderBy('id')->lazyByCursor(2)->each(function (): void {
+        $queries = $this->withQueryLog(static function (): void {
+            ExampleLazyByCursor::orderBy('id')->lazyByCursor(2)->each(static function (): void {
                 // do nothing 😅
             });
         });

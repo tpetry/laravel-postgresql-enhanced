@@ -33,7 +33,7 @@ class UpsertPartialTest extends TestCase
         $queries = $this->withQueryLog(function (): void {
             $result = $this->getConnection()
                 ->table('example')
-                ->upsertPartial([['col' => 446737, 'val' => 896013], ['col' => 719244, 'val' => 572449]], ['col'], ['val'], fn (Builder $query) => $query->whereNull('deleted_at'));
+                ->upsertPartial([['col' => 446737, 'val' => 896013], ['col' => 719244, 'val' => 572449]], ['col'], ['val'], static fn (Builder $query) => $query->whereNull('deleted_at'));
 
             $this->assertEquals(2, $result);
         });

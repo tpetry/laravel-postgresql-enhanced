@@ -31,8 +31,8 @@ trait AutomaticDateFormat
             // Therefore, the value is parsed again without the time zone to catch that edge case.
             if (version_compare(App::version(), '7.0.0', '<') && \is_string($value)) {
                 return rescue(
-                    callback: fn () => Date::createFromFormat('Y-m-d H:i:s', $value),
-                    rescue: fn () => throw $e,
+                    callback: static fn () => Date::createFromFormat('Y-m-d H:i:s', $value),
+                    rescue: static fn () => throw $e,
                     report: false,
                 );
             }

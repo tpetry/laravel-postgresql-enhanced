@@ -12,11 +12,11 @@ class IndexUniqueTest extends TestCase
 {
     public function testUniqueIndexByColumn(): void
     {
-        Schema::create('test_800299', function (Blueprint $table): void {
+        Schema::create('test_800299', static function (Blueprint $table): void {
             $table->string('col_494598');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_800299', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_800299', static function (Blueprint $table): void {
                 $table->uniqueIndex(['col_494598']);
             });
         });
@@ -25,11 +25,11 @@ class IndexUniqueTest extends TestCase
 
     public function testUniqueIndexByName(): void
     {
-        Schema::create('test_645101', function (Blueprint $table): void {
+        Schema::create('test_645101', static function (Blueprint $table): void {
             $table->string('col_173311');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_645101', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_645101', static function (Blueprint $table): void {
                 $table->uniqueIndex(['col_173311'], 'unique_229201');
             });
         });

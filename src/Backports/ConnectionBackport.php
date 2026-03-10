@@ -49,16 +49,15 @@ trait ConnectionBackport
             return (string) $value;
         } elseif (\is_bool($value)) {
             return $this->escapeBool($value);
-        } else {
-            if (str_contains($value, "\00")) {
-                throw new RuntimeException('Strings with null bytes cannot be escaped. Use the binary escape option.');
-            }
-            if (false === preg_match('//u', $value)) {
-                throw new RuntimeException('Strings with invalid UTF-8 byte sequences cannot be escaped.');
-            }
-
-            return $this->escapeString($value);
         }
+        if (str_contains($value, "\00")) {
+            throw new RuntimeException('Strings with null bytes cannot be escaped. Use the binary escape option.');
+        }
+        if (false === preg_match('//u', $value)) {
+            throw new RuntimeException('Strings with invalid UTF-8 byte sequences cannot be escaped.');
+        }
+
+        return $this->escapeString($value);
     }
 
     /**

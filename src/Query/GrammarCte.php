@@ -14,7 +14,7 @@ trait GrammarCte
             return '';
         }
 
-        $hasRecursive = array_reduce($expressions, function (bool $carry, array $expression): bool {
+        $hasRecursive = array_reduce($expressions, static function (bool $carry, array $expression): bool {
             return $carry || ($expression['options']['recursive'] ?? false);
         }, false);
 
@@ -23,13 +23,13 @@ trait GrammarCte
             $parts = [
                 $this->wrapTable($expression['as']),
                 'as',
-                transform($expression['options']['materialized'] ?? null, fn ($materialized) => $materialized ? 'materialized' : 'not materialized'),
+                transform($expression['options']['materialized'] ?? null, static fn ($materialized) => $materialized ? 'materialized' : 'not materialized'),
                 "({$expression['query']})",
-                transform($expression['options']['search'] ?? null, fn ($search) => "search {$search}"),
-                transform($expression['options']['cycle'] ?? null, fn ($cycle) => "cycle {$cycle}"),
+                transform($expression['options']['search'] ?? null, static fn ($search) => "search {$search}"),
+                transform($expression['options']['cycle'] ?? null, static fn ($cycle) => "cycle {$cycle}"),
             ];
 
-            $ctes[] = implode(' ', array_filter($parts, fn (?string $part) => filled($part)));
+            $ctes[] = implode(' ', array_filter($parts, static fn (?string $part) => filled($part)));
         }
 
         return match ($hasRecursive) {

@@ -397,8 +397,8 @@ class ExtensionTimescaleTest extends TestCase
                 $this->getConnection()->raw('count(*) count'),
             ]);
 
-        $queries = $this->withQueryLog(function () use ($query): void {
-            Schema::continuousAggregate('hypertbl_agg', function (CaggBlueprint $table) use ($query): void {
+        $queries = $this->withQueryLog(static function () use ($query): void {
+            Schema::continuousAggregate('hypertbl_agg', static function (CaggBlueprint $table) use ($query): void {
                 $table->as($query);
                 $table->realtime();
 
@@ -429,12 +429,12 @@ class ExtensionTimescaleTest extends TestCase
 
     public function testDbWipeWillRemoveAllTimescaleStuff(): void
     {
-        Schema::create('hypertbl', function (Blueprint $table): void {
+        Schema::create('hypertbl', static function (Blueprint $table): void {
             $table->text('tenant_id');
             $table->timestampsTz();
             $table->timescale(new CreateHypertable('created_at', '14 days'));
         });
-        Schema::continuousAggregate('hypertbl_agg', function (CaggBlueprint $table): void {
+        Schema::continuousAggregate('hypertbl_agg', static function (CaggBlueprint $table): void {
             $table->as("select time_bucket('1 day', created_at) bucket, tenant_id, count(*) from hypertbl group by bucket, tenant_id");
         });
 
@@ -450,7 +450,7 @@ class ExtensionTimescaleTest extends TestCase
         $this->getConnection()->statement("select create_hypertable('hypertbl', by_range('time'))");
         $this->getConnection()->statement("create materialized view hypertbl_agg with (timescaledb.continuous) AS select time_bucket('1 day', time) bucket, count(*) from hypertbl group by bucket with no data");
 
-        $queries = $this->withQueryLog(function (): void {
+        $queries = $this->withQueryLog(static function (): void {
             Schema::dropContinuousAggregate('hypertbl_agg');
         });
 
@@ -463,7 +463,7 @@ class ExtensionTimescaleTest extends TestCase
         $this->getConnection()->statement("select create_hypertable('hypertbl', by_range('time'))");
         $this->getConnection()->statement("create materialized view hypertbl_agg with (timescaledb.continuous) AS select time_bucket('1 day', time) bucket, count(*) from hypertbl group by bucket with no data");
 
-        $queries = $this->withQueryLog(function (): void {
+        $queries = $this->withQueryLog(static function (): void {
             Schema::dropContinuousAggregateIfExists('hypertbl_agg');
         });
 
@@ -493,8 +493,8 @@ class ExtensionTimescaleTest extends TestCase
             }
         };
 
-        $queries = $this->withQueryLog(function () use ($action): void {
-            Schema::table('tbl', function (Blueprint $table) use ($action): void {
+        $queries = $this->withQueryLog(static function () use ($action): void {
+            Schema::table('tbl', static function (Blueprint $table) use ($action): void {
                 $table->timescale($action);
             });
         });

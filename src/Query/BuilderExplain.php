@@ -21,8 +21,8 @@ trait BuilderExplain
         };
 
         return (new Collection($this->getConnection()->select("EXPLAIN ({$options}) {$this->toSql()}", $this->getBindings())))
-            ->map(fn ($row) => Arr::first($row))
-            ->reduce(function (?Collection $carry, string $item) {
+            ->map(static fn ($row) => Arr::first($row))
+            ->reduce(static function (?Collection $carry, string $item) {
                 if (null === $carry) {
                     return new Collection([$item]);
                 }

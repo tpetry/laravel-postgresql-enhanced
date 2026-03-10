@@ -39,7 +39,7 @@ class BuilderUpsertPartialTest extends TestCase
         $queries = $this->withQueryLog(function (): void {
             $result = (new ExamplePartial())
                 ->newQuery()
-                ->upsertPartial([['str' => 'JKLkmraa', 'val' => 849351]], ['str'], ['val'], fn (Builder $query) => $query->whereNull('deleted_at'));
+                ->upsertPartial([['str' => 'JKLkmraa', 'val' => 849351]], ['str'], ['val'], static fn (Builder $query) => $query->whereNull('deleted_at'));
 
             $this->assertEquals(1, $result);
         });

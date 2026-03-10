@@ -25,7 +25,7 @@ trait BuilderCte
         // add them. The app could fix it by keeping track of which CTEs have already been added. But for better
         // developer experience we just keep the last added expression, so the applications could doesn't have to be
         // made more complex when the *same* CTE is added multiple times.
-        $this->expressions = array_filter($this->expressions, function (array $expression) use ($as): bool {
+        $this->expressions = array_filter($this->expressions, static function (array $expression) use ($as): bool {
             return $expression['as'] !== $as;
         });
         $this->bindings['expressions'] = Arr::flatten(array_column($this->expressions, 'bindings'), 1);

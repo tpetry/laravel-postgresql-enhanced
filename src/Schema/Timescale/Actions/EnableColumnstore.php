@@ -21,8 +21,8 @@ class EnableColumnstore implements Action
             'timescaledb.compress' => true,
             'timescaledb.compress_orderby' => $grammar->columnizeWithSuffix(Arr::wrap($this->orderBy)),
             'timescaledb.compress_segmentby' => $grammar->columnize(Arr::wrap($this->segmentBy)),
-        ], fn (mixed $value) => filled($value));
-        $optionsStr = implode(', ', array_map(fn (string $key, mixed $value) => "{$key} = {$grammar->escape($value)}", array_keys($options), array_values($options)));
+        ], static fn (mixed $value) => filled($value));
+        $optionsStr = implode(', ', array_map(static fn (string $key, mixed $value) => "{$key} = {$grammar->escape($value)}", array_keys($options), array_values($options)));
 
         return ["alter table {$grammar->wrap($table)} set ({$optionsStr})"];
     }

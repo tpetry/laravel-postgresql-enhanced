@@ -105,7 +105,7 @@ class CaggBlueprint
     {
         foreach ($actions as $action) {
             $this->commands[] = function (Connection $connection, Grammar $grammar) use ($action) {
-                return array_map(fn ($sql) => str_replace('alter table', 'alter materialized view', $sql), $action->getValue($grammar, $this->table));
+                return array_map(static fn ($sql) => str_replace('alter table', 'alter materialized view', $sql), $action->getValue($grammar, $this->table));
             };
         }
     }

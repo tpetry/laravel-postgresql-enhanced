@@ -36,7 +36,7 @@ class BuilderReturning
             /* @var \Illuminate\Database\Eloquent\Builder $this */
             return $this->hydrate(
                 $this->applyScopes()->getQuery()->deleteReturning(null, $returning)->all()
-            )->each(fn (Model $model) => $model->exists = false);
+            )->each(static fn (Model $model) => $model->exists = false);
         };
     }
 

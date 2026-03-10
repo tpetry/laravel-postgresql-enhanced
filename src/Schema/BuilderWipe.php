@@ -75,12 +75,12 @@ trait BuilderWipe
     {
         $excludedRelations = array_merge($this->connection->getConfig('dont_drop') ?? [], $exclude);
 
-        $avilableRelations = array_map(fn ($relation) => [
+        $avilableRelations = array_map(static fn ($relation) => [
             'name' => $relation->name,
             'schema_qualified_name' => "{$relation->schema}.{$relation->name}",
         ], $relations->all());
 
-        return array_filter($avilableRelations, function ($relation) use ($excludedRelations) {
+        return array_filter($avilableRelations, static function ($relation) use ($excludedRelations) {
             return blank(array_intersect([$relation['name'], $relation['schema_qualified_name']], $excludedRelations));
         });
     }

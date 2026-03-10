@@ -19,8 +19,8 @@ class TableOptionsTest extends TestCase
 
     public function testStorageParameters(): void
     {
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test', static function (Blueprint $table): void {
                 $table->with([
                     'autovacuum_analyze_scale_factor' => 0.02,
                     'fillfactor' => 90,
@@ -35,8 +35,8 @@ class TableOptionsTest extends TestCase
 
     public function testUnlogged(): void
     {
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test', static function (Blueprint $table): void {
                 $table->unlogged();
                 $table->unlogged(true);
                 $table->unlogged(false);

@@ -88,7 +88,7 @@ trait BlueprintIndex
      */
     protected function createIndexName($type, array $columns): string
     {
-        $columns = array_map(function (string $column): string {
+        $columns = array_map(static function (string $column): string {
             // When the column has a structure like '(.+).*' it's an functional index. But it's not
             // easily possible to extract column names from a functional expression so the developer
             // has to provide an index name instead of relying on the automatic index name generation.

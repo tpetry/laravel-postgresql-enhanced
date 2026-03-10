@@ -20,8 +20,8 @@ class ForeignKeyTest extends TestCase
         $this->getConnection()->statement('CREATE TABLE test_589166 (col_306219 bigint PRIMARY KEY)');
         $this->getConnection()->statement('CREATE TABLE test_114824 (col_306219 bigint)');
 
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_114824', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_114824', static function (Blueprint $table): void {
                 $table->foreign('col_306219')->references('col_306219')->on('test_589166')->notEnforced(false);
             });
         });
@@ -37,8 +37,8 @@ class ForeignKeyTest extends TestCase
         $this->getConnection()->statement('CREATE TABLE test_940615 (col_422395 bigint PRIMARY KEY)');
         $this->getConnection()->statement('CREATE TABLE test_861910 (col_422395 bigint)');
 
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_861910', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_861910', static function (Blueprint $table): void {
                 $table->foreign('col_422395')->references('col_422395')->on('test_940615')->notEnforced(true);
             });
         });
@@ -55,8 +55,8 @@ class ForeignKeyTest extends TestCase
         $this->getConnection()->statement('CREATE TABLE test_668671 (col_975277 bigint, valid tstzrange, PRIMARY KEY (col_975277, valid WITHOUT OVERLAPS))');
         $this->getConnection()->statement('CREATE TABLE test_178855 (col_975277 bigint, valid tstzrange, PRIMARY KEY (col_975277, valid WITHOUT OVERLAPS))');
 
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_178855', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_178855', static function (Blueprint $table): void {
                 $table->foreign(['col_975277', 'PERIOD valid'])->references(['col_975277', 'PERIOD valid'])->on('test_668671');
             });
         });

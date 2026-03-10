@@ -24,7 +24,7 @@ class CreateHypertable implements Action
     {
         $column = $grammar->escape($this->column);
         $interval = is_numeric($this->interval) ? $this->interval : "interval {$grammar->escape($this->interval)}";
-        $partitionFunction = transform($this->partitionFunction, fn (string $name) => $grammar->escape($name));
+        $partitionFunction = transform($this->partitionFunction, static fn (string $name) => $grammar->escape($name));
 
         return match (filled($partitionFunction)) {
             false => "by_range({$column}, {$interval})",

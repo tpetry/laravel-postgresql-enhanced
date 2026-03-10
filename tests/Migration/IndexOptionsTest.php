@@ -18,11 +18,11 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
-        Schema::create('test_260745', function (Blueprint $table): void {
+        Schema::create('test_260745', static function (Blueprint $table): void {
             $table->string('col_818827');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_260745', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_260745', static function (Blueprint $table): void {
                 $table->fullText(['col_818827'])->concurrently();
             });
         }, pretend: true);
@@ -35,11 +35,11 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
-        Schema::create('test_406163', function (Blueprint $table): void {
+        Schema::create('test_406163', static function (Blueprint $table): void {
             $table->string('col_833985');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_406163', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_406163', static function (Blueprint $table): void {
                 $table->fullText(['col_833985'], 'index_495761')->concurrently();
             });
         }, pretend: true);
@@ -48,11 +48,11 @@ class IndexOptionsTest extends TestCase
 
     public function testConcurrentlyIndexByColumn(): void
     {
-        Schema::create('test_684553', function (Blueprint $table): void {
+        Schema::create('test_684553', static function (Blueprint $table): void {
             $table->string('col_930758');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_684553', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_684553', static function (Blueprint $table): void {
                 $table->index(['col_930758'])->concurrently();
             });
         }, pretend: true);
@@ -61,11 +61,11 @@ class IndexOptionsTest extends TestCase
 
     public function testConcurrentlyIndexByName(): void
     {
-        Schema::create('test_323396', function (Blueprint $table): void {
+        Schema::create('test_323396', static function (Blueprint $table): void {
             $table->string('col_677415');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_323396', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_323396', static function (Blueprint $table): void {
                 $table->index(['col_677415'], 'index_336745')->concurrently();
             });
         }, pretend: true);
@@ -78,11 +78,11 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
         }
 
-        Schema::create('test_142731', function (Blueprint $table): void {
+        Schema::create('test_142731', static function (Blueprint $table): void {
             $table->string('col_247155');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_142731', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_142731', static function (Blueprint $table): void {
                 $table->rawIndex('col_247155', 'idx_585783')->concurrently();
             });
         }, pretend: true);
@@ -91,11 +91,11 @@ class IndexOptionsTest extends TestCase
 
     public function testConcurrentlySpatialIndexByColumn(): void
     {
-        Schema::create('test_734987', function (Blueprint $table): void {
+        Schema::create('test_734987', static function (Blueprint $table): void {
             $table->integerRange('col_617117');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_734987', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_734987', static function (Blueprint $table): void {
                 $table->spatialIndex(['col_617117'])->concurrently();
             });
         }, pretend: true);
@@ -104,11 +104,11 @@ class IndexOptionsTest extends TestCase
 
     public function testConcurrentlySpatialIndexByName(): void
     {
-        Schema::create('test_469394', function (Blueprint $table): void {
+        Schema::create('test_469394', static function (Blueprint $table): void {
             $table->integerRange('col_562801');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_469394', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_469394', static function (Blueprint $table): void {
                 $table->spatialIndex(['col_562801'], 'index_623983')->concurrently();
             });
         }, pretend: true);
@@ -117,11 +117,11 @@ class IndexOptionsTest extends TestCase
 
     public function testConcurrentlyUniqueIndexByColumn(): void
     {
-        Schema::create('test_144373', function (Blueprint $table): void {
+        Schema::create('test_144373', static function (Blueprint $table): void {
             $table->string('col_988745');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_144373', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_144373', static function (Blueprint $table): void {
                 $table->uniqueIndex(['col_988745'])->concurrently();
             });
         }, pretend: true);
@@ -130,11 +130,11 @@ class IndexOptionsTest extends TestCase
 
     public function testConcurrentlyUniqueIndexByName(): void
     {
-        Schema::create('test_583449', function (Blueprint $table): void {
+        Schema::create('test_583449', static function (Blueprint $table): void {
             $table->string('col_134696');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_583449', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_583449', static function (Blueprint $table): void {
                 $table->uniqueIndex(['col_134696'], 'index_304869')->concurrently();
             });
         }, pretend: true);
@@ -147,11 +147,11 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
-        Schema::create('test_806712', function (Blueprint $table): void {
+        Schema::create('test_806712', static function (Blueprint $table): void {
             $table->string('col_274742');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_806712', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_806712', static function (Blueprint $table): void {
                 $table->fullText(['col_274742'])->ifNotExists();
             });
         }, pretend: true);
@@ -164,11 +164,11 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
-        Schema::create('test_940928', function (Blueprint $table): void {
+        Schema::create('test_940928', static function (Blueprint $table): void {
             $table->string('col_563370');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_940928', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_940928', static function (Blueprint $table): void {
                 $table->fullText(['col_563370'], 'index_726055')->ifNotExists();
             });
         });
@@ -177,11 +177,11 @@ class IndexOptionsTest extends TestCase
 
     public function testIfNotExistsIndexByColumn(): void
     {
-        Schema::create('test_233704', function (Blueprint $table): void {
+        Schema::create('test_233704', static function (Blueprint $table): void {
             $table->string('col_484213');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_233704', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_233704', static function (Blueprint $table): void {
                 $table->index(['col_484213'])->ifNotExists();
             });
         });
@@ -190,11 +190,11 @@ class IndexOptionsTest extends TestCase
 
     public function testIfNotExistsIndexByName(): void
     {
-        Schema::create('test_101004', function (Blueprint $table): void {
+        Schema::create('test_101004', static function (Blueprint $table): void {
             $table->string('col_749919');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_101004', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_101004', static function (Blueprint $table): void {
                 $table->index(['col_749919'], 'index_605253')->ifNotExists();
             });
         });
@@ -207,11 +207,11 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
         }
 
-        Schema::create('test_302103', function (Blueprint $table): void {
+        Schema::create('test_302103', static function (Blueprint $table): void {
             $table->string('col_650398');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_302103', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_302103', static function (Blueprint $table): void {
                 $table->rawIndex('col_650398', 'idx_728687')->ifNotExists();
             });
         });
@@ -220,11 +220,11 @@ class IndexOptionsTest extends TestCase
 
     public function testIfNotExistsSpatialIndexByColumn(): void
     {
-        Schema::create('test_508190', function (Blueprint $table): void {
+        Schema::create('test_508190', static function (Blueprint $table): void {
             $table->integerRange('col_402778');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_508190', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_508190', static function (Blueprint $table): void {
                 $table->spatialIndex(['col_402778'])->ifNotExists();
             });
         });
@@ -233,11 +233,11 @@ class IndexOptionsTest extends TestCase
 
     public function testIfNotExistsSpatialIndexByName(): void
     {
-        Schema::create('test_521621', function (Blueprint $table): void {
+        Schema::create('test_521621', static function (Blueprint $table): void {
             $table->integerRange('col_990392');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_521621', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_521621', static function (Blueprint $table): void {
                 $table->spatialIndex(['col_990392'], 'index_124848')->ifNotExists();
             });
         });
@@ -246,11 +246,11 @@ class IndexOptionsTest extends TestCase
 
     public function testIfNotExistsUniqueIndexByColumn(): void
     {
-        Schema::create('test_868599', function (Blueprint $table): void {
+        Schema::create('test_868599', static function (Blueprint $table): void {
             $table->string('col_571721');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_868599', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_868599', static function (Blueprint $table): void {
                 $table->uniqueIndex(['col_571721'])->ifNotExists();
             });
         });
@@ -259,11 +259,11 @@ class IndexOptionsTest extends TestCase
 
     public function testIfNotExistsUniqueIndexByName(): void
     {
-        Schema::create('test_324400', function (Blueprint $table): void {
+        Schema::create('test_324400', static function (Blueprint $table): void {
             $table->string('col_208151');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_324400', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_324400', static function (Blueprint $table): void {
                 $table->uniqueIndex(['col_208151'], 'index_810276')->ifNotExists();
             });
         });
@@ -272,12 +272,12 @@ class IndexOptionsTest extends TestCase
 
     public function testIncludeIndexByColumn(): void
     {
-        Schema::create('test_130163', function (Blueprint $table): void {
+        Schema::create('test_130163', static function (Blueprint $table): void {
             $table->string('col_133517');
             $table->string('col_838026');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_130163', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_130163', static function (Blueprint $table): void {
                 $table->index(['col_133517'])->include(['col_838026']);
             });
         });
@@ -286,12 +286,12 @@ class IndexOptionsTest extends TestCase
 
     public function testIncludeIndexByName(): void
     {
-        Schema::create('test_943012', function (Blueprint $table): void {
+        Schema::create('test_943012', static function (Blueprint $table): void {
             $table->string('col_575492');
             $table->string('col_699784');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_943012', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_943012', static function (Blueprint $table): void {
                 $table->index(['col_575492'], 'index_326954')->include('col_699784');
             });
         });
@@ -304,12 +304,12 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
         }
 
-        Schema::create('test_550509', function (Blueprint $table): void {
+        Schema::create('test_550509', static function (Blueprint $table): void {
             $table->string('col_197581');
             $table->string('col_535872');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_550509', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_550509', static function (Blueprint $table): void {
                 $table->rawIndex('col_197581', 'idx_253616')->include(['col_535872']);
             });
         });
@@ -318,12 +318,12 @@ class IndexOptionsTest extends TestCase
 
     public function testIncludeSpatialIndexByColumn(): void
     {
-        Schema::create('test_780591', function (Blueprint $table): void {
+        Schema::create('test_780591', static function (Blueprint $table): void {
             $table->integerRange('col_450233');
             $table->string('col_570386');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_780591', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_780591', static function (Blueprint $table): void {
                 $table->spatialIndex(['col_450233'])->include(['col_570386']);
             });
         });
@@ -332,12 +332,12 @@ class IndexOptionsTest extends TestCase
 
     public function testIncludeSpatialIndexByName(): void
     {
-        Schema::create('test_900795', function (Blueprint $table): void {
+        Schema::create('test_900795', static function (Blueprint $table): void {
             $table->integerRange('col_668927');
             $table->string('col_381249');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_900795', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_900795', static function (Blueprint $table): void {
                 $table->spatialIndex(['col_668927'], 'index_444499')->include('col_381249');
             });
         });
@@ -346,12 +346,12 @@ class IndexOptionsTest extends TestCase
 
     public function testIncludeUniqueIndexByColumn(): void
     {
-        Schema::create('test_263710', function (Blueprint $table): void {
+        Schema::create('test_263710', static function (Blueprint $table): void {
             $table->string('col_865593');
             $table->string('col_972446');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_263710', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_263710', static function (Blueprint $table): void {
                 $table->uniqueIndex(['col_865593'])->include(['col_972446']);
             });
         });
@@ -360,12 +360,12 @@ class IndexOptionsTest extends TestCase
 
     public function testIncludeUniqueIndexByName(): void
     {
-        Schema::create('test_114041', function (Blueprint $table): void {
+        Schema::create('test_114041', static function (Blueprint $table): void {
             $table->string('col_878088');
             $table->string('col_958638');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_114041', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_114041', static function (Blueprint $table): void {
                 $table->uniqueIndex(['col_878088'], 'index_151431')->include('col_958638');
             });
         });
@@ -378,11 +378,11 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
-        Schema::create('test_805943', function (Blueprint $table): void {
+        Schema::create('test_805943', static function (Blueprint $table): void {
             $table->string('col_721591');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_805943', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_805943', static function (Blueprint $table): void {
                 $table->fullText(['col_721591'])->language('simple');
             });
         });
@@ -395,11 +395,11 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
-        Schema::create('test_575245', function (Blueprint $table): void {
+        Schema::create('test_575245', static function (Blueprint $table): void {
             $table->string('col_400891');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_575245', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_575245', static function (Blueprint $table): void {
                 $table->fullText(['col_400891'], 'index_618564')->language('simple');
             });
         });
@@ -416,11 +416,11 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Null distinct handling is first supported with PostgreSQL 15.');
         }
 
-        Schema::create('test_235072', function (Blueprint $table): void {
+        Schema::create('test_235072', static function (Blueprint $table): void {
             $table->string('col_864636')->nullable();
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_235072', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_235072', static function (Blueprint $table): void {
                 $table->rawIndex('col_864636', 'idx_400631')->nullsNotDistinct();
             });
         });
@@ -433,11 +433,11 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Null distinct handling is first supported with PostgreSQL 15.');
         }
 
-        Schema::create('test_362300', function (Blueprint $table): void {
+        Schema::create('test_362300', static function (Blueprint $table): void {
             $table->string('col_175058')->nullable();
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_362300', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_362300', static function (Blueprint $table): void {
                 $table->uniqueIndex(['col_175058'])->nullsNotDistinct();
             });
         });
@@ -450,11 +450,11 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Null distinct handling is first supported with PostgreSQL 15.');
         }
 
-        Schema::create('test_269321', function (Blueprint $table): void {
+        Schema::create('test_269321', static function (Blueprint $table): void {
             $table->string('col_729148')->nullable();
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_269321', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_269321', static function (Blueprint $table): void {
                 $table->uniqueIndex(['col_729148'], 'index_992648')->nullsNotDistinct();
             });
         });
@@ -467,13 +467,13 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
-        Schema::create('test_311536', function (Blueprint $table): void {
+        Schema::create('test_311536', static function (Blueprint $table): void {
             $table->string('col_877250');
             $table->string('col_599221');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_311536', function (Blueprint $table): void {
-                $table->fullText(['col_877250'])->where(fn (Builder $query) => $query->whereNull('col_599221'));
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_311536', static function (Blueprint $table): void {
+                $table->fullText(['col_877250'])->where(static fn (Builder $query) => $query->whereNull('col_599221'));
             });
         });
         $this->assertEquals(['create index "test_311536_col_877250_fulltext" on "test_311536" using gin ((to_tsvector(\'english\', "col_877250"))) where "col_599221" is null'], array_column($queries, 'query'));
@@ -485,12 +485,12 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
-        Schema::create('test_606168', function (Blueprint $table): void {
+        Schema::create('test_606168', static function (Blueprint $table): void {
             $table->string('col_229595');
             $table->string('col_711664');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_606168', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_606168', static function (Blueprint $table): void {
                 $table->fullText(['col_229595'], 'index_461578')->where('col_711664 is null');
             });
         });
@@ -499,13 +499,13 @@ class IndexOptionsTest extends TestCase
 
     public function testPartialIndexByColumn(): void
     {
-        Schema::create('test_723016', function (Blueprint $table): void {
+        Schema::create('test_723016', static function (Blueprint $table): void {
             $table->string('col_437040');
             $table->string('col_922611');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_723016', function (Blueprint $table): void {
-                $table->index(['col_437040'])->where(fn (Builder $query) => $query->whereNull('col_922611'));
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_723016', static function (Blueprint $table): void {
+                $table->index(['col_437040'])->where(static fn (Builder $query) => $query->whereNull('col_922611'));
             });
         });
         $this->assertEquals(['create index "test_723016_col_437040_index" on "test_723016" ("col_437040") where "col_922611" is null'], array_column($queries, 'query'));
@@ -513,12 +513,12 @@ class IndexOptionsTest extends TestCase
 
     public function testPartialIndexByName(): void
     {
-        Schema::create('test_551914', function (Blueprint $table): void {
+        Schema::create('test_551914', static function (Blueprint $table): void {
             $table->string('col_306144');
             $table->string('col_203409');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_551914', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_551914', static function (Blueprint $table): void {
                 $table->index(['col_306144'], 'index_402517')->where('col_203409 is null');
             });
         });
@@ -531,13 +531,13 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
         }
 
-        Schema::create('test_992618', function (Blueprint $table): void {
+        Schema::create('test_992618', static function (Blueprint $table): void {
             $table->string('col_306901');
             $table->integer('col_554001');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_992618', function (Blueprint $table): void {
-                $table->rawIndex('col_306901', 'idx_836465')->where(fn (Builder $query) => $query->where('col_554001', 611288));
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_992618', static function (Blueprint $table): void {
+                $table->rawIndex('col_306901', 'idx_836465')->where(static fn (Builder $query) => $query->where('col_554001', 611288));
             });
         });
         $this->assertEquals(['create index "idx_836465" on "test_992618" (col_306901) where "col_554001" = 611288'], array_column($queries, 'query'));
@@ -545,13 +545,13 @@ class IndexOptionsTest extends TestCase
 
     public function testPartialSpatialIndexByColumn(): void
     {
-        Schema::create('test_726064', function (Blueprint $table): void {
+        Schema::create('test_726064', static function (Blueprint $table): void {
             $table->integerRange('col_503874');
             $table->integer('col_223582');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_726064', function (Blueprint $table): void {
-                $table->spatialIndex(['col_503874'])->where(fn (Builder $query) => $query->whereIn('col_223582', [413742]));
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_726064', static function (Blueprint $table): void {
+                $table->spatialIndex(['col_503874'])->where(static fn (Builder $query) => $query->whereIn('col_223582', [413742]));
             });
         });
         $this->assertEquals(['create index "test_726064_col_503874_spatialindex" on "test_726064" using gist ("col_503874") where "col_223582" in (413742)'], array_column($queries, 'query'));
@@ -559,12 +559,12 @@ class IndexOptionsTest extends TestCase
 
     public function testPartialSpatialIndexByName(): void
     {
-        Schema::create('test_181740', function (Blueprint $table): void {
+        Schema::create('test_181740', static function (Blueprint $table): void {
             $table->integerRange('col_285795');
             $table->integer('col_575425');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_181740', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_181740', static function (Blueprint $table): void {
                 $table->spatialIndex(['col_285795'], 'index_812661')->where('col_575425 in(674016)');
             });
         });
@@ -573,13 +573,13 @@ class IndexOptionsTest extends TestCase
 
     public function testPartialUniqueIndexByColumn(): void
     {
-        Schema::create('test_262832', function (Blueprint $table): void {
+        Schema::create('test_262832', static function (Blueprint $table): void {
             $table->string('col_656454');
             $table->integer('col_476983');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_262832', function (Blueprint $table): void {
-                $table->uniqueIndex(['col_656454'])->where(fn (Builder $query) => $query->where('col_476983', 966923));
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_262832', static function (Blueprint $table): void {
+                $table->uniqueIndex(['col_656454'])->where(static fn (Builder $query) => $query->where('col_476983', 966923));
             });
         });
         $this->assertEquals(['create unique index "test_262832_col_656454_unique" on "test_262832" ("col_656454") where "col_476983" = 966923'], array_column($queries, 'query'));
@@ -587,12 +587,12 @@ class IndexOptionsTest extends TestCase
 
     public function testPartialUniqueIndexByName(): void
     {
-        Schema::create('test_614344', function (Blueprint $table): void {
+        Schema::create('test_614344', static function (Blueprint $table): void {
             $table->string('col_327595');
             $table->integer('col_127923');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_614344', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_614344', static function (Blueprint $table): void {
                 $table->uniqueIndex(['col_327595'], 'index_729619')->where('col_127923 = 840879');
             });
         });
@@ -605,12 +605,12 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
-        Schema::create('test_517379', function (Blueprint $table): void {
+        Schema::create('test_517379', static function (Blueprint $table): void {
             $table->string('col_383934');
             $table->string('col_996362');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_517379', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_517379', static function (Blueprint $table): void {
                 $table->fullText(['col_383934', 'col_996362'])->weight(['A', 'B']);
             });
         });
@@ -623,12 +623,12 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
-        Schema::create('test_460239', function (Blueprint $table): void {
+        Schema::create('test_460239', static function (Blueprint $table): void {
             $table->string('col_705289');
             $table->string('col_996385');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_460239', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_460239', static function (Blueprint $table): void {
                 $table->fullText(['col_705289', 'col_996385'], 'index_183210')->weight(['A', 'B']);
             });
         });
@@ -641,11 +641,11 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
-        Schema::create('test_136102', function (Blueprint $table): void {
+        Schema::create('test_136102', static function (Blueprint $table): void {
             $table->string('col_856942');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_136102', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_136102', static function (Blueprint $table): void {
                 $table->fullText(['col_856942'])->with(['fastupdate' => 'off']);
             });
         });
@@ -658,11 +658,11 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Fulltext indexes have been added in a later Laraverl version.');
         }
 
-        Schema::create('test_251686', function (Blueprint $table): void {
+        Schema::create('test_251686', static function (Blueprint $table): void {
             $table->string('col_307576');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_251686', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_251686', static function (Blueprint $table): void {
                 $table->fullText(['col_307576'], 'index_767340')->with(['fastupdate' => 'off']);
             });
         });
@@ -671,11 +671,11 @@ class IndexOptionsTest extends TestCase
 
     public function testWithIndexByColumn(): void
     {
-        Schema::create('test_679473', function (Blueprint $table): void {
+        Schema::create('test_679473', static function (Blueprint $table): void {
             $table->string('col_534422');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_679473', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_679473', static function (Blueprint $table): void {
                 $table->index(['col_534422'])->with(['fillfactor' => 80]);
             });
         });
@@ -684,11 +684,11 @@ class IndexOptionsTest extends TestCase
 
     public function testWithIndexByName(): void
     {
-        Schema::create('test_533609', function (Blueprint $table): void {
+        Schema::create('test_533609', static function (Blueprint $table): void {
             $table->string('col_889546');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_533609', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_533609', static function (Blueprint $table): void {
                 $table->index(['col_889546'], 'index_477176')->with(['fillfactor' => 80]);
             });
         });
@@ -702,12 +702,12 @@ class IndexOptionsTest extends TestCase
         }
 
         Schema::createExtensionIfNotExists('btree_gist');
-        Schema::create('test_897145', function (Blueprint $table): void {
+        Schema::create('test_897145', static function (Blueprint $table): void {
             $table->string('col_301428');
             $table->timestampTzRange('col_734356');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_897145', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_897145', static function (Blueprint $table): void {
                 $table->primary(['col_301428', 'col_734356 WITHOUT OVERLAPS']);
             });
         });
@@ -721,12 +721,12 @@ class IndexOptionsTest extends TestCase
         }
 
         Schema::createExtensionIfNotExists('btree_gist');
-        Schema::create('test_849793', function (Blueprint $table): void {
+        Schema::create('test_849793', static function (Blueprint $table): void {
             $table->string('col_376999');
             $table->timestampTzRange('col_513975');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_849793', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_849793', static function (Blueprint $table): void {
                 $table->unique(['col_376999', 'col_513975 WITHOUT OVERLAPS']);
             });
         });
@@ -740,12 +740,12 @@ class IndexOptionsTest extends TestCase
         }
 
         Schema::createExtensionIfNotExists('btree_gist');
-        Schema::create('test_224202', function (Blueprint $table): void {
+        Schema::create('test_224202', static function (Blueprint $table): void {
             $table->string('col_405091');
             $table->timestampTzRange('col_427625');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_224202', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_224202', static function (Blueprint $table): void {
                 $table->unique(['col_405091', 'col_427625 WITHOUT OVERLAPS'], 'index_142173');
             });
         });
@@ -758,11 +758,11 @@ class IndexOptionsTest extends TestCase
             $this->markTestSkipped('Raw indexes have been added in a later Laravel version.');
         }
 
-        Schema::create('test_136121', function (Blueprint $table): void {
+        Schema::create('test_136121', static function (Blueprint $table): void {
             $table->string('col_933646');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_136121', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_136121', static function (Blueprint $table): void {
                 $table->rawIndex('col_933646', 'idx_547689')->with(['deduplicate_items' => true]);
             });
         });
@@ -771,11 +771,11 @@ class IndexOptionsTest extends TestCase
 
     public function testWithSpatialIndexByColumn(): void
     {
-        Schema::create('test_837999', function (Blueprint $table): void {
+        Schema::create('test_837999', static function (Blueprint $table): void {
             $table->integerRange('col_705526');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_837999', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_837999', static function (Blueprint $table): void {
                 $table->spatialIndex(['col_705526'])->with(['buffering' => 'auto']);
             });
         });
@@ -784,11 +784,11 @@ class IndexOptionsTest extends TestCase
 
     public function testWithSpatialIndexByName(): void
     {
-        Schema::create('test_183851', function (Blueprint $table): void {
+        Schema::create('test_183851', static function (Blueprint $table): void {
             $table->integerRange('col_297604');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_183851', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_183851', static function (Blueprint $table): void {
                 $table->spatialIndex(['col_297604'], 'index_675551')->with(['buffering' => 'auto']);
             });
         });
@@ -797,11 +797,11 @@ class IndexOptionsTest extends TestCase
 
     public function testWithUniqueIndexByColumn(): void
     {
-        Schema::create('test_457083', function (Blueprint $table): void {
+        Schema::create('test_457083', static function (Blueprint $table): void {
             $table->string('col_190610');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_457083', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_457083', static function (Blueprint $table): void {
                 $table->uniqueIndex(['col_190610'])->with(['deduplicate_items' => true]);
             });
         });
@@ -810,11 +810,11 @@ class IndexOptionsTest extends TestCase
 
     public function testWithUniqueIndexByName(): void
     {
-        Schema::create('test_271032', function (Blueprint $table): void {
+        Schema::create('test_271032', static function (Blueprint $table): void {
             $table->string('col_770102');
         });
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test_271032', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test_271032', static function (Blueprint $table): void {
                 $table->uniqueIndex(['col_770102'], 'index_655511')->with(['deduplicate_items' => true]);
             });
         });

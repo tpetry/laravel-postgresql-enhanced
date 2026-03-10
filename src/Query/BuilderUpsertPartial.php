@@ -44,7 +44,7 @@ trait BuilderUpsertPartial
 
         $bindings = $this->cleanBindings([
             ...Arr::flatten($values, 1),
-            ...(new Collection($update))->reject(fn ($value, $key) => \is_int($key))->all(),
+            ...(new Collection($update))->reject(static fn ($value, $key) => \is_int($key))->all(),
         ]);
 
         $upsert = $this->grammar->compileUpsert($this, $values, (array) $uniqueBy, $update);

@@ -40,7 +40,7 @@ class LazyByCursorTest extends TestCase
     public function testIteratesInBatches(): void
     {
         $queries = $this->withQueryLog(function (): void {
-            $this->getConnection()->table('example')->orderBy('id')->lazyByCursor(2)->each(function (): void {
+            $this->getConnection()->table('example')->orderBy('id')->lazyByCursor(2)->each(static function (): void {
                 // do nothing 😅
             });
         });

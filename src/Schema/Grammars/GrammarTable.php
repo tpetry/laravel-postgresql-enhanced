@@ -51,7 +51,7 @@ trait GrammarTable
     public function compileStorageParameters(Blueprint $blueprint, Fluent $command): string
     {
         $options = $command->get('options');
-        $options = array_map(fn (string $value, string $key) => "{$key} = {$value}", $options, array_keys($options));
+        $options = array_map(static fn (string $value, string $key) => "{$key} = {$value}", $options, array_keys($options));
         $storageParameters = implode(', ', $options);
 
         return "alter table {$this->wrapTable($blueprint->getTable())} set ({$storageParameters})";

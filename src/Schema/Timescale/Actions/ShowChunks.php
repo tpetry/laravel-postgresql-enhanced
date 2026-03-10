@@ -22,13 +22,13 @@ abstract class ShowChunks implements Action
 
         return match ([filled($olderThan), filled($newerThan)]) {
             [false, false] => "show_chunks({$grammar->escape($table)})",
-            default => value(function () use ($grammar, $table, $olderThan, $newerThan) {
+            default => value(static function () use ($grammar, $table, $olderThan, $newerThan) {
                 $values = array_filter([
                     'older_than' => $olderThan,
                     'newer_than' => $newerThan,
                 ]);
 
-                return "show_chunks({$grammar->escape($table)}, ".implode(', ', array_map(fn ($value, $key) => "{$key} => {$value}", $values, array_keys($values))).')';
+                return "show_chunks({$grammar->escape($table)}, ".implode(', ', array_map(static fn ($value, $key) => "{$key} => {$value}", $values, array_keys($values))).')';
             }),
         };
     }

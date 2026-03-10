@@ -19,8 +19,8 @@ class TableTest extends TestCase
 
     public function testAddColumnInitial(): void
     {
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test', static function (Blueprint $table): void {
                 $table->text('col_829351')->initial('val_656165');
             });
         });
@@ -33,8 +33,8 @@ class TableTest extends TestCase
 
     public function testAddColumnInitialWithDefault(): void
     {
-        $queries = $this->withQueryLog(function (): void {
-            Schema::table('test', function (Blueprint $table): void {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test', static function (Blueprint $table): void {
                 $table->text('col_437065')->initial('val_217786')->default('val_121964');
             });
         });
