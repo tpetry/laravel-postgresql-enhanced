@@ -93,7 +93,7 @@ class CaggBlueprint
      */
     public function realtime(bool $enabled = true): void
     {
-        $this->commands[] = fn (Connection $connection, Grammar $grammar) => ["alter materialized view {$grammar->wrap($this->table)} set (timescaledb.materialized_only = {$grammar->escape(!$enabled)})"];
+        $this->commands[] = fn (Connection $connection, Grammar $grammar) => ["alter materialized view {$grammar->wrapTable($this->table)} set (timescaledb.materialized_only = {$grammar->escape(!$enabled)})"];
     }
 
     /**
