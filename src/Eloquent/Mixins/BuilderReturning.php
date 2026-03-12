@@ -56,7 +56,7 @@ class BuilderReturning
             /* @var \Illuminate\Database\Eloquent\Builder $this */
             return $this->hydrate(
                 $this->applyScopes()->getQuery()->insertReturning($values, $returning)->all()
-            )->each(fn (Model $model) => $model->wasRecentlyCreated = true);
+            )->each(static fn (Model $model) => $model->wasRecentlyCreated = true);
         };
     }
 
@@ -66,7 +66,7 @@ class BuilderReturning
             /* @var \Illuminate\Database\Eloquent\Builder $this */
             return $this->hydrate(
                 $this->applyScopes()->getQuery()->insertUsingReturning($columns, $query, $returning)->all()
-            )->each(fn (Model $model) => $model->wasRecentlyCreated = true);
+            )->each(static fn (Model $model) => $model->wasRecentlyCreated = true);
         };
     }
 
