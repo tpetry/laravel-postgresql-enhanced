@@ -2,18 +2,22 @@ name: Laravel 12.x Compatability
 
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
     strategy:
       fail-fast: false
       matrix:
         php: [8.2, 8.3, 8.4]
-        laravel: [12.x-dev]
-        testbench: [10.*]
+        laravel: [12.x-dev, 13.x]
+        testbench: ['10.*', '11.*']
+        exclude:
+          - laravel: 13.x
+            php: 8.2
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }}
 
@@ -24,11 +28,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
       - name: Checkout code

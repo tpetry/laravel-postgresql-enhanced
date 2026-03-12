@@ -1,15 +1,18 @@
 name: PHPUnit
 
-on: [push, pull_request]
+on:
+  - push
+  - pull_request
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
     strategy:
       fail-fast: false
       matrix:
         php: [8.0, 8.1, 8.2, 8.3, 8.4]
-        laravel: [6.*, 7.*, 8.*, 9.*, 10.*, 11.*, 12.*]
+        laravel: ['6.*', '7.*', '8.*', '9.*', '10.*', '11.*', '12.*', '13.*']
         stability: [prefer-lowest, prefer-stable]
         include:
           - laravel: 6.*
@@ -78,6 +81,12 @@ jobs:
             php: 8.0
           - laravel: 12.*
             php: 8.1
+          - laravel: 13.*
+            php: 8.0
+          - laravel: 13.*
+            php: 8.1
+          - laravel: 13.*
+            php: 8.2
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }}
 
@@ -88,11 +97,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
       - name: Checkout code
