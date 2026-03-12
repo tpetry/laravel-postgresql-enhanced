@@ -10,8 +10,8 @@ class CreateRefreshPolicy implements Action
 {
     public function __construct(
         private string $interval,
-        private string|int|null $start,
-        private string|int|null $end,
+        private string|int|null $start = null,
+        private string|int|null $end = null,
     ) {
     }
 

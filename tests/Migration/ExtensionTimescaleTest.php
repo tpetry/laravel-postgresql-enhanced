@@ -156,7 +156,7 @@ class ExtensionTimescaleTest extends TestCase
 
     public function testActionCreateRefreshPolicy(): void
     {
-        $this->assertEquals(["select add_continuous_aggregate_policy('tbl', null, null, interval '5 minutes')"], $this->toSql(new CreateRefreshPolicy('5 minutes', null, null)));
+        $this->assertEquals(["select add_continuous_aggregate_policy('tbl', null, null, interval '5 minutes')"], $this->toSql(new CreateRefreshPolicy('5 minutes')));
 
         $this->assertEquals(["select add_continuous_aggregate_policy('tbl', 86400, 86400, interval '1 minutes')"], $this->toSql(new CreateRefreshPolicy('1 minutes', 86400, 86400)));
         $this->assertEquals(["select add_continuous_aggregate_policy('tbl', 86400, null, interval '1 minutes')"], $this->toSql(new CreateRefreshPolicy('1 minutes', 86400, null)));
