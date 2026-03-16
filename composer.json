@@ -65,7 +65,5 @@
                 "phpstan-extension.neon"
             ]
         }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }
