@@ -127,6 +127,32 @@ class ReturningTest extends TestCase
         $this->assertEquals(['insert into "example" ("str") values (?) on conflict do nothing returning "str"'], array_column($queries, 'query'));
     }
 
+    public function testInsertOrIgnoreReturningUniqueByArray(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            $result = $this->getConnection()
+                ->table('example')
+                ->insertOrIgnoreReturning(['str' => 'TssOy0gr'], uniqueBy: ['str', 'str']);
+
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([(object) ['id' => 1, 'str' => 'TssOy0gr']], $result->toArray());
+        });
+        $this->assertEquals(['insert into "example" ("str") values (?) on conflict ("str", "str") do nothing returning *'], array_column($queries, 'query'));
+    }
+
+    public function testInsertOrIgnoreReturningUniqueByString(): void
+    {
+        $queries = $this->withQueryLog(function (): void {
+            $result = $this->getConnection()
+                ->table('example')
+                ->insertOrIgnoreReturning(['str' => 'TssOy0gr'], uniqueBy: 'str');
+
+            $this->assertInstanceOf(Collection::class, $result);
+            $this->assertEquals([(object) ['id' => 1, 'str' => 'TssOy0gr']], $result->toArray());
+        });
+        $this->assertEquals(['insert into "example" ("str") values (?) on conflict ("str") do nothing returning *'], array_column($queries, 'query'));
+    }
+
     public function testInsertReturningAll(): void
     {
         $queries = $this->withQueryLog(function (): void {

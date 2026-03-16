@@ -46,7 +46,7 @@ trait BuilderReturning
      *
      * @return Collection<int, object>
      */
-    public function insertOrIgnoreReturning(array $values, array $returning = ['*']): Collection
+    public function insertOrIgnoreReturning(array $values, array $returning = ['*'], array|string|null $uniqueBy = null): Collection
     {
         if (empty($values)) {
             return collect();
@@ -65,14 +65,17 @@ trait BuilderReturning
             $this->applyBeforeQueryCallbacks();
         }
 
-        $sqlInsert = $this->getGrammar()->compileInsertOrIgnore($this, $values);
+        $sqlInsert = $this->getGrammar()->compileInsert($this, $values);
+        $sqlConflict = match ($uniqueBy) {
+            null => 'on conflict do nothing',
+            default => "on conflict ({$this->getGrammar()->columnize(Arr::wrap($uniqueBy))}) do nothing",
+        };
         $sqlReturning = $this->getGrammar()->compileReturning($this, $returning);
-        $bindings = [...$this->bindings['expressions'], ...Arr::flatten($values, 1)];
 
         return collect(
             $this->getConnection()->returningStatement(
-                "{$sqlInsert} {$sqlReturning}",
-                $this->cleanBindings($bindings),
+                "{$sqlInsert} {$sqlConflict} {$sqlReturning}",
+                $this->cleanBindings([...$this->bindings['expressions'], ...Arr::flatten($values, 1)]),
             ),
         );
     }
