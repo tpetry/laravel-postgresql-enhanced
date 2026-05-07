@@ -50,6 +50,40 @@ class OrderTest extends TestCase
         );
     }
 
+    public function testSortDirectionEnum(): void
+    {
+        if (!\function_exists('enum_exists') || !enum_exists(\SortDirection::class)) {
+            $this->markTestSkipped('The SortDirection enum is not available.');
+        }
+
+        $this->getConnection()->unprepared('CREATE TABLE example (id int, col int, created_at timestamp)');
+
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->orderBy('col', \SortDirection::Ascending)->get();
+            $this->getConnection()->table('example')->orderBy('col', \SortDirection::Descending, nulls: 'last')->get();
+            $this->getConnection()->table('example')->orderByNullsFirst('col', \SortDirection::Descending)->get();
+            $this->getConnection()->table('example')->latest('created_at')->get();
+            $this->getConnection()->table('example')->oldest('created_at')->get();
+            $this->getConnection()->table('example')->orderByDesc('col')->get();
+            $this->getConnection()->table('example')->forPageBeforeId(10, 20)->get();
+            $this->getConnection()->table('example')->forPageAfterId(10, 20)->get();
+        });
+
+        $this->assertEquals(
+            [
+                'select * from "example" order by "col" asc',
+                'select * from "example" order by "col" desc nulls last',
+                'select * from "example" order by "col" desc nulls first',
+                'select * from "example" order by "created_at" desc',
+                'select * from "example" order by "created_at" asc',
+                'select * from "example" order by "col" desc',
+                'select * from "example" where "id" < ? order by "id" desc limit 10',
+                'select * from "example" where "id" > ? order by "id" asc limit 10',
+            ],
+            array_column($queries, 'query'),
+        );
+    }
+
     public function testVectorSimilarity(): void
     {
         if (!$this->getConnection()->table('pg_available_extensions')->where('name', 'vector')->exists()) {
