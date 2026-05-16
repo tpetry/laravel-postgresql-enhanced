@@ -28,12 +28,8 @@ trait BuilderOrder
         }
 
         $direction = match (true) {
-            $direction instanceof \SortDirection => match ($direction) {
-                \SortDirection::Ascending => 'asc',
-                \SortDirection::Descending => 'desc',
-            },
-            'asc' === strtolower($direction) => 'asc',
-            'desc' === strtolower($direction) => 'desc',
+            \SortDirection::Ascending === $direction || 'asc' === strtolower($direction) => 'asc',
+            \SortDirection::Descending === $direction || 'desc' === strtolower($direction) => 'desc',
             default => throw new InvalidArgumentException('Order direction must be a SortDirection, "asc" or "desc".'),
         };
 
