@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests\Query;
 
+use Composer\Semver\Comparator;
 use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class OrderTest extends TestCase
@@ -46,6 +47,36 @@ class OrderTest extends TestCase
         });
         $this->assertEquals(
             ['select * from "example" order by "col" asc nulls last', 'select * from "example" order by "col" asc nulls last'],
+            array_column($queries, 'query'),
+        );
+    }
+
+    public function testSortDirectionEnum(): void
+    {
+        if (Comparator::lessThan(\PHP_VERSION, '8.1.0')) {
+            $this->markTestSkipped('Enums are only supported from PHP 8.1.0.');
+        }
+
+        $this->getConnection()->unprepared('CREATE TABLE example (col int)');
+
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->orderBy('col', \SortDirection::Ascending)->get();
+            $this->getConnection()->table('example')->orderBy('col', \SortDirection::Descending)->get();
+            $this->getConnection()->table('example')->orderByNullsFirst('col', \SortDirection::Ascending)->get();
+            $this->getConnection()->table('example')->orderByNullsFirst('col', \SortDirection::Descending)->get();
+            $this->getConnection()->table('example')->orderByNullsLast('col', \SortDirection::Ascending)->get();
+            $this->getConnection()->table('example')->orderByNullsLast('col', \SortDirection::Descending)->get();
+        });
+
+        $this->assertEquals(
+            [
+                'select * from "example" order by "col" asc',
+                'select * from "example" order by "col" desc',
+                'select * from "example" order by "col" asc nulls first',
+                'select * from "example" order by "col" desc nulls first',
+                'select * from "example" order by "col" asc nulls last',
+                'select * from "example" order by "col" desc nulls last',
+            ],
             array_column($queries, 'query'),
         );
     }

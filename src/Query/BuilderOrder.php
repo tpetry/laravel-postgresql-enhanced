@@ -7,6 +7,7 @@ namespace Tpetry\PostgresqlEnhanced\Query;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Query\Expression;
 use InvalidArgumentException;
+use SortDirection;
 
 trait BuilderOrder
 {
@@ -14,7 +15,7 @@ trait BuilderOrder
      * Add an "order by" clause to the query.
      *
      * @param \Closure|\Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder<*>|\Illuminate\Contracts\Database\Query\Expression|string $column
-     * @param 'asc'|'desc' $direction
+     * @param SortDirection|'asc'|'desc' $direction
      * @param 'default'|'first'|'last' $nulls
      */
     public function orderBy($column, $direction = 'asc', $nulls = 'default'): static
@@ -27,10 +28,13 @@ trait BuilderOrder
             $this->addBinding($bindings, $this->unions ? 'unionOrder' : 'order');
         }
 
-        $direction = strtolower($direction);
-        if (!\in_array($direction, ['asc', 'desc'], true)) {
-            throw new InvalidArgumentException('Order direction must be "asc" or "desc".');
-        }
+        $direction = match (true) {
+            class_exists(SortDirection::class) && SortDirection::Ascending === $direction => 'asc',
+            class_exists(SortDirection::class) && SortDirection::Descending === $direction => 'desc',
+            'asc' === strtolower($direction) => 'asc',
+            'desc' === strtolower($direction) => 'desc',
+            default => throw new InvalidArgumentException('Order direction must be a SortDirection, "asc" or "desc".'),
+        };
 
         $nulls = strtolower($nulls);
         if (!\in_array($nulls, ['default', 'first', 'last'], true)) {
@@ -50,9 +54,9 @@ trait BuilderOrder
      * Add an "order by nulls first" clause to the query.
      *
      * @param \Closure|\Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder<*>|\Illuminate\Contracts\Database\Query\Expression|string $column
-     * @param 'asc'|'desc' $direction
+     * @param SortDirection|'asc'|'desc' $direction
      */
-    public function orderByNullsFirst($column, string $direction = 'asc'): static
+    public function orderByNullsFirst($column, $direction = 'asc'): static
     {
         return $this->orderBy($column, $direction, 'first');
     }
@@ -61,9 +65,9 @@ trait BuilderOrder
      * Add an "order by nulls last" clause to the query.
      *
      * @param \Closure|\Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder<*>|\Illuminate\Contracts\Database\Query\Expression|string $column
-     * @param 'asc'|'desc' $direction
+     * @param SortDirection|'asc'|'desc' $direction
      */
-    public function orderByNullsLast($column, string $direction = 'asc'): static
+    public function orderByNullsLast($column, $direction = 'asc'): static
     {
         return $this->orderBy($column, $direction, 'last');
     }
