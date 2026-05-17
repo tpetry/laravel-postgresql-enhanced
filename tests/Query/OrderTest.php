@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests\Query;
 
+use Composer\Semver\Comparator;
 use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class OrderTest extends TestCase
@@ -52,6 +53,10 @@ class OrderTest extends TestCase
 
     public function testSortDirectionEnum(): void
     {
+        if (Comparator::lessThan(\PHP_VERSION, '8.1.0')) {
+            $this->markTestSkipped('Enums are only supported from PHP 8.1.0.');
+        }
+
         $this->getConnection()->unprepared('CREATE TABLE example (col int)');
 
         $queries = $this->withQueryLog(function (): void {
