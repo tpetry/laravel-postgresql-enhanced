@@ -7,6 +7,7 @@ namespace Tpetry\PostgresqlEnhanced\Query;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Query\Expression;
 use InvalidArgumentException;
+use SortDirection;
 
 trait BuilderOrder
 {
@@ -14,7 +15,7 @@ trait BuilderOrder
      * Add an "order by" clause to the query.
      *
      * @param \Closure|\Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder<*>|\Illuminate\Contracts\Database\Query\Expression|string $column
-     * @param \SortDirection|'asc'|'desc' $direction
+     * @param SortDirection|'asc'|'desc' $direction
      * @param 'default'|'first'|'last' $nulls
      */
     public function orderBy($column, $direction = 'asc', $nulls = 'default'): static
@@ -28,8 +29,8 @@ trait BuilderOrder
         }
 
         $direction = match (true) {
-            \SortDirection::Ascending === $direction => 'asc',
-            \SortDirection::Descending === $direction => 'desc',
+            class_exists(SortDirection::class) && SortDirection::Ascending === $direction => 'asc',
+            class_exists(SortDirection::class) && SortDirection::Descending === $direction => 'desc',
             'asc' === strtolower($direction) => 'asc',
             'desc' === strtolower($direction) => 'desc',
             default => throw new InvalidArgumentException('Order direction must be a SortDirection, "asc" or "desc".'),
@@ -53,7 +54,7 @@ trait BuilderOrder
      * Add an "order by nulls first" clause to the query.
      *
      * @param \Closure|\Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder<*>|\Illuminate\Contracts\Database\Query\Expression|string $column
-     * @param \SortDirection|'asc'|'desc' $direction
+     * @param SortDirection|'asc'|'desc' $direction
      */
     public function orderByNullsFirst($column, $direction = 'asc'): static
     {
@@ -64,7 +65,7 @@ trait BuilderOrder
      * Add an "order by nulls last" clause to the query.
      *
      * @param \Closure|\Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder<*>|\Illuminate\Contracts\Database\Query\Expression|string $column
-     * @param \SortDirection|'asc'|'desc' $direction
+     * @param SortDirection|'asc'|'desc' $direction
      */
     public function orderByNullsLast($column, $direction = 'asc'): static
     {
