@@ -9,6 +9,7 @@ use Illuminate\Container\Container;
 use Illuminate\Database\PostgresConnection;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Str;
+use PDO;
 use Tpetry\PostgresqlEnhanced\Backports\ConnectionBackport;
 use Tpetry\PostgresqlEnhanced\Connection\Transaction;
 use Tpetry\PostgresqlEnhanced\Exceptions\LazyTransactionLostConnectionException;
@@ -29,6 +30,28 @@ class PostgresEnhancedConnection extends PostgresConnection
      * @var ?array{append: array<int, mixed>, prepend: array<int, mixed>}
      */
     private ?array $additionalBindings = null;
+
+    /**
+     * Bind values to their parameters in the given statement.
+     *
+     * @param \PDOStatement $statement
+     * @param array $bindings
+     */
+    public function bindValues($statement, $bindings): void
+    {
+        foreach ($bindings as $key => $value) {
+            if (!\is_bool($value)) {
+                continue;
+            }
+
+            // Booleans only survive prepareBindings() when native booleans are enabled. They are bound as typed boolean
+            // parameters here because Laravel's own implementation would bind them as text.
+            $statement->bindValue(\is_string($key) ? $key : $key + 1, $value, PDO::PARAM_BOOL);
+            unset($bindings[$key]);
+        }
+
+        parent::bindValues($statement, $bindings);
+    }
 
     /**
      * Get the query grammar used by the connection.
@@ -62,6 +85,30 @@ class PostgresEnhancedConnection extends PostgresConnection
         $grammar = parent::getSchemaGrammar();
 
         return $grammar;
+    }
+
+    /**
+     * Prepare the query bindings for execution.
+     */
+    public function prepareBindings(array $bindings): array
+    {
+        $prepared = parent::prepareBindings($bindings);
+
+        if (!PostgresqlEnhanced::usesNativeBooleans()) {
+            return $prepared;
+        }
+
+        $emulatesPrepares = $this->usesEmulatedPreparesCompat();
+        foreach ($bindings as $key => $value) {
+            if (\is_bool($value)) {
+                // With real prepared statements pdo_pgsql sends a PHP bool as a typed boolean parameter. With emulated
+                // prepares the value is interpolated client side, so the literal strings Laravel 13.17 introduced for
+                // that case are used instead (laravel/framework#60425).
+                $prepared[$key] = $emulatesPrepares ? ($value ? 'true' : 'false') : $value;
+            }
+        }
+
+        return $prepared;
     }
 
     /**
@@ -199,5 +246,20 @@ class PostgresEnhancedConnection extends PostgresConnection
         ];
 
         return parent::run($query, $bindings, $callback);
+    }
+
+    /**
+     * Whether the PDO connection emulates prepared statements.
+     */
+    private function usesEmulatedPreparesCompat(): bool
+    {
+        // Laravel 13.17 added PostgresConnection::usesEmulatedPrepares() which also honours read/write connection
+        // configs (https://github.com/laravel/framework/pull/60425). Older versions fall back to the plain config.
+        // @phpstan-ignore function.alreadyNarrowedType (Laravel < 13.17 has no usesEmulatedPrepares())
+        if (method_exists($this, 'usesEmulatedPrepares')) {
+            return (bool) $this->usesEmulatedPrepares();
+        }
+
+        return (bool) ($this->getConfig('options')[PDO::ATTR_EMULATE_PREPARES] ?? false);
     }
 }
