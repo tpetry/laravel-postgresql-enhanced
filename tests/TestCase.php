@@ -12,6 +12,7 @@ use Illuminate\Database\Events\TransactionRolledBack;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection;
+use Tpetry\PostgresqlEnhanced\PostgresqlEnhanced;
 use Tpetry\PostgresqlEnhanced\PostgresqlEnhancedPdoConnection;
 use Tpetry\PostgresqlEnhanced\PostgresqlEnhancedServiceProvider;
 
@@ -19,15 +20,35 @@ class TestCase extends Orchestra
 {
     use DatabaseTransactions;
 
+    protected function tearDown(): void
+    {
+        // Static package flags must never leak into other tests: the suite runs in one process in random order.
+        PostgresqlEnhanced::reset();
+
+        parent::tearDown();
+    }
+
     public function getEnvironmentSetUp($app): void
     {
         $app['config']->set('database.default', 'pgsql');
         $app['config']->set('database.connections.pgsql.search_path', null);
+
+        foreach ($this->additionalConnections() as $name => $overrides) {
+            $app['config']->set("database.connections.{$name}", array_replace_recursive($app['config']->get('database.connections.pgsql'), $overrides));
+        }
+    }
+
+    /**
+     * Additional pgsql connections (name => config overrides merged over the default pgsql connection) a test class needs.
+     */
+    protected function additionalConnections(): array
+    {
+        return [];
     }
 
     protected function connectionsToTransact(): array
     {
-        return ['pgsql'];
+        return ['pgsql', ...array_keys($this->additionalConnections())];
     }
 
     /**
@@ -94,16 +115,16 @@ class TestCase extends Orchestra
         ];
     }
 
-    protected function withQueryLog(Closure $fn, bool $pretend = false): array
+    protected function withQueryLog(Closure $fn, bool $pretend = false, ?string $connection = null): array
     {
-        $this->getConnection()->flushQueryLog();
-        $this->getConnection()->enableQueryLog();
+        $this->getConnection($connection)->flushQueryLog();
+        $this->getConnection($connection)->enableQueryLog();
 
         match ($pretend) {
-            true => $this->getConnection()->pretend($fn),
+            true => $this->getConnection($connection)->pretend($fn),
             false => $fn(),
         };
 
-        return $this->getConnection()->getQueryLog();
+        return $this->getConnection($connection)->getQueryLog();
     }
 }
