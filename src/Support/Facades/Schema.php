@@ -33,6 +33,9 @@ use Illuminate\Support\Facades\Schema as BaseSchema;
  * @method static void dropMaterializedView(string ...$name)
  * @method static void dropMaterializedViewIfExists(string ...$name)
  * @method static void refreshMaterializedView(string $name, bool $concurrently = false, bool $withData = true)
+ * @method static void grantConnect(string $user)
+ * @method static void grantReadOnly(string $user, string $schema = 'public', bool $includeFuture = false)
+ * @method static void grantReadWrite(string $user, string $schema = 'public', bool $includeFuture = false)
  */
 class Schema extends BaseSchema
 {

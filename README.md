@@ -71,6 +71,7 @@ The minimal breaking changes of the past years are listed in the [breaking chang
         - [Label Tree](#label-tree)
         - [Vector](#vector)
         - [XML](#xml)
+    - [Grants](#grants)
 - [Query](#query)
     - [Explain](#explain)
     - [Fulltext Search](#fulltext-search)
@@ -946,6 +947,24 @@ The xml data type can be used to store an xml document.
 ```php
 // @see https://www.postgresql.org/docs/current/datatype-xml.html
 $table->xml(string $column);
+```
+
+### Grants
+
+Maybe you're using more than one database user.
+Granting this user the correct rights is more complicated in PostgreSQL than MySQL because you can do this per object.
+And by design, a new user starts with the most restrictive rights: It can't access anything.
+
+To simplify this, the three most common use cases for grants are provided as simple methods.
+With PostgreSQL, a grant for table access only allows tables that exist currently.
+You can pass the `includeFuture` option that also future tables are included when created by the current user running this command.
+
+```php
+use Tpetry\PostgresqlEnhanced\Support\Facades\Schema;
+
+Schema::grantConnect('newuser');
+Schema::grantReadOnly('newuser', schema: 'public', includeFuture: true);
+Schema::grantReadWrite('newuser', schema: 'public', includeFuture: true);
 ```
 
 ## Query
