@@ -13,6 +13,7 @@ class Builder extends PostgresBuilder
     use BuilderDomain;
     use BuilderExtension;
     use BuilderFunction;
+    use BuilderGrant;
     use BuilderView;
     use BuilderWipe;
 
