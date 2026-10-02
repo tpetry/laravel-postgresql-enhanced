@@ -10,6 +10,14 @@ use Tpetry\PostgresqlEnhanced\Schema\Timescale\Actions\Action;
 trait BlueprintTable
 {
     /**
+     * Set a table to (not) use row level security.
+     */
+    public function rowLevelSecurity(bool $value = true): Fluent
+    {
+        return $this->addCommand('rls', compact('value'));
+    }
+
+    /**
      * Set timescale hypertable options.
      *
      * @param Action ...$actions

@@ -17,6 +17,23 @@ class TableOptionsTest extends TestCase
         $this->getConnection()->statement('create table test()');
     }
 
+    public function testRowLevelSecurity(): void
+    {
+        $queries = $this->withQueryLog(static function (): void {
+            Schema::table('test', static function (Blueprint $table): void {
+                $table->rowLevelSecurity();
+                $table->rowLevelSecurity(true);
+                $table->rowLevelSecurity(false);
+            });
+        });
+
+        $this->assertEquals([
+            'alter table "test" enable row level security',
+            'alter table "test" enable row level security',
+            'alter table "test" disable row level security',
+        ], array_column($queries, 'query'));
+    }
+
     public function testStorageParameters(): void
     {
         $queries = $this->withQueryLog(static function (): void {

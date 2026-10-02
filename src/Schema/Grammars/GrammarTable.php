@@ -45,6 +45,14 @@ trait GrammarTable
         ];
     }
 
+    public function compileRls(Blueprint $blueprint, Fluent $command): string
+    {
+        return match ((bool) $command->get('value')) {
+            true => "alter table {$this->wrapTable($blueprint->getTable())} enable row level security",
+            false => "alter table {$this->wrapTable($blueprint->getTable())} disable row level security",
+        };
+    }
+
     /**
      * Compile a table storage parameters command.
      */

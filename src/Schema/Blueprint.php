@@ -15,6 +15,7 @@ use Illuminate\Database\Schema\Grammars\Grammar as BaseGrammar;
 class Blueprint extends BaseBlueprint
 {
     use BlueprintIndex;
+    use BlueprintPolicy;
     use BlueprintTable;
     use BlueprintTrigger;
     use BlueprintTypes;
