@@ -54,6 +54,7 @@ The minimal breaking changes of the past years are listed in the [breaking chang
     - [Table Options](#table-options)
         - [Unlogged](#unlogged)
         - [Storage Parameters](#storage-parameters-table)
+        - [Row Level Security](#row-level-security)
     - [Column Options](#column-options)
         - [Compression](#compression)
         - [Initial](#initial)
@@ -771,6 +772,55 @@ Schema::table('sessions', function (Blueprint $table): void {
     ]);
 });
 ```
+
+#### Row Level Security
+
+PostgreSQL allows you to define access control rules for table rows with [Row-Level Security (RLS)](https://www.postgresql.org/docs/current/ddl-rowsecurity.html) policies.
+With RLS enabled for a table, any row is hidden unless a policy grants access.
+You can imagine it as PostgreSQL preventing a user within your application from seeing and modifying rows of other tenants.
+Laravel's Eloquent scopes do the same thing, but one mistake anywhere in the application and a user can see data they shouldn't be allowed to see.
+Think of Laravel doing your fine-grained permission checks and PostgreSQL's row-level security as the last barrier to prevent data leakage and the need to tell your users you exposed their information to other people.
+
+```php
+// You shouldn't store credit cards yourself as you would have to comply with PCI DSS.
+// But it's a good example of why the extra security layer can be important...
+Schema::create('creditcards', function (Blueprint $table) {
+    $table->identity(always: true);
+    $table->uuid('tenant_id');
+    $table->uuid('user_id');
+    $table->text('cc_name');
+    $table->text('cc_number');
+    $table->text('cc_expiration');
+    $table->text('cc_securitycode');
+
+    $table->rowLevelSecurity();
+    $table->createPolicy(
+        name: 'access-by-user', 
+        user: 'app', 
+        condition: "user_id = current_setting('app.user_id', true)::uuid",
+    );
+    $table->createPolicy(
+        name: 'access-by-tenant-admin', 
+        user: 'app',
+        condition: fn ($query) => $query
+            ->whereRaw("tenant_id = current_setting('app.tenant_id', true)::uuid")
+            ->whereRaw("'admin' = current_setting('app.tenant_role', true)"),
+    );
+});
+```
+
+The `createPolicy()` table modifier allows all SQL operations.
+You can use `createPolicySelect()`, `createPolicyUpdate()`, `createInsert()` and `createPolicyDelete()` for more fine-grained policies if e.g. your rules for modifications should be different from selecting rows.
+With `alterPolicy*()` and `dropPolicy*()` you can change or remove policies created by `createPolicy*()`.
+
+> [!NOTE]
+> * PostgreSQL superusers and the user owning the database are exempt from RLS policies:
+>   You typically use the database owner for the migrations and create a new user for the Laravel requests which is restricted by the policies.
+> * Access is allowed when **one** policy matches: They are `ORed` and not `ANDed`.
+> * When a user doesn't have access, PG just pretends the row does not exist.
+>   Errors are only thrown when:
+>   - an INSERT is forbidden
+>   - an UPDATE would change access of the row from allowed to forbidden for the current user
 
 ### Column Options
 #### Compression
