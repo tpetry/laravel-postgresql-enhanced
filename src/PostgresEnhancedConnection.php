@@ -9,8 +9,9 @@ use Illuminate\Container\Container;
 use Illuminate\Database\PostgresConnection;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Str;
-use Throwable;
 use Tpetry\PostgresqlEnhanced\Backports\ConnectionBackport;
+use Tpetry\PostgresqlEnhanced\Connection\Transaction;
+use Tpetry\PostgresqlEnhanced\Exceptions\LazyTransactionLostConnectionException;
 use Tpetry\PostgresqlEnhanced\Query\Builder as QueryBuilder;
 use Tpetry\PostgresqlEnhanced\Query\Grammar as QueryGrammar;
 use Tpetry\PostgresqlEnhanced\Schema\Builder as SchemaBuilder;
@@ -20,6 +21,7 @@ use Tpetry\PostgresqlEnhanced\Support\Helpers\ZeroDowntimeMigrationSupervisor;
 class PostgresEnhancedConnection extends PostgresConnection
 {
     use ConnectionBackport;
+    use Transaction;
 
     /**
      * Additional bindings which will be used in run().
@@ -140,6 +142,7 @@ class PostgresEnhancedConnection extends PostgresConnection
      * @param string $query
      * @param array $bindings
      */
+    #[\Override]
     protected function handleQueryException(QueryException $e, $query, $bindings, Closure $callback): mixed
     {
         $zeroDowntimeMigrationErrors = [
@@ -155,34 +158,30 @@ class PostgresEnhancedConnection extends PostgresConnection
             throw new ZeroDowntimeMigrationTimeoutException('Zero downtime migration timeout exceeded.', previous: $e);
         }
 
-        return parent::handleQueryException($e, $query, $bindings, $callback);
-    }
+        // A lazy transaction is started on the database with the first unqueueable query, so a lost connection is only
+        // detected when that query fails. Like Laravel does for a failing `BEGIN`, the connection is renewed and the
+        // transaction started again. This is safe as nothing of the query is ever executed on the database.
+        $previous = $e->getPrevious();
+        if ($previous instanceof LazyTransactionLostConnectionException) {
+            // Reconnecting resets the transaction level and rolls back the transactions manager, which drops the
+            // transaction state and executes the rollback callbacks. That's not what we want as the reconnection should
+            // happen invisibly. So the current state is kept and reapplied after reconnecting, so we can continue with
+            // Laravel's usual exception handling to rerun the actual query which will start a lazy transaction again.
+            with(['level' => $this->transactions, 'manager' => $this->transactionsManager], function (array $transactionState): void {
+                $this->unsetTransactionManager();
+                $this->reconnect();
+                $this->setTransactionManager($transactionState['manager']);
+                $this->transactions = $transactionState['level'];
+            });
 
-    /**
-     * Handle an exception encountered when running a transacted statement.
-     *
-     * @param Throwable $e
-     * @param int $currentAttempt
-     * @param int $maxAttempts
-     */
-    protected function handleTransactionException($e, $currentAttempt, $maxAttempts): void
-    {
-        try {
-            parent::handleTransactionException($e, $currentAttempt, $maxAttempts);
-        } catch (Throwable $handleException) {
-            if ($e instanceof ZeroDowntimeMigrationTimeoutException) {
-                Container::getInstance()->get(ZeroDowntimeMigrationSupervisor::class)->stop();
+            /** @var PostgresqlEnhancedPdoConnection $pdo */
+            $pdo = $this->getPdo();
+            $pdo->lazyTransaction = $previous->getQueuedQueries();
 
-                // The laravel handleTransactionException handler will try to rollback any changes done in the failed
-                // transaction. In case on a ZeroDowntimeMigrationTimeoutException the database connection will
-                // probably already be closed so trying to rollback would throw new exception. When the $handleException
-                // is thrown all operations of the transaction have been reversed and the timeout exception can be
-                // thrown again.
-                throw $e;
-            }
-
-            throw $handleException;
+            return $this->runQueryCallback($query, $bindings, $callback);
         }
+
+        return parent::handleQueryException($e, $query, $bindings, $callback);
     }
 
     /**

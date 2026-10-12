@@ -86,6 +86,8 @@ The minimal breaking changes of the past years are listed in the [breaking chang
     - [Casts](#casts)
     - [Refresh Data on Save](#refresh-data-on-save)
     - [Date Formats](#date-formats)
+- [Connection](#connection)
+    - [Lazy Transaction](#lazy-transaction) 
 - [Expressions](#expressions)
 - [Supported Extensions](#supported-extensions)
     - [Timescale](#timescale)
@@ -1487,6 +1489,56 @@ class Example extends Model
 > When you mix columns with and without milliseconds in a table, the columns without milliseconds may behave unexpectedly to you:
 > Instead of truncating the milliseconds, they are rounded by PostgreSQL.
 > When the value is rounded up, your timestamp will be in the future.
+
+# Connection
+
+# Lazy Transaction
+
+You probably want to run all your operations within a transaction, so either all changes of your requests are saved to the database or none when an error occurs.
+Right now, you manually have to wrap these code blocks in a `DB::transaction()` manually.
+Wouldn't it be great if you could write an http middleware that automatically wraps a controller's action in a transaction?
+It's possible, but then you must apply it selectively to the right actions and you hopefully don't forget one!
+
+With lazy transaction, you can "start" a transaction which just notifies Laravel that you would like to run some stuff in a transaction.
+But the transaction is not immediately started, it is delayed until you send the first query.
+And if you don't send any, a lazy transaction is intelligent enough to realize that starting and committing an empty transaction is not a great thing to do.
+So it just doesn't do it.
+The transaction is now a no-operation.
+
+```php
+$db->transactionLazy(function() use($db) {
+    sleep(5); // no transaction active
+    $db->table('creditcards')->where('id', 1)->get(); // BEGIN + SELECT sent in one query
+}); // COMMIT sent
+
+$db->transactionLazy(function() use($db) {
+    sleep(5);
+}); // no database query sent
+```
+
+So the http middleware that wraps an action in a transaction only when needed is easy to build:
+
+```php
+class TransactionWrapper
+{
+    public function handle(Request $request, Closure $next): Response
+    {
+        DB::beginTransactionLazy();
+
+        try {
+            return $response = $next($request);
+        } finally {
+            isset($response) && !isset($response->exception) ? DB::commit() : DB::rollBack();
+        }
+    }
+}
+```
+
+> [!NOTE]
+> The queries executed within a lazy transaction are delayed but still an active database connection is needed.
+
+> [!NOTE]
+> Lazy transactions are only supported with PHP 8.4+, Laravel 11+ and don't work with persistent connections.
 
 # Expressions
 

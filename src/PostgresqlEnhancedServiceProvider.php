@@ -92,11 +92,12 @@ class PostgresqlEnhancedServiceProvider extends ServiceProvider
         EloquentBuilder::mixin(new BuilderReturning());
         EloquentBuilder::mixin(new BuilderUpsertPartial());
 
+        $this->app->bind('db.connector.pgsql', PostgresqlEnhancedConnector::class);
         Connection::resolverFor('pgsql', static function (PDO|Closure $pdo, string $database = '', string $tablePrefix = '', array $config = []) {
             return new PostgresEnhancedConnection($pdo, $database, $tablePrefix, $config);
         });
-        $this->app->singleton(ZeroDowntimeMigrationSupervisor::class);
 
+        $this->app->singleton(ZeroDowntimeMigrationSupervisor::class);
         Event::listen(MigrationsStarted::class, function (): void {
             $this->app->get(ZeroDowntimeMigrationSupervisor::class)->start();
         });
