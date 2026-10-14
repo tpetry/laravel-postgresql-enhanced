@@ -16,7 +16,7 @@ class BuilderReturning
     {
         return function (array $returning = ['*']): Collection {
             /** @var \Illuminate\Database\Eloquent\Builder $this */
-            $model = $this->getModel();
+            $model = $this->getModel(); // @phpstan-ignore varTag.nativeType
 
             $usesSoftDeletesTrait = \in_array(SoftDeletes::class, trait_uses_recursive($model::class));
             $hasDeletedAtColumn = method_exists($model, 'getDeletedAtColumn') && filled($model->getDeletedAtColumn());
@@ -96,7 +96,7 @@ class BuilderReturning
             /* @var \Illuminate\Database\Eloquent\Builder $this */
             return $this->hydrate(
                 $this->applyScopes()->getQuery()->updateReturning(
-                    $this->addUpdatedAtColumn($values),
+                    $this->addUpdatedAtColumn($values), // @phpstan-ignore method.protected
                     $returning
                 )->all()
             );
@@ -117,9 +117,9 @@ class BuilderReturning
 
             return $this->hydrate(
                 $this->applyScopes()->getQuery()->upsertReturning(
-                    $this->addTimestampsToUpsertValues($values),
+                    $this->addTimestampsToUpsertValues($values), // @phpstan-ignore method.protected
                     $uniqueBy,
-                    $this->addUpdatedAtToUpsertColumns($update),
+                    $this->addUpdatedAtToUpsertColumns($update), // @phpstan-ignore method.protected
                     $returning,
                 )->all()
             );

@@ -39,8 +39,6 @@ class Grammar extends PostgresGrammar
 
     /**
      * Compile a delete statement into SQL.
-     *
-     * @param Builder $query
      */
     public function compileDelete(BaseBuilder $query): string
     {
@@ -49,8 +47,6 @@ class Grammar extends PostgresGrammar
 
     /**
      * Compile an insert statement into SQL.
-     *
-     * @param Builder $query
      */
     public function compileInsert(BaseBuilder $query, array $values): string
     {
@@ -59,8 +55,6 @@ class Grammar extends PostgresGrammar
 
     /**
      * Compile an insert statement using a subquery into SQL.
-     *
-     * @param Builder $query
      */
     public function compileInsertUsing(BaseBuilder $query, array $columns, string $sql): string
     {
@@ -69,8 +63,6 @@ class Grammar extends PostgresGrammar
 
     /**
      * Compile a select query into SQL.
-     *
-     * @param Builder $query
      */
     public function compileSelect(BaseBuilder $query): string
     {
@@ -79,8 +71,6 @@ class Grammar extends PostgresGrammar
 
     /**
      * Compile an update statement into SQL.
-     *
-     * @param Builder $query
      */
     public function compileUpdate(BaseBuilder $query, array $values): string
     {
@@ -89,8 +79,6 @@ class Grammar extends PostgresGrammar
 
     /**
      * Compile an update from statement into SQL.
-     *
-     * @param Builder $query
      */
     public function compileUpdateFrom(BaseBuilder $query, $values): string
     {

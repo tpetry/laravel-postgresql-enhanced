@@ -28,11 +28,10 @@ trait BuilderCte
         $this->expressions = array_filter($this->expressions, static function (array $expression) use ($as): bool {
             return $expression['as'] !== $as;
         });
-        $this->bindings['expressions'] = Arr::flatten(array_column($this->expressions, 'bindings'), 1);
 
         [$query, $bindings] = $this->createSub($query);
         $this->expressions[] = compact('as', 'query', 'options', 'bindings');
-        $this->addBinding($bindings, 'expressions');
+        $this->bindings['expressions'] = Arr::flatten(array_column($this->expressions, 'bindings'), 1);
 
         return $this;
     }

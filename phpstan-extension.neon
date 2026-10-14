@@ -1,3 +1,6 @@
+includes:
+    - phpstan-extension.php
+
 services:
     - class: Tpetry\PostgresqlEnhanced\Support\Phpstan\QueryBuilderExtension
       tags:

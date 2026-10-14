@@ -10,6 +10,17 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 class Query
 {
     /**
+     * Runs the before query callbacks of a query.
+     */
+    public static function applyBeforeQueryCallbacks(QueryBuilder $query): void
+    {
+        // @phpstan-ignore function.alreadyNarrowedType (Laravel 6 and 7 don't have the method.)
+        if (method_exists($query, 'applyBeforeQueryCallbacks')) {
+            $query->applyBeforeQueryCallbacks();
+        }
+    }
+
+    /**
      * Transforms a query to it's sql representation.
      */
     public static function toSql(EloquentBuilder|QueryBuilder|string $query): string

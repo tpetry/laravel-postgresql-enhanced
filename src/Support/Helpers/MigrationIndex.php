@@ -111,7 +111,7 @@ class MigrationIndex
     public function createName(string $type, string $prefix, string $table, array $columns): string
     {
         $table = match (str_contains($table, '.')) {
-            true => substr_replace("{$table}.{$prefix}", strrpos($table, '.'), 1),
+            true => Str::replaceLast('.', ".{$prefix}", $table),
             false => $prefix.$table,
         };
         $columns = array_map(static fn (string $column) => Str::before($column, ' '), $columns);

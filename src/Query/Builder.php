@@ -8,6 +8,19 @@ use Illuminate\Database\Query\Builder as BaseBuilder;
 use Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection;
 
 /**
+ * @phpstan-type Bindings array{
+ *     expressions: list<mixed>,
+ *     select: list<mixed>,
+ *     from: list<mixed>,
+ *     join: list<mixed>,
+ *     where: list<mixed>,
+ *     groupBy: list<mixed>,
+ *     having: list<mixed>,
+ *     order: list<mixed>,
+ *     union: list<mixed>,
+ *     unionOrder: list<mixed>,
+ * }
+ *
  * @method PostgresEnhancedConnection getConnection()
  * @method Grammar getGrammar()
  */
@@ -25,7 +38,7 @@ class Builder extends BaseBuilder
     /**
      * The current query value bindings.
      *
-     * @var array
+     * @var Bindings
      */
     public $bindings = [
         'expressions' => [],

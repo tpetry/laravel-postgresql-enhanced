@@ -11,8 +11,8 @@ use Illuminate\Database\Grammar;
 class Uuid7 implements Expression
 {
     public function __construct(
-        private readonly ?DateTimeInterface $time = null,
-        private readonly bool $native = false,
+        private ?DateTimeInterface $time = null,
+        private bool $native = false,
     ) {
     }
 
