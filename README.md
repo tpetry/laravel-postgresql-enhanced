@@ -1325,6 +1325,26 @@ $query->orWhereIntegerArrayMatches($column, string $query);
 $query->whereIntegerArrayMatches('tags', '3&4&(5|6)&!7');
 ```
 
+#### Distinct From
+
+Comparing a nullable column with `=` or `!=` ignores all rows where the column is `NULL`, because any comparison with `NULL` is unknown in SQL.
+With PostgreSQL's `IS DISTINCT FROM` and `IS NOT DISTINCT FROM` keywords `NULL` is treated like any other value, so the comparison also works for `NULL` values on both sides.
+
+```php
+// before:
+$query->where(fn ($query) => $query->where('status', '!=', $status)->orWhereNull('status'));
+
+// now:
+$query->whereDistinctFrom('status', $status);
+```
+
+```php
+$query->whereDistinctFrom($column, mixed $value);
+$query->whereNotDistinctFrom($column, mixed $value);
+$query->orWhereDistinctFrom($column, mixed $value);
+$query->orWhereNotDistinctFrom($column, mixed $value);
+```
+
 ### Order By
 
 #### NULLS FIRST/LAST

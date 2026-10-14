@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Query;
 
+use Illuminate\Contracts\Database\Query\Expression as ExpressionContract;
 use Illuminate\Database\Query\Expression;
 
 trait BuilderWhere
@@ -46,6 +47,16 @@ trait BuilderWhere
     public function orWhereBoolean($column, bool $value): static
     {
         return $this->orWhere($column, new Expression(var_export($value, true)));
+    }
+
+    /**
+     * Add an "or where distinct from" statement to the query.
+     *
+     * @param Expression|string $column
+     */
+    public function orWhereDistinctFrom($column, mixed $value): static
+    {
+        return $this->whereDistinctFrom($column, $value, 'or');
     }
 
     /**
@@ -108,6 +119,16 @@ trait BuilderWhere
     public function orWhereNotBoolean($column, bool $value): static
     {
         return $this->orWhere($column, '!=', new Expression(var_export($value, true)));
+    }
+
+    /**
+     * Add an "or where not distinct from" statement to the query.
+     *
+     * @param Expression|string $column
+     */
+    public function orWhereNotDistinctFrom($column, mixed $value): static
+    {
+        return $this->whereNotDistinctFrom($column, $value, 'or');
     }
 
     /**
@@ -180,6 +201,25 @@ trait BuilderWhere
     }
 
     /**
+     * Add a "where distinct from" statement to the query.
+     *
+     * @param Expression|string $column
+     * @param string $boolean
+     * @param bool $not
+     */
+    public function whereDistinctFrom($column, mixed $value, $boolean = 'and', $not = false): static
+    {
+        $type = 'distinctFrom';
+
+        $this->wheres[] = compact('type', 'column', 'value', 'boolean', 'not');
+        if (!$value instanceof Expression && !$value instanceof ExpressionContract) {
+            $this->addBinding($value);
+        }
+
+        return $this;
+    }
+
+    /**
      * Add a where integer array matches statement to the query.
      *
      * @param Expression|string $column
@@ -246,6 +286,17 @@ trait BuilderWhere
     public function whereNotBoolean($column, bool $value): static
     {
         return $this->where($column, '!=', new Expression(var_export($value, true)));
+    }
+
+    /**
+     * Add a "where not distinct from" statement to the query.
+     *
+     * @param Expression|string $column
+     * @param string $boolean
+     */
+    public function whereNotDistinctFrom($column, mixed $value, $boolean = 'and'): static
+    {
+        return $this->whereDistinctFrom($column, $value, $boolean, true);
     }
 
     /**
