@@ -89,4 +89,17 @@ trait GrammarWhere
             default => parent::whereColumn($query, $where),
         };
     }
+
+    /**
+     * Compile a "distinct from" where clause.
+     *
+     * @param array $where
+     */
+    protected function whereDistinctFrom(Builder $query, $where): string
+    {
+        return match ($where['not']) {
+            true => "{$this->wrap($where['column'])} is not distinct from {$this->parameter($where['value'])}",
+            false => "{$this->wrap($where['column'])} is distinct from {$this->parameter($where['value'])}",
+        };
+    }
 }

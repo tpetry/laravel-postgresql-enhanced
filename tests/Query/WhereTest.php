@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Tests\Query;
 
+use Illuminate\Database\Query\Expression;
 use Tpetry\PostgresqlEnhanced\Tests\TestCase;
 
 class WhereTest extends TestCase
@@ -74,6 +75,23 @@ class WhereTest extends TestCase
         $this->assertEquals(
             ['select * from "example" where "val" = true or "val" = false'],
             array_column($queries, 'query'),
+        );
+    }
+
+    public function testOrWhereDistinctFrom(): void
+    {
+        $this->getConnection()->unprepared('CREATE TABLE example (val text)');
+
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->orWhereDistinctFrom('val', 'test392493')->orWhereDistinctFrom(new Expression('val'), 'test425941')->get();
+        });
+        $this->assertEquals(
+            ['select * from "example" where "val" is distinct from ? or val is distinct from ?'],
+            array_column($queries, 'query'),
+        );
+        $this->assertEquals(
+            [['test392493', 'test425941']],
+            array_column($queries, 'bindings'),
         );
     }
 
@@ -172,6 +190,23 @@ class WhereTest extends TestCase
         );
     }
 
+    public function testOrWhereNotDistinctFrom(): void
+    {
+        $this->getConnection()->unprepared('CREATE TABLE example (val text)');
+
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->orWhereNotDistinctFrom('val', 'test930617')->orWhereNotDistinctFrom(new Expression('val'), 'test217810')->get();
+        });
+        $this->assertEquals(
+            ['select * from "example" where "val" is not distinct from ? or val is not distinct from ?'],
+            array_column($queries, 'query'),
+        );
+        $this->assertEquals(
+            [['test930617', 'test217810']],
+            array_column($queries, 'bindings'),
+        );
+    }
+
     public function testOrWhereNotLike(): void
     {
         $this->getConnection()->unprepared('CREATE TABLE example (str text)');
@@ -251,6 +286,23 @@ class WhereTest extends TestCase
         $this->assertEquals(
             ['select * from "example" where "val" = true and "val" = false'],
             array_column($queries, 'query'),
+        );
+    }
+
+    public function testWhereDistinctFrom(): void
+    {
+        $this->getConnection()->unprepared('CREATE TABLE example (val text)');
+
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->whereDistinctFrom('val', 'test784406')->whereDistinctFrom(new Expression('val'), 'test621815')->get();
+        });
+        $this->assertEquals(
+            ['select * from "example" where "val" is distinct from ? and val is distinct from ?'],
+            array_column($queries, 'query'),
+        );
+        $this->assertEquals(
+            [['test784406', 'test621815']],
+            array_column($queries, 'bindings'),
         );
     }
 
@@ -346,6 +398,23 @@ class WhereTest extends TestCase
         $this->assertEquals(
             ['select * from "example" where "val" != true and "val" != false'],
             array_column($queries, 'query'),
+        );
+    }
+
+    public function testWhereNotDistinctFrom(): void
+    {
+        $this->getConnection()->unprepared('CREATE TABLE example (val text)');
+
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->whereNotDistinctFrom('val', 'test669998')->whereNotDistinctFrom(new Expression('val'), 'test749532')->get();
+        });
+        $this->assertEquals(
+            ['select * from "example" where "val" is not distinct from ? and val is not distinct from ?'],
+            array_column($queries, 'query'),
+        );
+        $this->assertEquals(
+            [['test669998', 'test749532']],
+            array_column($queries, 'bindings'),
         );
     }
 

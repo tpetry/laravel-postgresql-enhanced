@@ -49,6 +49,16 @@ trait BuilderWhere
     }
 
     /**
+     * Add an "or where distinct from" statement to the query.
+     *
+     * @param Expression|string $column
+     */
+    public function orWhereDistinctFrom($column, mixed $value): static
+    {
+        return $this->whereDistinctFrom($column, $value, 'or');
+    }
+
+    /**
      * Add an or where integer array matches statement to the query.
      *
      * @param Expression|string $column
@@ -108,6 +118,16 @@ trait BuilderWhere
     public function orWhereNotBoolean($column, bool $value): static
     {
         return $this->orWhere($column, '!=', new Expression(var_export($value, true)));
+    }
+
+    /**
+     * Add an "or where not distinct from" statement to the query.
+     *
+     * @param Expression|string $column
+     */
+    public function orWhereNotDistinctFrom($column, mixed $value): static
+    {
+        return $this->whereNotDistinctFrom($column, $value, 'or');
     }
 
     /**
@@ -180,6 +200,21 @@ trait BuilderWhere
     }
 
     /**
+     * Add a "where distinct from" statement to the query.
+     *
+     * @param Expression|string $column
+     */
+    public function whereDistinctFrom($column, mixed $value, string $boolean = 'and', bool $not = false): static
+    {
+        $type = 'distinctFrom';
+
+        $this->wheres[] = compact('type', 'column', 'value', 'boolean', 'not');
+        $this->addBinding($value);
+
+        return $this;
+    }
+
+    /**
      * Add a where integer array matches statement to the query.
      *
      * @param Expression|string $column
@@ -246,6 +281,16 @@ trait BuilderWhere
     public function whereNotBoolean($column, bool $value): static
     {
         return $this->where($column, '!=', new Expression(var_export($value, true)));
+    }
+
+    /**
+     * Add a "where not distinct from" statement to the query.
+     *
+     * @param Expression|string $column
+     */
+    public function whereNotDistinctFrom($column, mixed $value, string $boolean = 'and'): static
+    {
+        return $this->whereDistinctFrom($column, $value, $boolean, true);
     }
 
     /**
