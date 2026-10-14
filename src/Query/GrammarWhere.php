@@ -93,7 +93,7 @@ trait GrammarWhere
     /**
      * Compile a "distinct from" where clause.
      *
-     * @param array $where
+     * @param array{column: string, not: bool, value: mixed} $where
      */
     protected function whereDistinctFrom(Builder $query, $where): string
     {
