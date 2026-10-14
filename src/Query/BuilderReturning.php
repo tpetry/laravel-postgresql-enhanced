@@ -6,6 +6,7 @@ namespace Tpetry\PostgresqlEnhanced\Query;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Tpetry\PostgresqlEnhanced\Support\Helpers\Query;
 
 /**
  * The implementations of these functions have been taken from the Laravel core and
@@ -30,9 +31,7 @@ trait BuilderReturning
         $sqlDelete = $this->getGrammar()->compileDelete($this);
         $sqlReturning = $this->getGrammar()->compileReturning($this, $returning);
 
-        if (method_exists($this, 'applyBeforeQueryCallbacks')) {
-            $this->applyBeforeQueryCallbacks();
-        }
+        Query::applyBeforeQueryCallbacks($this);
 
         return collect(
             $this->getConnection()->returningStatement("{$sqlDelete} {$sqlReturning}", $this->cleanBindings(
@@ -61,9 +60,7 @@ trait BuilderReturning
             }
         }
 
-        if (method_exists($this, 'applyBeforeQueryCallbacks')) {
-            $this->applyBeforeQueryCallbacks();
-        }
+        Query::applyBeforeQueryCallbacks($this);
 
         $sqlInsert = $this->getGrammar()->compileInsert($this, $values);
         $sqlConflict = match ($uniqueBy) {
@@ -107,9 +104,7 @@ trait BuilderReturning
             }
         }
 
-        if (method_exists($this, 'applyBeforeQueryCallbacks')) {
-            $this->applyBeforeQueryCallbacks();
-        }
+        Query::applyBeforeQueryCallbacks($this);
 
         $sqlInsert = $this->getGrammar()->compileInsert($this, $values);
         $sqlReturning = $this->getGrammar()->compileReturning($this, $returning);
@@ -135,9 +130,7 @@ trait BuilderReturning
      */
     public function insertUsingReturning(array $columns, $query, array $returning = ['*']): Collection
     {
-        if (method_exists($this, 'applyBeforeQueryCallbacks')) {
-            $this->applyBeforeQueryCallbacks();
-        }
+        Query::applyBeforeQueryCallbacks($this);
 
         [$sql, $bindings] = $this->createSub($query);
 
@@ -160,9 +153,7 @@ trait BuilderReturning
      */
     public function updateFromReturning(array $values, array $returning = ['*']): Collection
     {
-        if (method_exists($this, 'applyBeforeQueryCallbacks')) {
-            $this->applyBeforeQueryCallbacks();
-        }
+        Query::applyBeforeQueryCallbacks($this);
 
         return $this->getConnection()->runWithAdditionalBindings(function () use ($returning, $values) {
             $sqlUpdate = $this->getGrammar()->compileUpdateFrom($this, $values);
@@ -201,9 +192,7 @@ trait BuilderReturning
      */
     public function updateReturning(array $values, array $returning = ['*']): Collection
     {
-        if (method_exists($this, 'applyBeforeQueryCallbacks')) {
-            $this->applyBeforeQueryCallbacks();
-        }
+        Query::applyBeforeQueryCallbacks($this);
 
         return $this->getConnection()->runWithAdditionalBindings(function () use ($returning, $values) {
             $sqlUpdate = $this->getGrammar()->compileUpdate($this, $values);
@@ -244,9 +233,7 @@ trait BuilderReturning
             $update = array_keys(reset($values));
         }
 
-        if (method_exists($this, 'applyBeforeQueryCallbacks')) {
-            $this->applyBeforeQueryCallbacks();
-        }
+        Query::applyBeforeQueryCallbacks($this);
 
         $bindings = $this->cleanBindings(array_merge(
             Arr::flatten($values, 1),

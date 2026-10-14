@@ -86,8 +86,8 @@ class ZeroDowntimeMigrationSupervisor
         $this->pgsqlStatementTimeout = $this->migrationConnection->selectOne('SHOW statement_timeout')->statement_timeout;
         $this->pgsqlIdleInTransactionSessionTimeout = $this->migrationConnection->selectOne('SHOW idle_in_transaction_session_timeout')->idle_in_transaction_session_timeout;
         $this->migrationTimeout = match ($event->method) {
-            'down' => microtime(true) + $event->migration->timeoutDown(),
-            'up' => microtime(true) + $event->migration->timeoutUp(),
+            'down' => microtime(true) + $event->migration->timeoutDown(), // @phpstan-ignore method.notFound
+            'up' => microtime(true) + $event->migration->timeoutUp(), // @phpstan-ignore method.notFound
             default => throw new RuntimeException("Unknown migration method '{$event->method}'"),
         };
 

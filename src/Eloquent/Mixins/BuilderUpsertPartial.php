@@ -22,9 +22,9 @@ class BuilderUpsertPartial
             }
 
             return $this->toBase()->upsertPartial(
-                $this->addTimestampsToUpsertValues($values),
+                $this->addTimestampsToUpsertValues($values), // @phpstan-ignore method.protected
                 $uniqueBy,
-                $this->addUpdatedAtToUpsertColumns($update),
+                $this->addUpdatedAtToUpsertColumns($update), // @phpstan-ignore method.protected
                 $where
             );
         };

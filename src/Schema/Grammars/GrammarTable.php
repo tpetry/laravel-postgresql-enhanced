@@ -15,7 +15,7 @@ trait GrammarTable
      *
      * @return array<int, string>
      */
-    public function compileAdd(Blueprint $blueprint, Fluent $command): array
+    public function compileAdd(Blueprint $blueprint, Fluent $command): array // @phpstan-ignore method.childReturnType (Laravel documents a string, but the blueprint accepts an array of statements from every compile method.)
     {
         // In Laravel 11.15.0 the logic was changed that compileAdd is only for one column (the one in the command) of
         // the blueprint and not all ones of the blueprint as before.

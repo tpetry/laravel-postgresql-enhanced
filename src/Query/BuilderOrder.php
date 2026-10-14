@@ -37,7 +37,7 @@ trait BuilderOrder
         };
 
         $nulls = strtolower($nulls);
-        if (!\in_array($nulls, ['default', 'first', 'last'], true)) {
+        if (!\in_array($nulls, ['default', 'first', 'last'], true)) { // @phpstan-ignore function.alreadyNarrowedType
             throw new InvalidArgumentException('Nulls direction must be "default", "first" or "last".');
         }
 

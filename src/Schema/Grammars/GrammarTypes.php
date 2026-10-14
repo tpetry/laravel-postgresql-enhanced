@@ -40,7 +40,7 @@ trait GrammarTypes
                 'callback' => null,
             ]);
             $blueprintColumnExtract->addColumn($column['type'], $column['name'], $column->toArray());
-            $blueprintColumnExtractQueries = Arr::wrap(parent::compileChange($blueprint, $command, $this->connection));
+            $blueprintColumnExtractQueries = Arr::wrap(parent::compileChange($blueprint, $command, $this->connection)); // @phpstan-ignore arguments.count (Laravel <11 requires the connection as third parameter.)
 
             foreach ($blueprintColumnExtractQueries as $sql) {
                 $regex = Regex::match('/^ALTER table (?P<table>.*?) alter (column )?(?P<column>.*?) type (?P<type>\w+)(?P<modifiers>,.*)?/i', $sql);

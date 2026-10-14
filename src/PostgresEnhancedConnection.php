@@ -165,10 +165,10 @@ class PostgresEnhancedConnection extends PostgresConnection
      * @param int $currentAttempt
      * @param int $maxAttempts
      */
-    protected function handleTransactionException($e, $currentAttempt, $maxAttempts, ?Closure $onFailure = null): void
+    protected function handleTransactionException($e, $currentAttempt, $maxAttempts): void
     {
         try {
-            parent::handleTransactionException($e, $currentAttempt, $maxAttempts, $onFailure);
+            parent::handleTransactionException($e, $currentAttempt, $maxAttempts);
         } catch (Throwable $handleException) {
             if ($e instanceof ZeroDowntimeMigrationTimeoutException) {
                 Container::getInstance()->get(ZeroDowntimeMigrationSupervisor::class)->stop();
@@ -179,10 +179,6 @@ class PostgresEnhancedConnection extends PostgresConnection
                 // is thrown all operations of the transaction have been reversed and the timeout exception can be
                 // thrown again.
                 throw $e;
-            }
-
-            if (null !== $onFailure) {
-                $onFailure($e);
             }
 
             throw $handleException;

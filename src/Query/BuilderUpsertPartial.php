@@ -38,9 +38,7 @@ trait BuilderUpsertPartial
             $update = array_keys(reset($values));
         }
 
-        if (method_exists($this, 'applyBeforeQueryCallbacks')) {
-            $this->applyBeforeQueryCallbacks();
-        }
+        Query::applyBeforeQueryCallbacks($this);
 
         $bindings = $this->cleanBindings([
             ...Arr::flatten($values, 1),

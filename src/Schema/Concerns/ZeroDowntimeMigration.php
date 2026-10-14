@@ -11,16 +11,9 @@ trait ZeroDowntimeMigration
      */
     public function timeoutDown(): float
     {
-        // @phpstan-ignore function.impossibleType
-        if (property_exists($this, 'timeoutDown')) {
-            return (float) $this->timeoutDown;
-        }
-        // @phpstan-ignore function.impossibleType
-        if (property_exists($this, 'timeout')) {
-            return (float) $this->timeout;
-        }
+        $properties = get_object_vars($this);
 
-        return 1.0;
+        return (float) ($properties['timeoutDown'] ?? $properties['timeout'] ?? 1.0);
     }
 
     /**
@@ -28,15 +21,8 @@ trait ZeroDowntimeMigration
      */
     public function timeoutUp(): float
     {
-        // @phpstan-ignore function.impossibleType
-        if (property_exists($this, 'timeoutUp')) {
-            return (float) $this->timeoutUp;
-        }
-        // @phpstan-ignore function.impossibleType
-        if (property_exists($this, 'timeout')) {
-            return (float) $this->timeout;
-        }
+        $properties = get_object_vars($this);
 
-        return 1.0;
+        return (float) ($properties['timeoutUp'] ?? $properties['timeout'] ?? 1.0);
     }
 }
