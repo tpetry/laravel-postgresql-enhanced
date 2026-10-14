@@ -1332,7 +1332,9 @@ With PostgreSQL's `IS DISTINCT FROM` and `IS NOT DISTINCT FROM` keywords `NULL` 
 
 ```php
 // before:
-$query->where(fn ($query) => $query->where('status', '!=', $status)->orWhereNull('status'));
+$query->where(function ($query) {
+    $query->where('status', '!=', $status)->orWhereNull('status');
+});
 
 // now:
 $query->whereDistinctFrom('status', $status);

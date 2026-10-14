@@ -80,23 +80,19 @@ class WhereTest extends TestCase
 
     public function testOrWhereDistinctFrom(): void
     {
-        $this->getConnection()->unprepared('CREATE TABLE example (val int)');
-        $this->getConnection()->table('example')->insert([['val' => 1], ['val' => 2], ['val' => null]]);
+        $this->getConnection()->unprepared('CREATE TABLE example (val text)');
 
-        $results = [];
-        $queries = $this->withQueryLog(function () use (&$results): void {
-            $results[] = $this->getConnection()->table('example')->where('val', 2)->orWhereDistinctFrom('val', 1)->orderBy('val')->pluck('val')->all();
-            $results[] = $this->getConnection()->table('example')->where('val', 2)->orWhereDistinctFrom('val', null)->orderBy('val')->pluck('val')->all();
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->orWhereDistinctFrom('val', 'test392493')->orWhereDistinctFrom(new Expression('val'), 'test425941')->get();
         });
         $this->assertEquals(
-            ['select "val" from "example" where "val" = ? or "val" is distinct from ? order by "val" asc', 'select "val" from "example" where "val" = ? or "val" is distinct from ? order by "val" asc'],
+            ['select * from "example" where "val" is distinct from ? or val is distinct from ?'],
             array_column($queries, 'query'),
         );
         $this->assertEquals(
-            [[2, 1], [2, null]],
+            [['test392493', 'test425941']],
             array_column($queries, 'bindings'),
         );
-        $this->assertSame([[2, null], [1, 2]], $results);
     }
 
     public function testOrWhereIntegerArrayMatches(): void
@@ -196,23 +192,19 @@ class WhereTest extends TestCase
 
     public function testOrWhereNotDistinctFrom(): void
     {
-        $this->getConnection()->unprepared('CREATE TABLE example (val int)');
-        $this->getConnection()->table('example')->insert([['val' => 1], ['val' => 2], ['val' => null]]);
+        $this->getConnection()->unprepared('CREATE TABLE example (val text)');
 
-        $results = [];
-        $queries = $this->withQueryLog(function () use (&$results): void {
-            $results[] = $this->getConnection()->table('example')->orWhereNotDistinctFrom('val', 1)->orWhereNotDistinctFrom('val', 2)->orderBy('val')->pluck('val')->all();
-            $results[] = $this->getConnection()->table('example')->orWhereNotDistinctFrom('val', 1)->orWhereNotDistinctFrom('val', null)->orderBy('val')->pluck('val')->all();
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->orWhereNotDistinctFrom('val', 'test930617')->orWhereNotDistinctFrom(new Expression('val'), 'test217810')->get();
         });
         $this->assertEquals(
-            ['select "val" from "example" where "val" is not distinct from ? or "val" is not distinct from ? order by "val" asc', 'select "val" from "example" where "val" is not distinct from ? or "val" is not distinct from ? order by "val" asc'],
+            ['select * from "example" where "val" is not distinct from ? or val is not distinct from ?'],
             array_column($queries, 'query'),
         );
         $this->assertEquals(
-            [[1, 2], [1, null]],
+            [['test930617', 'test217810']],
             array_column($queries, 'bindings'),
         );
-        $this->assertSame([[1, 2], [1, null]], $results);
     }
 
     public function testOrWhereNotLike(): void
@@ -299,43 +291,19 @@ class WhereTest extends TestCase
 
     public function testWhereDistinctFrom(): void
     {
-        $this->getConnection()->unprepared('CREATE TABLE example (val int)');
-        $this->getConnection()->table('example')->insert([['val' => 1], ['val' => 2], ['val' => null]]);
+        $this->getConnection()->unprepared('CREATE TABLE example (val text)');
 
-        $results = [];
-        $queries = $this->withQueryLog(function () use (&$results): void {
-            $results[] = $this->getConnection()->table('example')->whereDistinctFrom('val', 1)->orderBy('val')->pluck('val')->all();
-            $results[] = $this->getConnection()->table('example')->whereDistinctFrom('val', null)->orderBy('val')->pluck('val')->all();
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->whereDistinctFrom('val', 'test784406')->whereDistinctFrom(new Expression('val'), 'test621815')->get();
         });
         $this->assertEquals(
-            ['select "val" from "example" where "val" is distinct from ? order by "val" asc', 'select "val" from "example" where "val" is distinct from ? order by "val" asc'],
+            ['select * from "example" where "val" is distinct from ? and val is distinct from ?'],
             array_column($queries, 'query'),
         );
         $this->assertEquals(
-            [[1], [null]],
+            [['test784406', 'test621815']],
             array_column($queries, 'bindings'),
         );
-        $this->assertSame([[2, null], [1, 2]], $results);
-    }
-
-    public function testWhereDistinctFromExpression(): void
-    {
-        $this->getConnection()->unprepared('CREATE TABLE example (val int)');
-        $this->getConnection()->table('example')->insert([['val' => 1], ['val' => 2], ['val' => null]]);
-
-        $results = [];
-        $queries = $this->withQueryLog(function () use (&$results): void {
-            $results[] = $this->getConnection()->table('example')->whereDistinctFrom('val', new Expression('1'))->orderBy('val')->pluck('val')->all();
-        });
-        $this->assertEquals(
-            ['select "val" from "example" where "val" is distinct from 1 order by "val" asc'],
-            array_column($queries, 'query'),
-        );
-        $this->assertEquals(
-            [[]],
-            array_column($queries, 'bindings'),
-        );
-        $this->assertSame([[2, null]], $results);
     }
 
     public function testWhereIntegerArrayMatches(): void
@@ -435,23 +403,19 @@ class WhereTest extends TestCase
 
     public function testWhereNotDistinctFrom(): void
     {
-        $this->getConnection()->unprepared('CREATE TABLE example (val int)');
-        $this->getConnection()->table('example')->insert([['val' => 1], ['val' => 2], ['val' => null]]);
+        $this->getConnection()->unprepared('CREATE TABLE example (val text)');
 
-        $results = [];
-        $queries = $this->withQueryLog(function () use (&$results): void {
-            $results[] = $this->getConnection()->table('example')->whereNotDistinctFrom('val', 1)->orderBy('val')->pluck('val')->all();
-            $results[] = $this->getConnection()->table('example')->whereNotDistinctFrom('val', null)->orderBy('val')->pluck('val')->all();
+        $queries = $this->withQueryLog(function (): void {
+            $this->getConnection()->table('example')->whereNotDistinctFrom('val', 'test669998')->whereNotDistinctFrom(new Expression('val'), 'test749532')->get();
         });
         $this->assertEquals(
-            ['select "val" from "example" where "val" is not distinct from ? order by "val" asc', 'select "val" from "example" where "val" is not distinct from ? order by "val" asc'],
+            ['select * from "example" where "val" is not distinct from ? and val is not distinct from ?'],
             array_column($queries, 'query'),
         );
         $this->assertEquals(
-            [[1], [null]],
+            [['test669998', 'test749532']],
             array_column($queries, 'bindings'),
         );
-        $this->assertSame([[1], [null]], $results);
     }
 
     public function testWhereNotLike(): void

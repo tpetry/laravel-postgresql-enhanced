@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tpetry\PostgresqlEnhanced\Query;
 
-use Illuminate\Contracts\Database\Query\Expression as ExpressionContract;
 use Illuminate\Database\Query\Expression;
 
 trait BuilderWhere
@@ -204,17 +203,13 @@ trait BuilderWhere
      * Add a "where distinct from" statement to the query.
      *
      * @param Expression|string $column
-     * @param string $boolean
-     * @param bool $not
      */
-    public function whereDistinctFrom($column, mixed $value, $boolean = 'and', $not = false): static
+    public function whereDistinctFrom($column, mixed $value, string $boolean = 'and', bool $not = false): static
     {
         $type = 'distinctFrom';
 
         $this->wheres[] = compact('type', 'column', 'value', 'boolean', 'not');
-        if (!$value instanceof Expression && !$value instanceof ExpressionContract) {
-            $this->addBinding($value);
-        }
+        $this->addBinding($value);
 
         return $this;
     }
@@ -292,9 +287,8 @@ trait BuilderWhere
      * Add a "where not distinct from" statement to the query.
      *
      * @param Expression|string $column
-     * @param string $boolean
      */
-    public function whereNotDistinctFrom($column, mixed $value, $boolean = 'and'): static
+    public function whereNotDistinctFrom($column, mixed $value, string $boolean = 'and'): static
     {
         return $this->whereDistinctFrom($column, $value, $boolean, true);
     }

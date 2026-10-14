@@ -93,12 +93,13 @@ trait GrammarWhere
     /**
      * Compile a "distinct from" where clause.
      *
-     * @param array{column: string, not: bool, value: mixed} $where
+     * @param array $where
      */
     protected function whereDistinctFrom(Builder $query, $where): string
     {
-        $operator = $where['not'] ? 'is not distinct from' : 'is distinct from';
-
-        return "{$this->wrap($where['column'])} {$operator} {$this->parameter($where['value'])}";
+        return match ($where['not']) {
+            true => "{$this->wrap($where['column'])} is not distinct from {$this->parameter($where['value'])}",
+            false => "{$this->wrap($where['column'])} is distinct from {$this->parameter($where['value'])}",
+        };
     }
 }
