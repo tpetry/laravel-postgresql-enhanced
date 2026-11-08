@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.11.0] - Unreleased
+### Added
+* Opt-in native PostgreSQL boolean bindings with `PostgresqlEnhanced::useNativeBooleans()`
+* Configurable query grammar and Eloquent date format with `PostgresqlEnhanced::useDateFormat()`
+* Opt-in binary string detection for `bytea` bindings with `PostgresqlEnhanced::detectBinaryStrings()`
+
 ## [3.10.0] - 2026-10-14
 ### Added
 * Lazy Transactions

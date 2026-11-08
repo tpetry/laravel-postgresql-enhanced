@@ -88,6 +88,10 @@ The minimal breaking changes of the past years are listed in the [breaking chang
     - [Date Formats](#date-formats)
 - [Connection](#connection)
     - [Lazy Transaction](#lazy-transaction) 
+    - [Binding Options](#binding-options)
+        - [Native Booleans](#native-booleans)
+        - [Global Date Format](#global-date-format)
+        - [Binary Strings](#binary-strings)
 - [Expressions](#expressions)
 - [Supported Extensions](#supported-extensions)
     - [Timescale](#timescale)
@@ -1490,9 +1494,11 @@ class Example extends Model
 > Instead of truncating the milliseconds, they are rounded by PostgreSQL.
 > When the value is rounded up, your timestamp will be in the future.
 
+If you want the same format for all your models and queries, you can also set it globally with [`PostgresqlEnhanced::useDateFormat()`](#global-date-format).
+
 # Connection
 
-# Lazy Transaction
+## Lazy Transaction
 
 You probably want to run all your operations within a transaction, so either all changes of your requests are saved to the database or none when an error occurs.
 Right now, you manually have to wrap these code blocks in a `DB::transaction()` manually.
@@ -1539,6 +1545,109 @@ class TransactionWrapper
 
 > [!NOTE]
 > Lazy transactions are only supported with PHP 8.4+, Laravel 11+ and don't work with persistent connections.
+
+## Binding Options
+
+Laravel converts the values you pass to a query in a way that works for all supported databases.
+That is not always what PostgreSQL would prefer: booleans are bound as integers by default, dates lose their time zone and microseconds, and binary strings are cut off at the first NUL byte.
+Three opt-in options change how values are bound.
+They are all disabled by default, so nothing changes until you enable them, typically in the `boot()` method of a service provider:
+
+```php
+use Illuminate\Support\ServiceProvider;
+use Tpetry\PostgresqlEnhanced\PostgresqlEnhanced;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        PostgresqlEnhanced::useNativeBooleans();
+        PostgresqlEnhanced::useDateFormat('Y-m-d\TH:i:s.up');
+        PostgresqlEnhanced::detectBinaryStrings();
+    }
+}
+```
+
+The options are global for all PostgreSQL connections of the process, so in Octane or queue workers they persist across requests.
+`PostgresqlEnhanced::reset()` restores all defaults, for example in the `tearDown()` of a test.
+
+### Native Booleans
+
+By default, Laravel binds PHP booleans as the integers `1` and `0`.
+(Laravel 13.17+ already sends `true`/`false` literals when using emulated prepared statements, see [laravel/framework#60425](https://github.com/laravel/framework/pull/60425).)
+With `useNativeBooleans()`, they are bound as real PostgreSQL booleans.
+This works with real and emulated prepared statements (`PDO::ATTR_EMULATE_PREPARES`).
+
+```php
+PostgresqlEnhanced::useNativeBooleans();
+
+DB::table('users')->where('active', true)->get(); // select * from "users" where "active" = ? (true is bound as a boolean)
+```
+
+> [!CAUTION]
+> This is opt-in because booleans are no longer sent as `1`/`0`, but as `t`/`f` (`true`/`false` with emulated prepared statements):
+> Comparing or inserting a PHP boolean with an `integer` or `smallint` column fails, a `text` column stores `t`/`f` (`true`/`false` with emulated prepared statements) instead of `1`/`0`, and a `jsonb` column rejects it with real prepared statements.
+
+### Global Date Format
+
+Laravel formats `DateTimeInterface` bindings as `Y-m-d H:i:s`, which drops microseconds and the UTC offset.
+`useDateFormat()` replaces the date format of the query grammar.
+Because Eloquent models use the grammar's format as their default `$dateFormat`, your models follow it automatically.
+The recommended format `Y-m-d\TH:i:s.up` keeps microseconds and the UTC offset (UTC is rendered as `Z`).
+
+```php
+PostgresqlEnhanced::useDateFormat('Y-m-d\TH:i:s.up');
+
+DB::table('events')->where('starts_at', '>', now())->get(); // bound as e.g. 2026-11-08T12:30:00.123456Z (UTC app timezone)
+```
+
+Pass `null` to restore Laravel's default `Y-m-d H:i:s`.
+Models with their own `$dateFormat` or using the `AutomaticDateFormat`/`AutomaticDateFormatWithMilliseconds` trait (see [Date Formats](#date-formats)) keep their format.
+
+> [!NOTE]
+> Eloquent can only read back values PostgreSQL returns in another format (e.g. `2026-11-08 12:30:00.123456+00`) since Laravel 7. On Laravel 6, use one of the `AutomaticDateFormat` traits instead.
+
+> [!CAUTION]
+> Microseconds are only kept by columns with sub-second precision (e.g. `$table->timestampTz('starts_at', precision: 6)`); columns created with precision 0 (Laravel's default before Laravel 11) round them, see [Date Formats](#date-formats).
+> The UTC offset is only meaningful for `timestampTz` columns.
+
+### Binary Strings
+
+PostgreSQL text parameters can't hold binary data: a string is silently cut off at its first NUL byte, and invalid UTF-8 is rejected.
+Storing such data (e.g. encrypted or compressed payloads) in a `bytea` column therefore requires binding a stream manually.
+With `detectBinaryStrings()`, every string containing a NUL byte or that is not valid UTF-8 is bound as `bytea`.
+This works with emulated prepared statements and inside lazy transactions.
+
+```php
+PostgresqlEnhanced::detectBinaryStrings();
+
+DB::table('documents')->insert(['payload' => gzcompress($content)]);
+
+$payload = stream_get_contents(DB::table('documents')->value('payload'));
+```
+
+pdo_pgsql returns `bytea` columns as stream resources, so read them with `stream_get_contents()`.
+
+> [!CAUTION]
+> This is opt-in because a binary string bound for a column other than `bytea` (e.g. `text`, `jsonb`) is no longer sent as text:
+> With real prepared statements PostgreSQL raises an error, with emulated prepared statements (`PDO::ATTR_EMULATE_PREPARES`) it is silently stored in its hex form (`\x…`).
+
+> [!WARNING]
+> Binary data that happens to be valid UTF-8 and contains no NUL byte cannot be detected and is still sent as text.
+> PostgreSQL then interprets it as `bytea` input syntax: the value `\x41` is stored as the byte `A`, and a lone backslash raises an error.
+> For such data bind a stream resource explicitly, which Laravel binds as `PDO::PARAM_LOB` (Laravel 7+, [laravel/framework#32319](https://github.com/laravel/framework/pull/32319); with binary string detection enabled also on Laravel 6):
+>
+> ```php
+> $stream = fopen('php://memory', 'r+');
+> fwrite($stream, $data);
+> rewind($stream);
+>
+> DB::table('documents')->insert(['payload' => $stream]);
+> ```
+>
+> Inside a [lazy transaction](#lazy-transaction) a stream can only be the first query when binary string detection is enabled.
+
+Native booleans and binary string detection can be disabled again by passing `false`, e.g. `PostgresqlEnhanced::useNativeBooleans(false)`; the date format is reset by passing `null`.
 
 # Expressions
 
