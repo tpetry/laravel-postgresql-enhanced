@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+// @php-cs-fixer-ignore void_return -- bindValues() must stay without return type, see its comment.
+
 namespace Tpetry\PostgresqlEnhanced;
 
 use Closure;
@@ -33,20 +35,31 @@ class PostgresEnhancedConnection extends PostgresConnection
 
     /**
      * Bind values to their parameters in the given statement.
+     * No native return type: Laravel declares none, so user subclasses written against it must stay compatible.
      *
      * @param \PDOStatement $statement
      * @param array $bindings
+     *
+     * @return void
      */
-    public function bindValues($statement, $bindings): void
+    public function bindValues($statement, $bindings)
     {
+        $usesNativeBooleans = PostgresqlEnhanced::usesNativeBooleans();
+        $detectsBinaryStrings = PostgresqlEnhanced::detectsBinaryStrings();
         foreach ($bindings as $key => $value) {
-            if (!\is_bool($value)) {
+            // Booleans only survive prepareBindings() when native booleans are enabled. They are bound with
+            // PDO::PARAM_BOOL, which pdo_pgsql sends as 't'/'f'. Strings containing NUL bytes or invalid UTF-8 are bound
+            // as LOBs (bytea) when binary string detection is enabled, as a text parameter can't hold them.
+            $type = match (true) {
+                $usesNativeBooleans && \is_bool($value) => PDO::PARAM_BOOL,
+                $detectsBinaryStrings && (\is_resource($value) || $this->isBinaryString($value)) => PDO::PARAM_LOB,
+                default => null,
+            };
+            if (null === $type) {
                 continue;
             }
 
-            // Booleans only survive prepareBindings() when native booleans are enabled. They are bound as typed boolean
-            // parameters here because Laravel's own implementation would bind them as text.
-            $statement->bindValue(\is_string($key) ? $key : $key + 1, $value, PDO::PARAM_BOOL);
+            $statement->bindValue(\is_string($key) ? $key : $key + 1, $value, $type);
             unset($bindings[$key]);
         }
 
@@ -89,8 +102,11 @@ class PostgresEnhancedConnection extends PostgresConnection
 
     /**
      * Prepare the query bindings for execution.
+     * No native return type: Laravel declares none, so user subclasses written against it must stay compatible.
+     *
+     * @return array
      */
-    public function prepareBindings(array $bindings): array
+    public function prepareBindings(array $bindings)
     {
         $prepared = parent::prepareBindings($bindings);
 
@@ -101,7 +117,8 @@ class PostgresEnhancedConnection extends PostgresConnection
         $emulatesPrepares = $this->usesEmulatedPreparesCompat();
         foreach ($bindings as $key => $value) {
             if (\is_bool($value)) {
-                // With real prepared statements pdo_pgsql sends a PHP bool as a typed boolean parameter. With emulated
+                // With real prepared statements the PHP bool is kept for bindValues(), which binds it with PDO::PARAM_BOOL
+                // so pdo_pgsql sends it as 't'/'f'. With emulated
                 // prepares the value is interpolated client side, so the literal strings Laravel 13.17 introduced for
                 // that case are used instead (laravel/framework#60425).
                 $prepared[$key] = $emulatesPrepares ? ($value ? 'true' : 'false') : $value;
@@ -245,7 +262,35 @@ class PostgresEnhancedConnection extends PostgresConnection
             ...$this->additionalBindings['append'] ?? [],
         ];
 
+        if (PostgresqlEnhanced::detectsBinaryStrings() && array_filter($bindings, fn (mixed $value): bool => \is_resource($value) || $this->isBinaryString($value))) {
+            // LOB bindings (binary strings and streams) are rejected by the statement initializing a lazy transaction, as
+            // its emulated prepares can't transport binary data. So a queued lazy transaction is started first and the
+            // query is a normal prepared statement. This happens inside the callback so a lost connection is handled by handleQueryException().
+            $callback = function (...$arguments) use ($callback): mixed {
+                // A lazy transaction can only exist inside a transaction, so the PDO is not resolved otherwise. This
+                // avoids opening the write connection for a read outside of transactions.
+                $pdo = !$this->pretending() && 0 < $this->transactionLevel() ? $this->getPdo() : null;
+                if ($pdo instanceof PostgresqlEnhancedPdoConnection) {
+                    $pdo->executeQueuedQueriesAndStopQueuing();
+                }
+
+                return $callback(...$arguments);
+            };
+        }
+
         return parent::run($query, $bindings, $callback);
+    }
+
+    /**
+     * Whether the value is a string only a bytea parameter can hold: it contains NUL bytes or is not valid UTF-8.
+     *
+     * Binary data that happens to be valid UTF-8 without NUL bytes can't be told apart from text. It is still sent as
+     * text, so PostgreSQL parses it as bytea escape input (`\x41` becomes `A`, a lone backslash raises an error).
+     */
+    private function isBinaryString(mixed $value): bool
+    {
+        // preg_match() with the /u modifier validates UTF-8 without requiring the mbstring extension.
+        return \is_string($value) && (str_contains($value, "\0") || 1 !== preg_match('//u', $value));
     }
 
     /**

@@ -88,8 +88,11 @@ class Grammar extends PostgresGrammar
 
     /**
      * Get the format for database stored dates.
+     * No native return type: Laravel declares none, so user subclasses written against it must stay compatible.
+     *
+     * @return string
      */
-    public function getDateFormat(): string
+    public function getDateFormat()
     {
         return PostgresqlEnhanced::dateFormat() ?? parent::getDateFormat();
     }

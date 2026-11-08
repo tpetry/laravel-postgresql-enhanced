@@ -20,8 +20,12 @@ class PostgresqlEnhanced
     }
 
     /**
-     * Enable automatic bytea binding for string values containing NUL bytes.
-     * Opt-in because such a value bound for a text column then raises a PostgreSQL type error instead of being silently truncated.
+     * Enable automatic bytea binding for string values containing NUL bytes or invalid UTF-8.
+     * Opt-in because such a value bound for a non-bytea column is no longer sent as text: with real prepares PostgreSQL
+     * raises an error, with emulated prepares it is silently stored as its hex text form (\x...). Without this option
+     * these strings are cut off at the first NUL byte.
+     * Binary data that is valid UTF-8 without NUL bytes can't be detected and is still sent as text, so PostgreSQL parses
+     * it as bytea escape input (\x41 becomes A, a lone backslash raises an error).
      */
     public static function detectBinaryStrings(bool $enabled = true): void
     {
@@ -38,7 +42,7 @@ class PostgresqlEnhanced
 
     /**
      * Reset all configuration flags to their defaults.
-     * Intended for tests and long-running processes that re-register providers.
+     * Public API for users' own tests and long-running processes that re-register providers.
      */
     public static function reset(): void
     {
@@ -58,7 +62,9 @@ class PostgresqlEnhanced
 
     /**
      * Enable native PostgreSQL boolean binding instead of Laravel's 1/0 integers.
-     * Opt-in because a boolean bound against an integer/smallint/jsonb column then fails.
+     * Opt-in because booleans are then sent as t/f (or true/false with emulated prepares) instead of 1/0: an integer or
+     * smallint column rejects them, a text column stores t/f (true/false with emulated prepares), and a jsonb column fails with real prepares but accepts the
+     * emulated true/false literals.
      */
     public static function useNativeBooleans(bool $enabled = true): void
     {
