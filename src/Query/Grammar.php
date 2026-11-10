@@ -9,6 +9,7 @@ use Illuminate\Database\Query\Grammars\PostgresGrammar;
 use Tpetry\PostgresqlEnhanced\Backports\GrammarBackportConstructor;
 use Tpetry\PostgresqlEnhanced\Backports\GrammarBackportEscape;
 use Tpetry\PostgresqlEnhanced\Backports\GrammarBackportSubstituteBindings;
+use Tpetry\PostgresqlEnhanced\PostgresqlEnhanced;
 
 class Grammar extends PostgresGrammar
 {
@@ -83,5 +84,16 @@ class Grammar extends PostgresGrammar
     public function compileUpdateFrom(BaseBuilder $query, $values): string
     {
         return $this->prependCtes($query, parent::compileUpdateFrom($query, $values));
+    }
+
+    /**
+     * Get the format for database stored dates.
+     * No native return type: Laravel declares none, so user subclasses written against it must stay compatible.
+     *
+     * @return string
+     */
+    public function getDateFormat()
+    {
+        return PostgresqlEnhanced::dateFormat() ?? parent::getDateFormat();
     }
 }
