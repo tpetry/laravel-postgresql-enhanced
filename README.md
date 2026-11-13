@@ -1534,6 +1534,8 @@ class TransactionWrapper
 }
 ```
 
+You can check whether a lazy transaction is still waiting for its first query, i.e. it has not been started on the database yet with `DB::inLazyTransaction()`.
+
 > [!NOTE]
 > The queries executed within a lazy transaction are delayed but still an active database connection is needed.
 

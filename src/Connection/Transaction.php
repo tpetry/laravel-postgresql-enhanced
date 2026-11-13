@@ -24,6 +24,17 @@ trait Transaction
     }
 
     /**
+     * Determine whether a lazy transaction is in progress that has not been started on the database yet and is still
+     * queueing queries.
+     */
+    public function inLazyTransaction(): bool
+    {
+        // The pdo property is checked directly instead of using getPdo() to not establish a connection: A lazy
+        // transaction can only be in progress when the connection has already been established.
+        return $this->pdo instanceof PostgresqlEnhancedPdoConnection && \is_array($this->pdo->lazyTransaction);
+    }
+
+    /**
      * @template TReturn
      *
      * @param Closure(): TReturn $callback

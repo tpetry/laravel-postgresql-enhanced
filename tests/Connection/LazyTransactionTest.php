@@ -215,6 +215,30 @@ class LazyTransactionTest extends TestCase
         $this->assertEmpty($queries['pdo']);
     }
 
+    public function testInLazyTransactionWithLazyTransaction(): void
+    {
+        if (!$this->getConnection()->getPdo() instanceof PostgresqlEnhancedPdoConnection) {
+            $this->markTestSkipped('Lazy transactions are not supported in this environment.');
+        }
+
+        $this->assertFalse($this->getConnection()->inLazyTransaction());
+        $this->getConnection()->beginTransactionLazy();
+        $this->assertTrue($this->getConnection()->inLazyTransaction());
+        $this->getConnection()->unprepared('set local app.random = 936203');
+        $this->assertTrue($this->getConnection()->inLazyTransaction());
+        $this->getConnection()->unprepared('set local app.random = 163036');
+        $this->assertTrue($this->getConnection()->inLazyTransaction());
+        $this->getConnection()->unprepared('select 1');
+        $this->assertFalse($this->getConnection()->inLazyTransaction());
+    }
+
+    public function testInLazyTransactionWithTransaction(): void
+    {
+        $this->assertFalse($this->getConnection()->inLazyTransaction());
+        $this->getConnection()->beginTransaction();
+        $this->assertFalse($this->getConnection()->inLazyTransaction());
+    }
+
     public function testTransactionLazyFailOnUnsupportedVersions(): void
     {
         if ($this->getConnection()->getPdo() instanceof PostgresqlEnhancedPdoConnection) {
